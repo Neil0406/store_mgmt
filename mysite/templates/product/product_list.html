@@ -22,7 +22,7 @@
         background-color:rgb(241, 241, 241);
     }
     .lightbox{
-        z-index:9999;
+        z-index:5000;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
         top: 0;	  
@@ -32,7 +32,6 @@
         align-items: center;
         justify-content: center;
         display: none;
-
 
     }
     .lightbox.active{
@@ -55,6 +54,34 @@
         right: 0;
     }
 
+    .lightbox2{
+        z-index:9999;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;	  
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+    }
+    .lightbox2.active{
+        display: flex;
+    }
+    .content_delete_check{
+        width: 250px;
+        height: 110px;
+        background-color: #ccc;
+        border-radius: 10px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-y:auto;
+
+    }
+
     img{
         width: auto;
         height: auto;
@@ -70,6 +97,16 @@
 
 <!-- page content -->
 <div class="container" role="main">
+
+    <div class="lightbox2">
+        <div class="content_delete_check">
+            <div style="display:flex; justify-content:center; align-items:center;">
+                <button class="btn btn-success" id='delete_true'>確認刪除</button>
+                <button class="btn btn-danger" id="close_delete_check">取消</button>
+            </div>
+        </div>
+    </div>
+
     <div class="lightbox">
         <div class="content" id='show_update'>
             <div class="card col-12">
@@ -79,31 +116,36 @@
                     {% csrf_token %}
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>廠商</h6>
-                            <input id="company" class="form-control" type='text' disabled>
+                            <h6>廠商＊</h6>
+                            <!-- <input id="company" class="form-control" type='text' disabled> -->
+                            <select class="form-control" id="company"></select>
                         </div>        
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>種類</h6>
-                            <input id="types" class="form-control" type='text' disabled>
+                            <h6>種類＊</h6>
+                            <!-- <input id="types" class="form-control" type='text' disabled> -->
+                            <select class="form-control" id="types"></select>
                         </div>
                     </div>
     
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>品牌</h6>
-                            <input id="brand" class="form-control" type='text' disabled>
+                            <!-- <input id="brand" class="form-control" type='text' disabled> -->
+                            <select class="form-control" id="brand"></select>
                         </div>
                     </div>
                     
            
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>型號 / 編號</h6>
-                            <input id="model" class="form-control" type='text' disabled>
+                            <h6>型號 / 編號＊</h6>
+                            <!-- <input id="model" class="form-control" type='text' disabled> -->
+                            <select class="form-control" id="model"></select>
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>品名</h6>
-                            <input id="name" class="form-control" type='text' disabled>                        
+                            <h6>品名＊</h6>
+                            <!-- <input id="name" class="form-control" type='text' disabled>    -->
+                            <select class="form-control" id="name"></select>                     
                         </div>
                     </div>
     
@@ -157,11 +199,15 @@
                     </div>
     
                     <div class="row my-3">
-                        <div class="col-lg-12 col-md-12 col-12">
+                        <div class="col-lg-10 col-md-10 col-12">
                             <button class="btn btn-success" id="sub">更新</button>
                             <button class="btn btn-danger" id="reset">清除</button>
                             <button class="btn btn-danger" id="close">關閉</button>
                         </div>
+                        <div class="col-lg-2 col-md-2 col-12">
+                            <button class="btn btn-danger" id="delete_check">刪除資料</button>
+                        </div>
+
                     </div>
     
                 </div>    
@@ -200,7 +246,7 @@
                                     <tbody>
                                         {% for i in product_list %}
                                         <tr>
-                                            <td><a href="#" onclick="get_id('{{i.id}}','{{i.company}}', '{{i}}' , '{{i.types}}', '{{i.brand}}', '{{i.model}}', '{{i.name}}')">{{i.company}}</a></td>
+                                            <td><a href="#" onclick="get_id('{{i.id}}','{{i.company}}')">{{i.company}}</a></td>
                                             <td>{{i.types}}</td>
                                             <td>{{i.brand}}</td>
                                             <td>{{i.model}}</td>
@@ -243,6 +289,40 @@
     <script src="{% static '/dashboard_plugin/datatable/pdfmake/build/vfs_fonts.js' %}"></script>
 
     <script>
+
+
+        $('#delete_check').click(function(){          //確認刪除lightbox
+            $('.lightbox2').addClass('active')      
+        });
+
+        $('#close_delete_check').click(function(){      //關閉確認刪除lightbox
+            $(".lightbox2").removeClass("active");
+        });
+
+        $('#delete_true').click(function(){
+            product_id = _id                //進貨表的商品id
+            $.ajax({
+                url: '/product_delete/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    product_id: product_id
+                },
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert ('刪除成功')
+                        window.location.reload();
+                    }else if(data.data == 'error'){
+                        alert ('刪除失敗')
+                        window.location.reload();
+                    }
+                }
+            });
+
+        });
+    
+
         var image_check = ''
         var image_check2 = ''
         var image_check3 = ''
@@ -260,14 +340,18 @@
                 success: function (data) {
                     var data = JSON.parse(data);
                     if(data.data.legth != 0){
-                        data.data['company'] = company
-                        $('#company').val(data.data['company']);
-                        $('#types').val(data.data['types']);
-                        $('#brand').val(data.data['brand']);
-                        $('#model').val(data.data['model']);
-                        $('#name').val(data.data['name']);
-                        $('#purchase_price').val(data.data['purchase_price']);
-                        $('#purchase_price').val(data.data['purchase_price']);
+                        var company_id = data.data['company']
+
+                        var company_data = '<option hidden select value="'+company_id+'">'+company+'</option>'
+                        for(i=0; i<data.company_name_list.length; i++){
+                            company_data += '<option value="'+data.company_id_list[i]+'">'+data.company_name_list[i]+'</option>'
+                        };
+                        document.getElementById('company').innerHTML = company_data
+                        document.getElementById('types').innerHTML = '<option hidden select value="'+data.data['types']+'">'+data.data['types']+'</option>'
+                        document.getElementById('brand').innerHTML = '<option hidden select value="'+data.data['brand']+'">'+data.data['brand']+'</option>'
+                        document.getElementById('model').innerHTML = '<option hidden select value="'+data.data['model']+'">'+data.data['model']+'</option>'
+                        document.getElementById('name').innerHTML = '<option hidden select value="'+data.data['name']+'">'+data.data['name']+'</option>'
+        
 
                         $('#purchase_price').val(data.data['purchase_price']);
                         $('#selling_price').val(data.data['selling_price']);
@@ -321,20 +405,35 @@
     }
 
     function get_data(){
+        var company_id = $('#company').val();
+        var types = $('#types').val();
+        var brand = $('#brand').val();
+        var model = $('#model').val();
+        var name = $('#name').val();
         var purchase_price = $('#purchase_price').val();
         var selling_price = $('#selling_price').val();
         var amount = $('#amount').val();
         var info = $('#info').val();
         var purchase_date = $('#purchase_date').val();
-        return {'purchase_price':purchase_price, 'selling_price': selling_price,'amount':amount,
-        'info':info,'purchase_date':purchase_date}
+        return {'company_id':company_id,'types':types,'brand':brand,'model':model,'name':name,'purchase_price':purchase_price, 
+        'selling_price': selling_price,'amount':amount,'info':info,'purchase_date':purchase_date}
     };
 
 
     $('#sub').click(function(){
         var data = get_data();
-        data['id'] = _id
-        if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
+        data['id'] = _id    //上面的product_id
+        if(data['company_id'] == ''){
+            alert ('請選擇廠商')
+        }else if(!data['types'] || data['types'].trim().length === 0){
+            alert ('請選擇種類')
+        }else if(!data['brand'] || data['brand'].trim().length === 0){
+            alert ('請選擇品牌')
+        }else if(!data['model'] || data['model'].trim().length === 0){
+            alert ('請選擇型號 / 編號')
+        }else if(!data['name'] || data['name'].trim().length === 0){
+            alert ('請輸入品名')
+        }else if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
             alert ('請輸入進價')
         }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
             alert ('請輸入售價')
@@ -358,14 +457,14 @@
                 upload.append("image",'')
             };
             if(image2.length != 0){
-                upload.append("image2",image2[0]);                      //upload到後端會是一個object   file類型使用 request.FILES['image']
+                upload.append("image2",image2[0]);                     
             }else if(image_check2 != ''){
                 upload.append("image2",JSON.stringify({'type2':'no_update'}))
             }else{
                 upload.append("image2",'')
             };
             if(image3.length != 0){
-                upload.append("image3",image3[0]);                      //upload到後端會是一個object   file類型使用 request.FILES['image']
+                upload.append("image3",image3[0]);                      
             }else if(image_check3 != ''){
                 upload.append("image3",JSON.stringify({'type3':'no_update'}))
             }else{
@@ -390,6 +489,91 @@
             });
         }
        
+    });
+
+
+    $('#company').change(function(){
+        var id_ = $('#company').val();
+        document.getElementById('types').innerHTML = '<option hidden select value="">種類</option>'
+        document.getElementById('brand').innerHTML = '<option hidden select value="">品牌</option>'
+        document.getElementById('model').innerHTML = '<option hidden select value="">型號 / 編號</option>'
+        document.getElementById('name').innerHTML = '<option hidden select value="">品名</option>'
+        $.ajax({
+            url: '/get_company_product_types/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0 && data.data != 'error'){
+                    var show_types = '<option hidden select value="">種類</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('types').innerHTML = show_types
+                }else{
+                    document.getElementById('types').innerHTML ='<option hidden select value="">沒有商品</option>'
+                }
+            }
+        });
+    });
+
+    $('#types').change(function(){
+        document.getElementById('brand').innerHTML = '<option hidden select value="">品牌</option>'
+        document.getElementById('model').innerHTML = '<option hidden select value="">型號 / 編號</option>'
+        document.getElementById('name').innerHTML = '<option hidden select value="">品名</option>'
+        var id_ = $('#company').val();
+        var types = $('#types').val();
+        $.ajax({
+            url: '/get_company_product_brand/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_,
+                types: types
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0 && data.data != 'error'){
+                    var show_types = '<option hidden select value="">品牌</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('brand').innerHTML = show_types
+                }
+            }
+        });
+    });
+
+
+    $('#brand').change(function(){
+        document.getElementById('model').innerHTML = '<option hidden select value="">型號 / 編號</option>'
+        document.getElementById('name').innerHTML = '<option hidden select value="">品名</option>'
+        var id_ = $('#company').val();
+        var types = $('#types').val();
+        var brand = $('#brand').val();
+        $.ajax({
+            url: '/get_company_product_model/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_,
+                types: types,
+                brand: brand
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0 && data.data != 'error'){
+                    var show_types = '<option hidden select value="">型號 / 編號</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('model').innerHTML = show_types
+                }
+            }
+        });
     });
 
 
@@ -437,13 +621,16 @@
     $('.close').click(function(){
         $(".lightbox").removeClass("active");
     });
-
     $('#close').click(function(){
         $(".lightbox").removeClass("active");
     });
 
 
     $('#reset').click(function(){
+        document.getElementById('types').innerHTML = '<option hidden select value="">種類</option>'
+        document.getElementById('brand').innerHTML = '<option hidden select value="">品牌</option>'
+        document.getElementById('model').innerHTML = '<option hidden select value="">型號 / 編號</option>'
+        document.getElementById('name').innerHTML = '<option hidden select value="">品名</option>'
         $('#purchase_price').val('');
         $('#selling_price').val('');
         $('#amount').val('');

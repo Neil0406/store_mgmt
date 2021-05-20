@@ -52,7 +52,12 @@ class ProductModel():
     def product_update(self, **kwargs):
         try:
             data = ProductInfo.objects.get(id=kwargs['id'])
-            data.purchase_price = int(kwargs['purchase_price'])
+            data.company_id = kwargs['company_id']
+            data.types = kwargs['types']
+            data.brand = kwargs['brand']
+            data.model = kwargs['model']
+            data.name = kwargs['name']
+            data.purchase_price = kwargs['purchase_price']
             data.selling_price = kwargs['selling_price']
             data.amount = kwargs['amount'] 
             data.info = kwargs['info']
@@ -96,7 +101,22 @@ class ProductModel():
             ret = 'error'
         return ret
 
-    def delete_image(self, data_image):
+    def delete_image(self, data_image):                #刪除照片
         path = os.getcwd()
         path = path + '/' +str(data_image)
         os.remove(path)
+
+    def product_delete(self, product_id):              #刪除進貨商品
+        try:
+            instance = ProductInfo.objects.get(id=product_id)
+            if instance.image != '':
+                self.delete_image(instance.image)
+            if instance.image2 != '':
+                self.delete_image(instance.image2)
+            if instance.image3 != '':
+                self.delete_image(instance.image3)
+            instance.delete()
+            ret = 'success'
+        except:
+            ret = 'error'
+        return ret

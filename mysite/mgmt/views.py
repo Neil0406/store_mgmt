@@ -70,7 +70,10 @@ class Product():
 			if request.method == 'POST':
 				product_id = request.POST.get('product_id')
 				ret = ProductModel().get_product_update_data(product_id)
-				ret = json.dumps({'data':ret})
+				company_list = CompanyInfo.objects.all()
+				company_name_list = [i.company_name for i in company_list]
+				company_id_list = [i.id for i in company_list]
+				ret = json.dumps({'data':ret, 'company_name_list':company_name_list, 'company_id_list':company_id_list})
 				return HttpResponse(ret)
 			return render(request,'product/product_list.html', locals())
 		else:
@@ -148,6 +151,17 @@ class Product():
 				data['image3'] = image3
 				data['purchase_date'] = datetime.strptime(data['purchase_date'], '%Y-%m-%d')
 				ret = ProductModel().product_update(**data)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')
+
+	def product_delete(self, request):
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				product_id = request.POST.get('product_id')
+				ret = ProductModel().product_delete(product_id)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
 		else:

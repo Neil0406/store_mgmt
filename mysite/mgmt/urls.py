@@ -10,11 +10,11 @@ urlpatterns = [
     path('product_list/', views.Product().product_list),
     path('create_product/', views.Product().create_product),
     path('product_update/', views.Product().product_update),
+    path('product_delete/', views.Product().product_delete),
+
     path('create_company/', views.Company().create_company),
     path('company_list/', views.Company().company_list),
     path('company_update/', views.Company().company_update),
-
-
     path('company_product/', views.Company().company_product),
     path('get_company_product_types/', views.Company().get_company_product_types),
     path('get_company_product_brand/', views.Company().get_company_product_brand),
