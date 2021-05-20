@@ -15,7 +15,9 @@ urlpatterns = [
     path('create_company/', views.Company().create_company),
     path('company_list/', views.Company().company_list),
     path('company_update/', views.Company().company_update),
-    path('company_product/', views.Company().company_product),
+    path('company_delete/', views.Company().company_delete),
+
+    path('create_company_product/', views.Company().create_company_product),
     path('get_company_product_types/', views.Company().get_company_product_types),
     path('get_company_product_brand/', views.Company().get_company_product_brand),
     path('get_company_product_model/', views.Company().get_company_product_model),

@@ -193,10 +193,11 @@
                         alert ('新增成功')
                         window.location.reload();
                     }else if(data.data == 'exists'){
-                        alert ('廠商已存在')
+                        alert ('公司已存在')
+                    }else if(data.data == 'restart'){
+                        alert ('重新啟用公司')
                         window.location.reload();
                     }
-
                 }
             });
         }

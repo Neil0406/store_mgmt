@@ -33,6 +33,7 @@ class CompanyInfo(models.Model):
     uniform_numbers = models.CharField(blank=True, null=True ,max_length=50)             #公司統編
     company_url = models.URLField(blank=True, null=True)                                 #公司網址
     company_info = models.TextField(blank=True, null=True)                               #另外資訊
+    company_active = models.BooleanField(blank=True, null=True)                          #廠商是否有效                  
     updated = models.DateTimeField(auto_now_add=False)                                  
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):     

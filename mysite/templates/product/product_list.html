@@ -1,7 +1,7 @@
 {% extends  'base.html' %}
 {% load static %}
 {% block title%}
-<title>庫存資訊</title>  
+<title>進貨紀錄</title>  
 {% endblock %}
 
 
@@ -111,26 +111,23 @@
         <div class="content" id='show_update'>
             <div class="card col-12">
                 <br>
-                <h5 style="text-align: center;">庫存商品更新</h5>
+                <h5 style="text-align: center;">進貨紀錄更新</h5>
                 <div class="card-body">
                     {% csrf_token %}
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>廠商＊</h6>
-                            <!-- <input id="company" class="form-control" type='text' disabled> -->
                             <select class="form-control" id="company"></select>
                         </div>        
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>種類＊</h6>
-                            <!-- <input id="types" class="form-control" type='text' disabled> -->
                             <select class="form-control" id="types"></select>
                         </div>
                     </div>
     
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>品牌</h6>
-                            <!-- <input id="brand" class="form-control" type='text' disabled> -->
+                            <h6>品牌＊</h6>
                             <select class="form-control" id="brand"></select>
                         </div>
                     </div>
@@ -139,12 +136,10 @@
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>型號 / 編號＊</h6>
-                            <!-- <input id="model" class="form-control" type='text' disabled> -->
                             <select class="form-control" id="model"></select>
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>品名＊</h6>
-                            <!-- <input id="name" class="form-control" type='text' disabled>    -->
                             <select class="form-control" id="name"></select>                     
                         </div>
                     </div>
@@ -207,7 +202,6 @@
                         <div class="col-lg-2 col-md-2 col-12">
                             <button class="btn btn-danger" id="delete_check">刪除資料</button>
                         </div>
-
                     </div>
     
                 </div>    
@@ -219,7 +213,7 @@
         <div class="col-md-12 col-sm-12 ">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>庫存資訊</small></h2>
+                    <h2>進貨紀錄</small></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">

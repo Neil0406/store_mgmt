@@ -22,7 +22,7 @@
         background-color:rgb(241, 241, 241);
     }
     .lightbox{
-        z-index:9999;
+        z-index:5000;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
         top: 0;	  
@@ -32,7 +32,6 @@
         align-items: center;
         justify-content: center;
         display: none;
-
 
     }
     .lightbox.active{
@@ -55,6 +54,34 @@
         right: 0;
     }
 
+    .lightbox2{
+        z-index:9999;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;	  
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+    }
+    .lightbox2.active{
+        display: flex;
+    }
+    .content_delete_check{
+        width: 250px;
+        height: 110px;
+        background-color: #ccc;
+        border-radius: 10px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-y:auto;
+
+    }
+
 
 </style>
 {% endblock%}
@@ -65,6 +92,17 @@
 
 <!-- page content -->
 <div class="container" role="main">
+
+    <div class="lightbox2">
+        <div class="content_delete_check">
+            <div style="display:flex; justify-content:center; align-items:center;">
+                <button class="btn btn-success" id='delete_true'>確認刪除</button>
+                <button class="btn btn-danger" id="close_delete_check">取消</button>
+            </div>
+        </div>
+    </div>
+
+    
     <div class="lightbox">
         <div class="content" id='show_update'>
             <div class="card col-12">
@@ -152,10 +190,13 @@
                     </div>
     
                     <div class="row my-3">
-                        <div class="col-lg-12 col-md-12 col-12">
+                        <div class="col-lg-10 col-md-10 col-12">
                             <button class="btn btn-success" id="sub">更新</button>
                             <button class="btn btn-danger" id="reset">清除</button>
                             <button class="btn btn-danger" id="close">關閉</button>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-12">
+                            <button class="btn btn-danger" id="delete_check">刪除資料</button>
                         </div>
                     </div>
     
@@ -236,6 +277,38 @@
     <script src="{% static '/dashboard_plugin/datatable/pdfmake/build/vfs_fonts.js' %}"></script>
 
     <script> 
+
+        $('#delete_check').click(function(){          //確認刪除lightbox
+            $('.lightbox2').addClass('active')      
+        });
+
+        $('#close_delete_check').click(function(){      //關閉確認刪除lightbox
+            $(".lightbox2").removeClass("active");
+        });
+
+        $('#delete_true').click(function(){   
+            var company_id = _id    //公司 id
+            $.ajax({
+                url: '/company_delete/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    company_id:company_id
+                },
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert ('刪除成功')
+                        window.location.reload();
+                    }else if(data.data == 'error'){
+                        alert ('刪除失敗')
+                        window.location.reload();
+                    }
+                }
+            });
+            
+        });
+
         var _id = ''
         function get_id(company_id){
             _id = company_id
@@ -315,6 +388,8 @@
                         }else if(data.data == 'error'){
                             alert ('新增失敗')
                             window.location.reload();
+                        }else if(data.data == 'exists'){
+                            alert ('公司已存在')
                         }
     
                     }

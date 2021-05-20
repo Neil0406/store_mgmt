@@ -70,7 +70,7 @@ class Product():
 			if request.method == 'POST':
 				product_id = request.POST.get('product_id')
 				ret = ProductModel().get_product_update_data(product_id)
-				company_list = CompanyInfo.objects.all()
+				company_list = CompanyInfo.objects.all().filter(company_active=True)          #如果不想看到刪除店家 .filter(company_active=True)
 				company_name_list = [i.company_name for i in company_list]
 				company_id_list = [i.id for i in company_list]
 				ret = json.dumps({'data':ret, 'company_name_list':company_name_list, 'company_id_list':company_id_list})
@@ -82,7 +82,7 @@ class Product():
 	def create_product(self, request):
 		user, check = session_check(request)
 		if check == True:
-			company_list = CompanyInfo.objects.all()
+			company_list = CompanyInfo.objects.all().filter(company_active=True)
 			if request.method == 'POST':
 				try:
 					image = request.FILES['image']
@@ -166,6 +166,7 @@ class Product():
 				return HttpResponse(ret)
 		else:
 			return redirect ('/')
+
 class Company():
 	def create_company(self, request):              #page
 		user, check = session_check(request)
@@ -185,7 +186,7 @@ class Company():
 	def company_list(self, request):
 		user, check = session_check(request)
 		if check == True:
-			company_list = CompanyInfo.objects.all()
+			company_list = CompanyInfo.objects.all().filter(company_active=True)
 			if request.method == 'POST': 
 				company_id = request.POST.get('company_id')
 				ret = CompanyModel().get_company_update_data(company_id)
@@ -209,19 +210,31 @@ class Company():
 		else:
 			return redirect ('/')	
 
-	def company_product(self, request):              #page
+	def company_delete(self, request):
 		user, check = session_check(request)
 		if check == True:
-			company_list = CompanyInfo.objects.all()
+			if request.method == 'POST': 
+				company_id = request.POST.get('company_id')
+				# print(company_id)
+				ret = CompanyModel().company_delete(company_id)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')	
+
+	def create_company_product(self, request):              #page
+		user, check = session_check(request)
+		if check == True:
+			company_list = CompanyInfo.objects.all().filter(company_active=True)
 			if request.method == 'POST':   
 				data = request.POST.get('data')  
 				data = json.loads(data)
 				updated = datetime.now() 
 				data['updated'] = updated   
-				ret = CompanyModel().company_product(**data)
+				ret = CompanyModel().create_company_product(**data)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
-			return render(request,'company/company_product.html', locals())
+			return render(request,'company/created_company_product.html', locals())
 		else:
 			return redirect ('/')
 

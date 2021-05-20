@@ -264,7 +264,7 @@
                 upload.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val());   
                 upload.append("data",JSON.stringify(data));        //                           jaon類型使用 request.POST.get('data')
                 $.ajax({
-                    url: '/company_product/', 
+                    url: '/create_company_product/', 
                     type: 'POST',  
                     data: upload,
                     contentType: false,  
@@ -279,7 +279,6 @@
                             window.location.reload();
                         }else if(data.data == 'exists'){
                             alert ('新增失敗 : 型號與品名重複')
-                            window.location.reload();
                         }
                     }
                 });
