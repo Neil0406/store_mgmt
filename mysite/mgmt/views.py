@@ -6,6 +6,7 @@ from .models import MgmtUser, CompanyInfo, CompanyProductInfo, ProductInfo
 from .procces_model.company_procces import CompanyModel
 from .procces_model.product_procces import ProductModel
 from datetime import datetime, timedelta
+from django.forms.models import model_to_dict
 import json
 
 def session_check(request):
@@ -153,6 +154,8 @@ class Product():
 				ret = ProductModel().product_update(**data)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 
@@ -164,8 +167,24 @@ class Product():
 				ret = ProductModel().product_delete(product_id)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
+
+	def selling(self, request):
+		user, check = session_check(request)
+		if check == True:
+			company_list = CompanyInfo.objects.all().filter(company_active=True)
+			if request.method == 'POST':
+				ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		
+			return render(request,'product/selling.html', locals())
+		else:
+			return redirect ('/')
+
 
 class Company():
 	def create_company(self, request):              #page
@@ -207,6 +226,8 @@ class Company():
 				ret = CompanyModel().company_update(**data)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')	
 
@@ -219,6 +240,8 @@ class Company():
 				ret = CompanyModel().company_delete(company_id)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')	
 
@@ -238,6 +261,51 @@ class Company():
 		else:
 			return redirect ('/')
 
+	def company_product_list(self, request):                      #廠商代理資訊更新頁面
+		user, check = session_check(request)
+		if check == True:
+			company_list = CompanyInfo.objects.all().filter(company_active=True)
+			id_list = [i.id for i in company_list]
+			ret = CompanyProductInfo.objects.filter(company_id__in=id_list)                   #找出 company_id 出現在 id_list 的所有資料
+			company_product_list = [model_to_dict(i) for i in ret]
+			if request.method == 'POST':
+				company_product_id = request.POST.get('company_product_id')
+				company_id = request.POST.get('company_id')
+				company_name_list = [i.company_name for i in company_list]
+				ret = CompanyModel().get_company_product_update_data(company_product_id)
+				ret = json.dumps({'data':ret, 'company_name_list':company_name_list, 'company_id_list':id_list})
+				return HttpResponse(ret)
+			return render(request,'company/company_proxy_product.html', locals())
+		else:
+			return redirect ('/')	
+
+	def company_product_update(self, request):                      #廠商代理資訊更新
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				data = request.POST.get('data')
+				data = json.loads(data)
+				ret = CompanyModel().company_product_update(**data)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+			else:
+				return redirect ('/')
+		else:
+			return redirect ('/')	
+
+	def company_product_delete(self, request):                      #廠商代理資訊更新
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				company_product_id = request.POST.get('company_product_id')
+				ret = CompanyModel().company_product_delete(company_product_id)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+			else:
+				return redirect ('/')
+		else:
+			return redirect ('/')	
+
 	def get_company_product_types(self, request):
 		user, check = session_check(request)
 		if check == True:
@@ -246,6 +314,8 @@ class Company():
 				ret = CompanyModel().get_company_product_types(company_id)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 
@@ -258,6 +328,8 @@ class Company():
 				ret = CompanyModel().get_company_product_brand(company_id, types)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 
@@ -271,6 +343,8 @@ class Company():
 				ret = CompanyModel().get_company_product_model(company_id, types, brand)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 
@@ -286,6 +360,8 @@ class Company():
 				ret = CompanyModel().get_company_product_name(company_id, types, brand, model)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 

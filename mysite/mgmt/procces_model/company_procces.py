@@ -36,6 +36,12 @@ class CompanyModel():
             ret = 'success'
         return ret
 
+    def get_company_update_data(self, company_id):
+        ret = CompanyInfo.objects.filter(id=company_id)
+        ret = [model_to_dict(i) for i in ret]
+        ret[0]['updated'] = ret[0]['updated'].strftime('%Y-%m-%d %H:%M:%S')
+        return ret[0]
+
     def company_update(self, **kwargs):
         try:
             check = CompanyInfo.objects.get(company_name=kwargs['company_name'])  #確認名子是否已存在
@@ -84,6 +90,7 @@ class CompanyModel():
             try:
                 data = CompanyProductInfo(
                         company_id = kwargs['company_id'],
+                        company_name = kwargs['company_name'],
                         types= kwargs['types'], 
                         brand= kwargs['brand'], 
                         model=kwargs['model'],
@@ -97,7 +104,42 @@ class CompanyModel():
         elif l[0]['name'] == kwargs['name'] and l[0]['model'] == kwargs['model']:
             ret = 'exists'
         return ret
+    
+    def get_company_product_update_data(self, company_product_id):
+        ret = CompanyProductInfo.objects.filter(id=company_product_id)
+        ret = [model_to_dict(i) for i in ret]
+        ret[0]['updated'] = ret[0]['updated'].strftime('%Y-%m-%d %H:%M:%S')
+        return ret[0]
 
+    def company_product_update(self, **kwargs):
+        ret = CompanyProductInfo.objects.filter(company_id=kwargs['company_id']).filter(types=kwargs['types']).filter(brand=kwargs['brand']).filter(model=kwargs['model']).filter(name=kwargs['name'])
+        l = [model_to_dict(i) for i in ret]
+        if len(l) == 0:    
+            try:
+                data = CompanyProductInfo.objects.get(id=kwargs['company_product_id'])
+                data.company_name = kwargs['company_name']
+                data.company_id = kwargs['company_id']
+                data.types = kwargs['types']
+                data.brand = kwargs['brand']
+                data.model = kwargs['model']
+                data.name = kwargs['name']
+                data.info = kwargs['info']
+                data.save()
+                ret = 'success'
+            except:
+                ret = 'error'
+        elif l[0]['name'] == kwargs['name'] and l[0]['model'] == kwargs['model']:
+            ret = 'exists'
+        return ret 
+
+    def company_product_delete(self, company_product_id):
+        try:
+            instance = CompanyProductInfo.objects.get(id=company_product_id) #真刪除
+            instance.delete()
+            ret = 'success'
+        except:
+            ret = 'error' 
+        return ret
 
     def get_company_product_types(self, company_id):
         try:
@@ -149,10 +191,4 @@ class CompanyModel():
             ret = 'error'
         # print(ret)
         return ret
-
-    def get_company_update_data(self, company_id):
-        ret = CompanyInfo.objects.filter(id=company_id)
-        ret = [model_to_dict(i) for i in ret]
-        ret[0]['updated'] = ret[0]['updated'].strftime('%Y-%m-%d %H:%M:%S')
-        return ret[0]
 

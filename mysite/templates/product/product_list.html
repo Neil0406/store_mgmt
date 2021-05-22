@@ -1,7 +1,7 @@
 {% extends  'base.html' %}
 {% load static %}
 {% block title%}
-<title>進貨紀錄</title>  
+<title>庫存資訊</title>  
 {% endblock %}
 
 
@@ -71,7 +71,7 @@
     }
     .content_delete_check{
         width: 250px;
-        height: 110px;
+        height: 150px;
         background-color: #ccc;
         border-radius: 10px;
         display:flex;
@@ -100,9 +100,12 @@
 
     <div class="lightbox2">
         <div class="content_delete_check">
-            <div style="display:flex; justify-content:center; align-items:center;">
-                <button class="btn btn-success" id='delete_true'>確認刪除</button>
-                <button class="btn btn-danger" id="close_delete_check">取消</button>
+            <div>
+                <h5>確定要刪除資料？</h5><br>
+                <div>
+                    <button class="btn btn-success" id='delete_true'>確認刪除</button>
+                    <button class="btn btn-danger" id="close_delete_check">取消</button>
+                </div>
             </div>
         </div>
     </div>
@@ -159,6 +162,10 @@
                             <h6>數量＊</h6>
                             <input class="form-control" type="number" step=any id="amount">
                         </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>庫存數量＊</h6>
+                            <input class="form-control" type="number" step=any id="product_in_stock">
+                        </div>
                     </div>
     
                     <div class="row my-3">
@@ -213,7 +220,7 @@
         <div class="col-md-12 col-sm-12 ">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>進貨紀錄</small></h2>
+                    <h2>庫存資訊</small></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -234,6 +241,7 @@
                                             <th>進價</th>
                                             <th>售價</th>
                                             <th>數量</th>
+                                            <th>庫存數量</th>
                                             <th>進貨日</th>
                                         </tr>
                                     </thead>
@@ -248,6 +256,7 @@
                                             <td>{{i.purchase_price |floatformat:-2}}</td>
                                             <td>{{i.selling_price |floatformat:-2}}</td>
                                             <td>{{i.amount |floatformat:-2 }}</td>
+                                            <td>{{i.product_in_stock |floatformat:-2 }}</td>
                                             <td>{{i.purchase_date|date:"Y-m-d"}}</td>
                                         </tr>
                                         {% endfor %}
@@ -346,10 +355,10 @@
                         document.getElementById('model').innerHTML = '<option hidden select value="'+data.data['model']+'">'+data.data['model']+'</option>'
                         document.getElementById('name').innerHTML = '<option hidden select value="'+data.data['name']+'">'+data.data['name']+'</option>'
         
-
                         $('#purchase_price').val(data.data['purchase_price']);
                         $('#selling_price').val(data.data['selling_price']);
                         $('#amount').val(data.data['amount']);
+                        $('#product_in_stock').val(data.data['product_in_stock']);
                         $('#purchase_date').val(data.data['purchase_date']);
                         $('#info').val(data.data['info']);
                         if(data.data.image != ''){
@@ -407,10 +416,11 @@
         var purchase_price = $('#purchase_price').val();
         var selling_price = $('#selling_price').val();
         var amount = $('#amount').val();
+        var product_in_stock = $('#product_in_stock').val();
         var info = $('#info').val();
         var purchase_date = $('#purchase_date').val();
         return {'company_id':company_id,'types':types,'brand':brand,'model':model,'name':name,'purchase_price':purchase_price, 
-        'selling_price': selling_price,'amount':amount,'info':info,'purchase_date':purchase_date}
+        'selling_price': selling_price,'amount':amount,'product_in_stock':product_in_stock,'info':info,'purchase_date':purchase_date}
     };
 
 
@@ -433,6 +443,8 @@
             alert ('請輸入售價')
         }else if(!data['amount'] || data['amount'].trim().length === 0){
             alert ('請輸入數量')
+        }else if(!data['product_in_stock'] || data['product_in_stock'].trim().length === 0){
+            alert ('請輸入庫存數量')
         }
         else{
             //var image = $("#image")[0].files[0]

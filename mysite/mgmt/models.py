@@ -43,6 +43,7 @@ class CompanyInfo(models.Model):
 class CompanyProductInfo(models.Model):
     id = models.AutoField(primary_key=True)                          #pk                     
     company = models.ForeignKey(CompanyInfo, on_delete=models.CASCADE)
+    company_name = models.CharField(blank=True, null=True ,max_length=50)         #公司名
     types = models.CharField(blank=True, null=True ,max_length=30)   #種類
     brand = models.CharField(blank=True, null=True ,max_length=100)   #種類
     model = models.CharField(blank=True, null=True ,max_length=100)  #型號(編號)
@@ -64,6 +65,7 @@ class ProductInfo(models.Model):
     purchase_price = models.FloatField(blank=True, null=True)        #進貨價
     selling_price = models.FloatField(blank=True, null=True)         #售價
     amount = models.FloatField(blank=True, null=True)
+    product_in_stock = models.FloatField(blank=True, null=True)      #庫存數量
     image = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
     image2 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
     image3 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())

@@ -71,7 +71,7 @@
     }
     .content_delete_check{
         width: 250px;
-        height: 110px;
+        height: 150px;
         background-color: #ccc;
         border-radius: 10px;
         display:flex;
@@ -95,9 +95,12 @@
 
     <div class="lightbox2">
         <div class="content_delete_check">
-            <div style="display:flex; justify-content:center; align-items:center;">
-                <button class="btn btn-success" id='delete_true'>確認刪除</button>
-                <button class="btn btn-danger" id="close_delete_check">取消</button>
+            <div>
+                <h5>確定要刪除資料？</h5><br>
+                <div>
+                    <button class="btn btn-success" id='delete_true'>確認刪除</button>
+                    <button class="btn btn-danger" id="close_delete_check">取消</button>
+                </div>
             </div>
         </div>
     </div>
@@ -112,7 +115,7 @@
                     {% csrf_token %}
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-12 col-12">
-                            <h6>公司名稱＊</h6>
+                            <h6>廠商＊</h6>
                             <input class="form-control g" type="text" id="company_name">
                         </div>
                     </div>
@@ -229,6 +232,7 @@
                                             <th>Email</th>
                                             <th>網址</th>
                                             <th>統編</th>
+                                            <!-- <th>代理資訊</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -244,6 +248,7 @@
                                                 <td></td>
                                             {% endif %}
                                             <td>{{i.uniform_numbers}}</td>
+                                            <!-- <td>代理資訊</td> -->
                                         </tr>
                                         {% endfor %}
                                     </tbody>

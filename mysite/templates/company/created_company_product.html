@@ -20,7 +20,7 @@
                             <option hidden select value="">廠商</option>
                             {% if company_list %}
                                 {% for i in company_list %}
-                                    <option value="{{i.id}}">{{i}}</option>
+                                    <option value="{{i.id}}" name='{{i}}'>{{i}}</option>
                                 {% endfor %}
                             {% else %}
                                 <option value="">沒有廠商</option>
@@ -87,6 +87,8 @@
 
 
 {% block js%}
+    
+
     <script>
         $('#company_id').change(function(){
             var id_ = $('#company_id').val();
@@ -244,7 +246,8 @@
             var model = $('#model').val();
             var name = $('#name').val();
             var info = $('#info').val();
-            return {'company_id':company_id,'types':types, 'brand':brand,'model': model, 'name':name,'info':info}
+            var company_name = $("#company_id  option:selected").text();   //取select 的 name
+            return {'company_id':company_id,'company_name':company_name,'types':types, 'brand':brand,'model': model, 'name':name,'info':info}
         };
 
         $('#sub').click(function(){

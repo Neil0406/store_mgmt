@@ -1,0 +1,61 @@
+{% extends  'base.html' %}
+{% load static %}
+{% block title%}
+<title>售出 / 銷貨</title>
+{% endblock %}
+
+{% block body%}
+<div class="container">
+    <h5>售出 / 銷貨</h5>
+    <div class=" row">
+        <div class="card col-lg-12 col-md-12 col-12">
+            <div class="card-body">
+                <div class="row my-3">
+                    {% csrf_token %}
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>廠商＊</h6>
+                        <select class="form-control" id="company_id">
+                            <option hidden select value="">廠商</option>
+                            {% if company_list %}
+                                {% for i in company_list %}
+                                    <option value="{{i.id}}">{{i}}</option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="">沒有廠商</option>
+                            {% endif %}
+                        </select>
+                    </div>        
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>種類＊</h6>
+                        <select class="form-control" id="types">
+                            <option hidden select value="">種類</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>品牌＊</h6>
+                        <select class="form-control" id="brand">
+                            <option hidden select value="">品牌</option>
+                        </select>
+                    </div>
+                </div>
+       
+                <div class="row my-3">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>型號 / 編號＊</h6>
+                        <select class="form-control" id="model">
+                            <option hidden select value="">型號 / 編號</option>>
+                        </select>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

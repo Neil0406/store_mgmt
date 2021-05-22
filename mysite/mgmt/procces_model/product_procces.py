@@ -16,6 +16,7 @@ class ProductModel():
                 purchase_price=kwargs['purchase_price'],
                 selling_price= kwargs['selling_price'],
                 amount=kwargs['amount'], 
+                product_in_stock = kwargs['amount'], 
                 image= kwargs['image'],
                 image2= kwargs['image2'],
                 image3= kwargs['image3'],
@@ -60,6 +61,7 @@ class ProductModel():
             data.purchase_price = kwargs['purchase_price']
             data.selling_price = kwargs['selling_price']
             data.amount = kwargs['amount'] 
+            data.product_in_stock = kwargs['product_in_stock']
             data.info = kwargs['info']
             data.purchase_date = kwargs['purchase_date']
             data.updated = datetime.now()
