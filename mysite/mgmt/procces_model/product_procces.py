@@ -9,6 +9,7 @@ class ProductModel():
         try:
             data = ProductInfo(
                 company_id = kwargs['company_id'],
+                company_name = kwargs['company_name'],
                 types= kwargs['types'], 
                 brand = kwargs['brand'], 
                 model= kwargs['model'], 
@@ -54,6 +55,7 @@ class ProductModel():
         try:
             data = ProductInfo.objects.get(id=kwargs['id'])
             data.company_id = kwargs['company_id']
+            data.company_name = kwargs['company_name']
             data.types = kwargs['types']
             data.brand = kwargs['brand']
             data.model = kwargs['model']
@@ -122,3 +124,31 @@ class ProductModel():
         except:
             ret = 'error'
         return ret
+
+    def get_selling_data_check(self, **kwargs):
+        company_id = kwargs['company_id']
+        model = kwargs['model']
+        name = kwargs['name']
+        ret = ProductInfo.objects.filter(company_id=company_id).filter(model=model).filter(name=name).filter(product_in_stock__gt = 0)   #庫存大於 0
+        ret = [model_to_dict(i) for i in ret]
+        if len(ret) != 0:
+            data = []
+            for i in ret:
+                data.append({
+                    'product_id': i['id'],
+                    'company_id': i['company'],
+                    'company_name': i['company_name'],
+                    'types': i['types'],
+                    'brand': i['brand'],
+                    'model': i['model'],
+                    'name': i['name'],
+                    'purchase_price': i['purchase_price'],
+                    'selling_price': i['selling_price'],
+                    'amount': i['amount'],
+                    'product_in_stock': i['product_in_stock'],
+                    'info': i['info'],
+                    'purchase_date': i['purchase_date'].strftime('%Y-%m-%d'),
+                })
+            return data
+        else:
+            return ''

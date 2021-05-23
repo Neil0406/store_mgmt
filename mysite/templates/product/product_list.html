@@ -419,7 +419,8 @@
         var product_in_stock = $('#product_in_stock').val();
         var info = $('#info').val();
         var purchase_date = $('#purchase_date').val();
-        return {'company_id':company_id,'types':types,'brand':brand,'model':model,'name':name,'purchase_price':purchase_price, 
+        var company_name = $("#company  option:selected").text();   //取select 的 name
+        return {'company_name':company_name, 'company_id':company_id,'types':types,'brand':brand,'model':model,'name':name,'purchase_price':purchase_price, 
         'selling_price': selling_price,'amount':amount,'product_in_stock':product_in_stock,'info':info,'purchase_date':purchase_date}
     };
 

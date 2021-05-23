@@ -58,6 +58,7 @@ class CompanyProductInfo(models.Model):
 class ProductInfo(models.Model):                      
     id = models.AutoField(primary_key=True)                       
     company = models.ForeignKey(CompanyInfo, related_name='company_id', on_delete=models.CASCADE)
+    company_name = models.CharField(blank=True, null=True ,max_length=50)         #公司名
     types = models.CharField(blank=True, null=True ,max_length=30)   #種類
     brand = models.CharField(blank=True, null=True ,max_length=50)   #品牌
     model = models.CharField(blank=True, null=True ,max_length=100)  #型號(編號)

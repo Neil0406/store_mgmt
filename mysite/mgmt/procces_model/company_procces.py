@@ -114,7 +114,7 @@ class CompanyModel():
     def company_product_update(self, **kwargs):
         ret = CompanyProductInfo.objects.filter(company_id=kwargs['company_id']).filter(types=kwargs['types']).filter(brand=kwargs['brand']).filter(model=kwargs['model']).filter(name=kwargs['name'])
         l = [model_to_dict(i) for i in ret]
-        if len(l) == 0:    
+        if len(l) == 0 or int(kwargs['company_product_id']) == l[0]['id']:    
             try:
                 data = CompanyProductInfo.objects.get(id=kwargs['company_product_id'])
                 data.company_name = kwargs['company_name']

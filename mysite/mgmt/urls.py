@@ -12,6 +12,7 @@ urlpatterns = [
     path('product_update/', views.Product().product_update),
     path('product_delete/', views.Product().product_delete),
     path('selling/', views.Product().selling),
+    path('get_selling_data_check/', views.Product().get_selling_data_check),
 
     path('create_company/', views.Company().create_company),
     path('company_list/', views.Company().company_list),

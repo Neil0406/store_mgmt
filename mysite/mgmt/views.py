@@ -180,8 +180,25 @@ class Product():
 				ret = ''
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
-		
 			return render(request,'product/selling.html', locals())
+		else:
+			return redirect ('/')
+
+	def get_selling_data_check(self, request):
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				company_id = request.POST.get('company_id')
+				types = request.POST.get('types')
+				brand = request.POST.get('brand')
+				model = request.POST.get('model')
+				name = request.POST.get('name')
+				data = {'company_id':company_id, 'types':types, 'brand':brand, 'model':model, 'name':name}
+				ret = ProductModel().get_selling_data_check(**data)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 
