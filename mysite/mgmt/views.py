@@ -177,7 +177,9 @@ class Product():
 		if check == True:
 			company_list = CompanyInfo.objects.all().filter(company_active=True)
 			if request.method == 'POST':
-				ret = ''
+				data = request.POST.get('data')
+				data = json.loads(data)
+				ret = ProductModel().selling(**data)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
 			return render(request,'product/selling.html', locals())

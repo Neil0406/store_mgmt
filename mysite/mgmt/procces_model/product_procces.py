@@ -1,4 +1,4 @@
-from mgmt.models import ProductInfo
+from mgmt.models import ProductInfo, ProductSelling
 from django.forms.models import model_to_dict
 from datetime import datetime
 import os
@@ -152,3 +152,52 @@ class ProductModel():
             return data
         else:
             return ''
+    
+    def selling(self, **kwargs):
+        try:
+            company_name = kwargs['company_name']
+            company_id = int(kwargs['company_id'])
+            types = kwargs['types']
+            brand = kwargs['brand']
+            model = kwargs['model']
+            name = kwargs['name']
+            selling_amount = int(kwargs['selling_amount'])       #售出數量
+            selling_price = int(kwargs['selling_price'])         #售出單價
+            selling_date = datetime.strptime(kwargs['selling_date'], '%Y-%m-%d')
+            info = kwargs['info']
+            product_id = int(kwargs['product_id'])                    #銷貨id(對照庫存表的id)
+            '''
+            流程
+            1. 依照 product_id 收尋進貨表 
+            2. 將進貨表的 product_in_stock (庫存)數量 - selling_amount (銷售))數量
+            3. 更新進貨表
+            3. 將selling_price(銷售單價)  x selling_amount(銷售數量) >> 寫入selling_sum(總銷售額)
+            4. 新增updated時間
+            '''
+            data = ProductInfo.objects.get(id=product_id)
+            data.product_in_stock = data.product_in_stock - selling_amount
+            data.updated = datetime.now()
+            data.save()
+
+            selling_sum = selling_amount * selling_price
+            
+            update = ProductSelling(
+                company_name = company_name,
+                company_id = company_id,
+                types = types,
+                brand = brand,
+                model = model,
+                name = name,
+                selling_amount = selling_amount,
+                selling_price = selling_price,
+                selling_date = selling_date,
+                info = info,
+                product_id = product_id,
+                selling_sum = selling_sum,
+                updated = datetime.now()
+            )
+            update.save()
+            ret = 'success'
+        except:
+            ret = 'error'
+        return ret

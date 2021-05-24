@@ -65,93 +65,92 @@
     <div class=" row">
         <div class="card col-lg-12 col-md-12 col-12">
             <div class="card-body">
-                <div class="spinner-border text-danger" role="status" id='loading' style="display: none;"></div>
-                    <div class="row my-3">
-                        {% csrf_token %}
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>廠商＊</h6>
-                            <select class="form-control" id="company_id">
-                                <option hidden select value="">廠商</option>
-                                {% if company_list %}
-                                    {% for i in company_list %}
-                                        <option value="{{i.id}}">{{i}}</option>
-                                    {% endfor %}
-                                {% else %}
-                                    <option value="">沒有廠商</option>
-                                {% endif %}
-                            </select>
-                        </div>        
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>種類＊</h6>
-                            <select class="form-control" id="types">
-                                <option hidden select value="">種類</option>
-                            </select>
-                        </div>
+                <div class="row my-3">
+                    {% csrf_token %}
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>廠商＊</h6>
+                        <select class="form-control" id="company_id">
+                            <option hidden select value="">廠商</option>
+                            {% if company_list %}
+                                {% for i in company_list %}
+                                    <option value="{{i.id}}">{{i}}</option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="">沒有廠商</option>
+                            {% endif %}
+                        </select>
+                    </div>        
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>種類＊</h6>
+                        <select class="form-control" id="types">
+                            <option hidden select value="">種類</option>
+                        </select>
                     </div>
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>品牌＊</h6>
-                            <select class="form-control" id="brand">
-                                <option hidden select value="">品牌</option>
-                            </select>
-                        </div>
+                </div>
+                <div class="row my-3">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>品牌＊</h6>
+                        <select class="form-control" id="brand">
+                            <option hidden select value="">品牌</option>
+                        </select>
                     </div>
-        
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>型號 / 編號＊</h6>
-                            <select class="form-control" id="model">
-                                <option hidden select value="">型號 / 編號</option>>
-                            </select>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>品名＊</h6>
-                            <select class="form-control" id="name">
-                                <option hidden select value="">品名</option>>
-                            </select>                     
-                        </div>
+                </div>
+    
+                <div class="row my-3">
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>型號 / 編號＊</h6>
+                        <select class="form-control" id="model">
+                            <option hidden select value="">型號 / 編號</option>>
+                        </select>
                     </div>
 
-                    <div class="row my-3">
-                        <div class="col-lg-8 col-md-12 col-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>選擇銷貨商品＊</small></h2>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="card-box table-responsive">
-                                                <p class="text-muted font-13 m-b-30">
-                                                    選擇銷貨商品
-                                                </p>
-                                                <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action" style="width:100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>
-                                                                <th>銷貨</th>
-                                                            </th>
-                                                            <th>廠商</th>
-                                                            <th>型號 / 編號</th>
-                                                            <th>品名</th>
-                                                            <th>進價</th>
-                                                            <th>售價</th>
-                                                            <th>庫存</th>
-                                                            <th>進貨日期</th>
-                                                        </tr>
-                                                    </thead>
-                            
-                                                    <tbody id='show_radio'></tbody>
-                                                </table>
-                                            </div>
+                    <div class="col-lg-3 col-md-6 col-6">
+                        <h6>品名＊</h6>
+                        <select class="form-control" id="name">
+                            <option hidden select value="">品名</option>>
+                        </select>                     
+                    </div>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-lg-8 col-md-12 col-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>選擇銷貨商品＊</small></h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card-box table-responsive">
+                                            <p class="text-muted font-13 m-b-30">
+                                                選擇銷貨商品
+                                            </p>
+                                            <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>
+                                                            <th>銷貨</th>
+                                                        </th>
+                                                        <th>廠商</th>
+                                                        <th>型號 / 編號</th>
+                                                        <th>品名</th>
+                                                        <th>進價</th>
+                                                        <th>售價</th>
+                                                        <th>庫存</th>
+                                                        <th>進貨日期</th>
+                                                    </tr>
+                                                </thead>
+                        
+                                                <tbody id='show_radio'></tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
                     
                 <div class="row my-3" id='show_selling'>
@@ -190,6 +189,7 @@
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}
 
@@ -402,7 +402,7 @@
             'info':info,'product_id':product_id}
         };
 
-
+        var post_type = false
         $('#sub').click(function(){
             var data = get_data()
             if(data['company_id'] == ''){
@@ -422,16 +422,36 @@
             }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
                 alert ('請輸入售出單價')
             }else{
+                post_type = true
                 $('.lightbox').addClass('active')
             }
         });
 
         $('#selling_true').click(function(){
-            console.log('送出')
-            window.location.reload()
+            if(post_type == true){
+                var data = get_data()
+                $.ajax({
+                    url: '/selling/', 
+                    type: 'POST',  
+                    headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                    data: {
+                        data: JSON.stringify(data),
+                    },
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        if(data.data == 'success'){
+                            alert ('銷售成功')
+                            window.location.reload()
+                        }else{
+                            alert ('Error')
+                        }
+                    }
+                });
+            }
         });
 
         $('#close_selling_check').click(function(){
+            post_type = false
             $('.lightbox').removeClass('active')
         });
 

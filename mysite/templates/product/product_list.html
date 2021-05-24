@@ -159,7 +159,7 @@
                     </div>
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>數量＊</h6>
+                            <h6>進貨數量＊</h6>
                             <input class="form-control" type="number" step=any id="amount">
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
@@ -240,7 +240,7 @@
                                             <th>品名</th>
                                             <th>進價</th>
                                             <th>售價</th>
-                                            <th>數量</th>
+                                            <th>進貨數量</th>
                                             <th>庫存數量</th>
                                             <th>進貨日</th>
                                         </tr>
@@ -443,7 +443,7 @@
         }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
             alert ('請輸入售價')
         }else if(!data['amount'] || data['amount'].trim().length === 0){
-            alert ('請輸入數量')
+            alert ('請輸入進貨數量')
         }else if(!data['product_in_stock'] || data['product_in_stock'].trim().length === 0){
             alert ('請輸入庫存數量')
         }

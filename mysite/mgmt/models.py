@@ -78,3 +78,23 @@ class ProductInfo(models.Model):
         return '{}'.format(self.company_id) 
 
 #售出資訊(log)
+class ProductSelling(models.Model):
+    id = models.AutoField(primary_key=True)                       
+    company = models.ForeignKey(CompanyInfo, on_delete=models.CASCADE)
+    product_id = models.IntegerField(blank=True, null=True)    
+    company_name = models.CharField(blank=True, null=True ,max_length=50)         #公司名
+    types = models.CharField(blank=True, null=True ,max_length=30)   #種類
+    brand = models.CharField(blank=True, null=True ,max_length=50)   #品牌
+    model = models.CharField(blank=True, null=True ,max_length=100)  #型號(編號)
+    name = models.CharField(blank=True, null=True ,max_length=100)   #商品名
+
+    selling_price = models.FloatField(blank=True, null=True)         #銷售單價
+    selling_amount = models.FloatField(blank=True, null=True)        #售出數量
+    selling_sum = models.FloatField(blank=True, null=True)           #總銷售額
+
+    info = models.TextField(blank=True, null=True) 
+    selling_date = models.DateTimeField(auto_now_add=False)         #售出日
+    updated = models.DateTimeField(auto_now_add=False)                                  
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):     
+        return '{}'.format(self.company_id) 
