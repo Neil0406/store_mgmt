@@ -76,3 +76,5 @@ class ProductInfo(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):     
         return '{}'.format(self.company_id) 
+
+#售出資訊(log)
