@@ -131,6 +131,7 @@
 
         $('#company_id').change(function(){
             l = []
+            product_id_l = []
             $('#show_data_check').empty();
             $('#selling_check').empty();
             var id_ = $('#company_id').val();
@@ -162,6 +163,7 @@
 
         $('#types').change(function(){
             l = []
+            product_id_l = []
             $('#show_data_check').empty();
             $('#selling_check').empty();
             document.getElementById('brand').innerHTML = '<option hidden select value="">品牌</option>'
@@ -193,6 +195,7 @@
 
         $('#brand').change(function(){
             l = []
+            product_id_l = []
             $('#show_data_check').empty();
             $('#selling_check').empty();
             document.getElementById('model').innerHTML = '<option hidden select value="">型號 / 編號</option>'
@@ -226,6 +229,7 @@
 
         $('#model').change(function(){
             l = []
+            product_id_l = []
             $('#show_data_check').empty();
             $('#selling_check').empty();
             document.getElementById('name').innerHTML = '<option hidden select value="">品名</option>'
@@ -259,6 +263,7 @@
 
         $('#name').change(function(){
             l = []
+            product_id_l = []
             $('#show_data_check').empty();
             $('#selling_check').empty();
             var id_ = $('#company_id').val();
@@ -295,28 +300,46 @@
         });
 
         var l = []
+        var product_id_l = []
         function checkbox_(product_id){
             $('#selling_check').empty();
             var checkbox_val = $('#'+product_id).val();
             if(document.getElementById(product_id).checked){
-                var s = '<div class="row my-3" id="selling_id_'+product_id+'"><div class="col-lg-6 col-md-6 col-6"><h6>'+checkbox_val+'.銷貨數量＊</h6><input class="form-control" type="number" step=any id="selling_amount"></div><div class="col-lg-6 col-md-6 col-6"><h6>售出價＊</h6><input class="form-control" type="number" step=any id="selling_price"></div></div>'
+                var s = '<div class="row my-3" ><div class="col-lg-6 col-md-6 col-6"><h6>'+checkbox_val+'.銷貨數量＊</h6><input class="form-control" type="number" step=any id="selling_amount_'+product_id+'"></div><div class="col-lg-6 col-md-6 col-6"><h6>售出價＊</h6><input class="form-control" type="number" step=any id="selling_price_'+product_id+'"></div></div>'
                 if(!l.includes(s)){
                     l.push(s)
+                }
+                if(!product_id_l.includes(product_id)){
+                    product_id_l.push(product_id)
                 }
                 for(i=0; i<l.length; i++){
                     document.getElementById('selling_check').innerHTML += l[i]
                 };
             }else{
-                var index_ = l.indexOf('<div class="row my-3" id="selling_id_'+product_id+'"><div class="col-lg-6 col-md-6 col-6"><h6>'+checkbox_val+'.銷貨數量＊</h6><input class="form-control" type="number" step=any id="selling_amount"></div><div class="col-lg-6 col-md-6 col-6"><h6>售出價＊</h6><input class="form-control" type="number" step=any id="selling_price"></div></div>');
+                var index_ = l.indexOf('<div class="row my-3" ><div class="col-lg-6 col-md-6 col-6"><h6>'+checkbox_val+'.銷貨數量＊</h6><input class="form-control" type="number" step=any id="selling_amount_'+product_id+'"></div><div class="col-lg-6 col-md-6 col-6"><h6>售出價＊</h6><input class="form-control" type="number" step=any id="selling_price_'+product_id+'"></div></div>');
                 l.splice(index_, 1);
+
+                var product_id_index = l.indexOf(product_id);
+                product_id_l.splice(product_id_index, 1);
+
                 for(i=0; i<l.length; i++){
                     document.getElementById('selling_check').innerHTML += l[i]
                 };
-                //console.log('取消選取:', can.id)
             };
             document.getElementById('selling_check').style.display = 'block'
         }
         
+        $('#sub').click(function(){
+            if(product_id_l.length != 0){
+                for(i=0; i<product_id_l.length; i++){
+                    $('#selling_amount_'+product_id_l[i])
+                    $('#selling_price_'+product_id_l[i])
+                };
+            }else{
+                alert ('Error')
+            }
+        });
+
 
         //window.onload=get_amount;
         function get_amount(){
