@@ -43,7 +43,7 @@ class CreateSuperuser():
         self.host = '127.0.0.1'
         self.port = 3306
         self.user = 'root'
-        self.passwd='Aa495378'
+        self.passwd=''
         self.db='store_mgmt'
     
     def insert_data(self, name, public_key, private_key, email):
@@ -55,7 +55,7 @@ class CreateSuperuser():
         cursor = conn.cursor()
 
         # cursor.execute("select * from mgmt_mgmtuser")
-        cursor.executemany("insert into mgmt_mgmtuser(name, auth, public_key, private_key, email, action ,created, updated, session_expire)values(%s, %s, %s, %s, %s, %s, %s, %s, %s)", [(name, 'height', public_key, private_key,email, time_ , time_, time_, session_expire)])
+        cursor.executemany("insert into mgmt_mgmtuser(name, auth, public_key, private_key, email, action ,created, updated, session_expire, image)values(%s, %s, %s, %s, %s, %s, %s, %s, %s)", [(name, 'height', public_key, private_key,email, time_ , time_, time_, session_expire, '')])
 
         new_id = cursor.lastrowid
         print("Id :", new_id)

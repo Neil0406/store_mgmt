@@ -10,6 +10,7 @@ class MgmtUser(models.Model):
     public_key = models.CharField(blank=True ,max_length=200)
     private_key = models.CharField(blank=True ,max_length=200)
     session_expire = models.DateTimeField(auto_now_add=False)
+    image = models.ImageField(upload_to='./static/user_images', storage=ImageStorage())
     action = models.DateTimeField(auto_now_add=False)
     updated = models.DateTimeField(auto_now_add=False)
     created = models.DateTimeField(auto_now_add=True)

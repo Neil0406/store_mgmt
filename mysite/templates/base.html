@@ -63,6 +63,7 @@
                 <li><a><i class="fa fa-edit"></i> 商品管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/product_list">庫存資訊</a></li>
+                    <li><a href="#">售出資訊</a></li>
                     <li><a href="/create_product">商品進貨</a></li>
                     <li><a href="/selling">售出 / 銷貨</a></li>
                     <li><a href="#">退貨處理(退回倉庫 -> 是否退回廠商)</a></li>
@@ -103,7 +104,7 @@
                 {% if user.auth == 'height' %}
                   <li><a><i class="fa fa-user"></i> 使用者管理 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="#">使用者</a></li>
+                      <li><a href="/create_user">新增使用者</a></li>
                       <li><a href="#">權限設定</a></li>
                     </ul>
                   </li>

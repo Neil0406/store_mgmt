@@ -29,4 +29,7 @@ urlpatterns = [
     path('get_company_product_model/', views.Company().get_company_product_model),
     path('get_company_product_name/', views.Company().get_company_product_name),
 
+
+    path('create_user/', views.UserControl().create_user),
+
 ]

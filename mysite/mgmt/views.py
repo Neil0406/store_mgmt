@@ -62,6 +62,14 @@ def home(request):
 	else:
 		return redirect ('/')
 
+class UserControl():
+	def create_user(self, request):
+		user, check = session_check(request)
+		if check == True:
+			return render(request,'user/create_user.html', locals())
+		else:
+			return redirect ('/')
+
 
 class Product():
 	def product_list(self, request):
