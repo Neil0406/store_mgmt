@@ -27,6 +27,16 @@
   {% block css%}
   {% endblock %}
 
+  <style>
+    #user-profile{
+      height:60px;
+      width:60px;
+      margin: 20px;
+      border: 2px solid;
+      border-color: rgb(40, 39, 39);
+    }
+  </style>
+
 </head>
 
 <body class="nav-md">
@@ -43,7 +53,13 @@
           <!-- menu profile quick info -->
           <div class="profile clearfix">
             <div class="profile_pic">
-              <img src="https://fakeimg.pl/50x50/####" alt="..." class="img-circle profile_img">
+              {% if user.image %}
+                <!-- <img src="/{{user.image}}" alt="..." class="img-circle profile_img"> -->
+                <a href="/" class="user-profile"><img src="/{{user.image}}" alt="" id="user-profile"></a>
+              {% else %}
+                <!-- <img src="https://fakeimg.pl/50x50/####" alt="..." class="img-circle profile_img"> -->
+                <a href="/" class="user-profile"><img src="https://fakeimg.pl/50x50/####" alt="" id="user-profile"></a>
+              {% endif %}
             </div>
             <div class="profile_info">
               <span>Welcome,</span>
@@ -60,7 +76,7 @@
               <ul class="nav side-menu">
                 <li><a href="/"><i class="fa fa-home"></i> Home </a></li>
 
-                <li><a><i class="fa fa-edit"></i> 商品管理 <span class="fa fa-chevron-down"></span></a>
+                <!-- <li><a><i class="fa fa-edit"></i> 商品管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/product_list">庫存資訊</a></li>
                     <li><a href="#">售出資訊</a></li>
@@ -68,18 +84,18 @@
                     <li><a href="/selling">售出 / 銷貨</a></li>
                     <li><a href="#">退貨處理(退回倉庫 -> 是否退回廠商)</a></li>
                   </ul>
-                </li>
+                </li> -->
 
                 <li><a><i class="fa fa-edit"></i> 廠商管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
-                    <li><a href="/company_list">廠商資訊</a></li>
-                    <li><a href="/company_product_list">廠商代理資訊</a></li>
-                    <li><a href="/create_company">新增廠商</a></li>
-                    <li><a href="/create_company_product">新增商品</a></li>
+                    <li><a href="/company/company_list">廠商資訊</a></li>
+                    <li><a href="/company/company_product_list">商品資訊</a></li>
+                    <!-- <li><a href="/company/create_company">新增廠商</a></li> -->
+                    <!-- <li><a href="/company/create_company_product">新增商品</a></li> -->
                   </ul>
                 </li>
 
-                <li><a><i class="fa fa-edit"></i> 空間管理 <span class="fa fa-chevron-down"></span></a>
+                <!-- <li><a><i class="fa fa-edit"></i> 空間管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="#">教室</a></li>
                     <li><a href="#">練團室</a></li>
@@ -98,14 +114,19 @@
                     <li><a href="#">教師名單</a></li>
                     <li><a href="#">example2</a></li>
                   </ul>
+                </li> -->
+
+                <li><a><i class="fa fa-user"></i> 帳戶管理 <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu">
+                    <li><a href="/user/update_user">帳戶管理</a></li>
+                  </ul>
                 </li>
 
-
-                {% if user.auth == 'height' %}
-                  <li><a><i class="fa fa-user"></i> 使用者管理 <span class="fa fa-chevron-down"></span></a>
+                {% if user.auth == 'hight'%}
+                  <li><a><i class="fa fa-lock"></i> 使用者管理 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="/create_user">新增使用者</a></li>
-                      <li><a href="#">權限設定</a></li>
+                      <!-- <li><a href="/create_user">新增使用者</a></li> -->
+                      <li><a href="/user_control">使用者管理</a></li>
                     </ul>
                   </li>
                 {% endif %}
@@ -125,7 +146,7 @@
             <a data-toggle="tooltip" data-placement="top" title="設定" href="/user_setting">
               <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
             </a>
-            <a data-toggle="tooltip" data-placement="top" title="管理帳戶" href="/update_user">
+            <a data-toggle="tooltip" data-placement="top" title="帳戶管理" href="/user/update_user">
               <span><i class="fa fa-user"></i></span>
             </a>
             <a data-toggle="tooltip" data-placement="top" title="登出" href="/logout">
@@ -147,13 +168,17 @@
               <li class="nav-item dropdown open" style="padding-left: 15px;">
                 <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown"
                   data-toggle="dropdown" aria-expanded="false">
-                  <img src="https://fakeimg.pl/50x50/####" alt="">{{user.email}}
+                  {% if user.image %}
+                    <img src="/{{user.image}}" alt="">{{user.email}}
+                  {% else %}
+                    <img src="https://fakeimg.pl/50x50/####" alt="">{{user.email}}
+                  {% endif %}
                 </a>
                 <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" href="javascript:;"> Profile</a>
-                  <a class="dropdown-item" href="/update_user">
+                  <a class="dropdown-item" href="/user/update_user">
                     <span class="badge bg-red pull-right">50%</span>
-                    <span>管理帳戶</span>
+                    <span>帳戶管理</span>
                   </a>
                   <a class="dropdown-item" href="javascript:;">Help</a>
                   <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out pull-right"></i> 登出</a>
@@ -219,14 +244,12 @@
 
 
 
-
-
   <!-- jQuery -->
   <script src="{% static '/dashboard_plugin/jquery/dist/jquery.min.js' %}"></script>
+
   <!-- Bootstrap -->
   <script src="{% static '/dashboard_plugin/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static '/dashboard_plugin/js/custom.min.js' %}"></script>
-
 
   {% block js %}
   {% endblock %}

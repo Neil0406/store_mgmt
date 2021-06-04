@@ -1,0 +1,248 @@
+{% extends 'base.html'%}
+
+{% block title %}
+<title>帳戶管理</title>
+{% endblock %}
+
+{% block css %}
+<style>
+    #show_image{
+        width: auto;
+        height: auto;
+        max-width: 50%;
+        max-height: 50%;	
+    }
+</style>
+{% endblock %}
+
+
+{% block body %}
+<div class="container">
+    <h4>使用者資料更新</h4>
+    <div class="card">
+        <div class="card-body">
+            {% csrf_token %}
+            <div class="row my-2">
+                <div class="col-lg-3 col-md-6 col-6">
+                    <h6>名稱</h6>
+                    <input type="text" class="form-control" id="name" value="{{user.name}}">
+                </div>
+                <div class="col-lg-3 col-md-6 col-6">
+                    <h6>Email&nbsp;&nbsp;&nbsp;<small id="email_check" style="color: brown;"></small></h6>
+                    <input type="text" class="form-control" id="email" value="{{user.email}}">
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-lg-3 col-md-3 col-12">
+                    <h6>照片上傳</h6>
+                    {% if user.image %}
+                        <img src="/{{user.image}}" alt="" id="show_image"><br>
+                        <button type="btn" class="btn-danger" id="delete_image">刪除照片</button>
+                    {% else %}
+                        <img src="" alt="" id="show_image"><br>
+                    {% endif %}
+                    <input type="file" id="image" accept="image/gif, image/jpeg, image/png" multiple="multiple">
+                </div>
+            </div>
+
+            <br>
+            <button class="btn btn-primary" onclick="update_sub('{{user.id}}')">更新</button>
+        </div>
+    </div>
+    <br>
+    <h4>密碼變更</h4>
+    <div class="card">
+        <div class="card-body">
+
+            <div class="row my-2">
+                <div class="col-lg-3 col-md-3 col-6">
+                    <h6>舊密碼</h6>
+                    <input type="password" class="form-control" id="old_password">
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-lg-3 col-md-3 col-6">
+                    <h6>新密碼 (大於6位數)&nbsp;&nbsp;&nbsp;<small id="password_len" style="color: brown;"></small></h6>
+                    <input type="password" class="form-control" id="password" minlength="6">
+                </div>
+                <div class="col-lg-3 col-md-3 col-6">
+                    <h6>新密碼確認&nbsp;&nbsp;&nbsp;<small id="password_check_len" style="color: brown;"></small></h6>
+                    <input type="password" class="form-control" id="password_check" minlength="6">
+                </div>
+            </div>
+            <br>
+            <button class="btn btn-primary" onclick="password_sub('{{user.id}}')">更新</button>
+            <button class="btn btn-danger" id="password_reset">清除</button>
+        </div>
+    </div>
+</div>
+<br>
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+    $('#delete_image').click(function(){
+        document.getElementById('show_image').src = ''
+        document.getElementById('delete_image').remove();
+    })
+
+
+    $("#image").change(function(){
+       readURL(this);   // this代表<input id="image">
+     });
+
+     function readURL(input){
+        if(input.files && input.files[0]){
+          var reader = new FileReader();
+          reader.onload = function (e) {
+             $("#show_image").attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    var email_true = true
+    $(document).ready(function(){
+        $("body").on("change", "#email", function (){
+            $('#email_check').empty();
+            $Emailchecking=IsEmail($("#email").val());
+            if($Emailchecking==false){
+                document.getElementById('email_check').innerHTML += '<i class="fas fa-exclamation-circle" style="color: brown;"></i>請填寫正確的E-MAIL格式'
+            }          
+        })
+        function IsEmail(email) { 
+            var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if(!regex.test(email) && email != '') { 
+                    email_true = false;
+                    return false;
+                }else{
+                    email_true = true;
+                    return true;
+            } 
+        }              
+    });
+
+    function update_sub(user_id){
+        var url = window.location.href
+        var name = $('#name').val();
+        var email = $('#email').val();
+        var image = $("#image")[0].files
+        var upload = new FormData();                              // upload(因為image是file格式所以要跟json分開放 需用form的方式) 不能使用-> data:{data:JSON.stringify(data), image:image}
+        upload.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val()); 
+
+        if(document.getElementById('show_image').src != url && image.length == 0){
+            //console.log('不更新')
+            upload.append("image", 'no_update');
+        }else if(image.length != 0){
+            //console.log('更新')
+            upload.append("image",image[0]);
+        }else if(document.getElementById('show_image').src == url && image.length == 0){
+            //console.log('刪除 / 不新增')
+            upload.append("image", '');
+        }
+
+        if(!name || name.trim().length === 0){
+            alert ('請輸入名稱');
+        }else if(!email || email.trim().length === 0){
+            alert ('請輸入Email');
+        }else if(email_true == false){
+            alert ('請填寫正確的E-MAIL格式');
+        }else{
+            var data = {'user_id':user_id, 'name':name, 'email':email}
+            upload.append("data",JSON.stringify(data));
+            $.ajax({
+                url: '/user/update_user/', 
+                type: 'POST',  
+                contentType: false,  
+                processData: false,   
+                data: upload,
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert ('更新成功')
+                        window.location.reload();
+                    }else if(data.data == 'exists'){
+                        alert ('Email已存在')
+                    }
+                }
+            });
+        }
+    }
+
+
+    $(document).ready(function(){
+        $("body").on("change", "#password", function (){
+            $('#password_len').empty();
+            var password = $("#password").val();
+            var password_check = $("#password_check").val();
+            if (password.length < 6 && password != ''){
+                document.getElementById('password_len').innerHTML += '<i class="fas fa-exclamation-circle" style="color: brown;"></i>密碼長度小於6位數，已輸入：' + password.length
+            }else if (password == password_check){
+                $('#password_check_len').empty();
+            }else if (password != password_check && password_check != ''){
+                $('#password_check_len').empty();
+                document.getElementById('password_check_len').innerHTML += '<i class="fas fa-exclamation-circle" style="color: brown;"></i>密碼不符' 
+            }
+        }) 
+    });
+
+
+    $(document).ready(function(){
+        $("body").on("change", "#password_check", function (){
+            $('#password_check_len').empty();
+            var password = $("#password").val();
+            var password_check = $("#password_check").val();
+            if (password != password_check && password_check != ''){
+                document.getElementById('password_check_len').innerHTML += '<i class="fas fa-exclamation-circle" style="color: brown;"></i>密碼不符' 
+            }
+        }) 
+    });
+
+    function password_sub(user_id){
+        var old_password = $('#old_password').val();
+        var password= $('#password').val();
+        var password_check = $('#password_check').val();
+        if(!old_password || old_password.trim().length === 0){
+            alert ('請輸入舊密碼')
+        }else if(!password || password.trim().length === 0){
+            alert ('請輸入新密碼')
+        }else if(!password_check || password_check.trim().length === 0){
+            alert ('請輸入新密碼確認')
+        }else if (password.length < 6){
+            alert ('密碼長度不足')
+        }else if (password_check != password){
+            alert ('密碼不符')
+        }else{
+            var data = {'user_id':user_id,'old_password':old_password, 'password':password, 'password_check':password_check}
+            $.ajax({
+                url: '/user/update_user_password/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    data: JSON.stringify(data),
+                },  
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert ('更新成功')
+                        window.location.reload();
+                    }else if(data.data == 'error'){
+                        alert ('舊密碼錯誤')
+                    }
+                }
+            });
+        }
+    }
+
+    $('#password_reset').click(function(){
+        window.location.reload();
+    })
+
+
+</script>
+{% endblock %}

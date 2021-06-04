@@ -1,7 +1,7 @@
-{% extends "base.html" %}
-{% load static%}
-{% block title%}
-<title>廠商資訊</title>  
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} 
+<title>廠商資訊</title>
 {% endblock %}
 
 {% block header%}
@@ -13,48 +13,13 @@
 {% endblock %}
 
 {% block css %}
-
 <style>
-    *{
-        font-family:"Arial","蘋方體","微軟正黑體",sans-serif
-      }
-    body {
-        background-color:rgb(241, 241, 241);
-    }
-    .lightbox{
-        z-index:5000;
-        position: fixed;
-        left: 0;    /* 靠左上角定位 */
-        top: 0;	  
-        width: 100%;
-        height: 100vh;    /* view-width. height  */
-        background-color: rgba(0,0,0,.5);
-        align-items: center;
-        justify-content: center;
-        display: none;
-
-    }
-    .lightbox.active{
-        display: flex;
-    }
-    .content{
-        width: 1200px;
-        height: 800px;
-        background-color: #ccc;
-        /*align-items: center;
-        justify-content: center;  */
-        position: relative;
-        overflow-y:auto;
-
-    }
-    .close{
-        z-index:9999;
+    #company_info_delete{
         position: absolute;
-        top: 0;
+        bottom: 6px;
         right: 0;
     }
-
-    .lightbox2{
+    .company_info_lightbox{
         z-index:9999;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -66,10 +31,10 @@
         justify-content: center;
         display: none;
     }
-    .lightbox2.active{
+    .company_info_lightbox.active{
         display: flex;
     }
-    .content_delete_check{
+    .company_info_content{
         width: 250px;
         height: 150px;
         background-color: #ccc;
@@ -79,149 +44,34 @@
         justify-content: center;
         position: relative;
         overflow-y:auto;
-
     }
 
 
+
 </style>
-{% endblock%}
-
-{% block body%}
+{% endblock %}
 
 
-
-<!-- page content -->
+{% block body %} 
+<!-- 廠商列表 -->
 <div class="container" role="main">
-
-    <div class="lightbox2">
-        <div class="content_delete_check">
-            <div>
-                <h5>確定要刪除資料？</h5><br>
-                <div>
-                    <button class="btn btn-success" id='delete_true'>確認刪除</button>
-                    <button class="btn btn-danger" id="close_delete_check">取消</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    
-    <div class="lightbox">
-        <div class="content" id='show_update'>
-            <div class="card col-12">
-                <br>
-                <h5 style="text-align: center;">廠商資料更新</h5>
-                <div class="card-body">
-                    {% csrf_token %}
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-12 col-12">
-                            <h6>廠商＊</h6>
-                            <input class="form-control g" type="text" id="company_name">
-                        </div>
-                    </div>
-                    <div class="row my-3">
-                        <div class="col-lg-2 col-md-6 col-6">
-                            <h6>縣 / 市</h6>
-                            <input class="form-control g" type="text" id="company_region">
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-6">
-                            <h6>鄉 / 鎮 / 區</h6>
-                            <input class="form-control g" type="text" id="company_town">
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-6 col-md-12 col-sm-12">
-                            <h6>地址</h6>
-                            <input class="form-control g" type="text" id="company_address">
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-8 col-8">
-                            <h6>公司電話</h6>
-                            <input class="form-control g" type="text" id="company_phone">
-                        </div>
-                        <div class="col-lg-1 col-md-4 col-4">
-                            <h6>分機</h6>
-                            <input class="form-control g" type="text" id="company_ext">
-                        </div>
-                        <div class="col-lg-2 col-md-12 col-12">
-                            <h6>公司聯絡人</h6>
-                            <input class="form-control g" type="text" id="company_contact_person">
-                        </div>
-                        <div class="col-lg-4 col-md-12 col-12">
-                            <h6>Email</h6>
-                            <input class="form-control g" type="email" id="company_email">
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-8 col-8">
-                            <h6>手機</h6>
-                            <input class="form-control g" type="text" id="mobile_phone">
-                        </div>
-                        <div class="col-lg-2 col-md-4 col-4">
-                            <h6>聯絡人</h6>
-                            <input class="form-control g" type="text" id="mobile_contact_person">
-                        </div>
-                        <div class="col-lg-4 col-md-12 col-12">
-                            <h6>Email</h6>
-                            <input class="form-control g" type="email" id="mobile_email">
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-6 col-md-12 col-12">
-                            <h6>公司網址</h6>
-                            <input class="form-control g" type="text" id="company_url" >
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-6 col-md-12 col-12">
-                            <h6>統一編號</h6>
-                            <input class="form-control g" type="text" id="uniform_numbers">
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-6 col-md-12 col-12">
-                            <h6>其他資訊</h6>
-                            <textarea style="width:100%;height:100px;" id='company_info'></textarea>
-                        </div>
-                    </div>
-    
-                    <div class="row my-3">
-                        <div class="col-lg-10 col-md-10 col-12">
-                            <button class="btn btn-success" id="sub">更新</button>
-                            <button class="btn btn-danger" id="reset">清除</button>
-                            <button class="btn btn-danger" id="close">關閉</button>
-                        </div>
-                        <div class="col-lg-2 col-md-2 col-12">
-                            <button class="btn btn-danger" id="delete_check">刪除資料</button>
-                        </div>
-                    </div>
-    
-                </div>    
-            </div>
-            <button class="close">X</button>
-        </div>
-    </div>
-
-    <div class="row">
+    <h4>廠商資訊</h4><a href="/company/create_company"><button class="btn-success">新增廠商</button></a>
+    <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>廠商資訊</small></h2>
+                    <h2>廠商列表</small></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up" id="chevron"></i></a></li>
+                      </ul>
                     <div class="clearfix"></div>
                 </div>
-                <div class="x_content">
+                <div class="x_content" id="company_list">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box table-responsive">
                                 <p class="text-muted font-13 m-b-30">
-                                The Buttons extension for DataTables provides a common set of options, API methods and styling to display buttons on a page that will interact with a DataTable. The core library provides the based framework upon which plug-ins can built.
+                                    廠商列表
                                 </p>
                                 <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
                                     <thead>
@@ -232,23 +82,21 @@
                                             <th>Email</th>
                                             <th>網址</th>
                                             <th>統編</th>
-                                            <!-- <th>代理資訊</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for i in company_list %}
+                                        {% for i in company_list%}
                                         <tr>
-                                            <td><a href="#" onclick="get_id('{{i.id}}')">{{i.company_name}}</a></td>
-                                            <td><a href="https://www.google.com.tw/maps/place/{{i.company_region}}{{i.company_town}}{{i.company_address}}" target="_blank">{{i.company_region}}{{i.company_town}}{{i.company_address}}</a></td>
-                                            <td>公司: {{i.company_phone}} / 分機: {{i.company_ext}} / {{i.company_contact_person}}<br>手機: {{i.mobile_phone}} / {{i.mobile_contact_person}}</td>
-                                            <td>公司: <a href="mailto:{{i.company_email}}">{{i.company_email}}</a><br>手機聯絡人: <a href="mailto:{{i.mobile_email}}">{{i.mobile_email}}</a></td>
-                                            {%if i.company_url != ''%}
-                                                <td><a href="{{i.company_url}}" target="_blank">網址</a></td>
+                                            <td><a href="#" onclick="company_info_btn('{{i.id}}')">{{i.name}}</a></td>
+                                            <td><a href="https://www.google.com.tw/maps/place/{{i.region}}{{i.town}}{{i.address}}" target="_blank">{{i.region}}{{i.town}}{{i.address}}</a></td>
+                                            <td>{{i.phone}}</td>
+                                            <td><a href="mailto:{{i.email}}">{{i.email}}</a></td>
+                                            {% if i.url %}
+                                                <td><a href="{{i.url}}" target="_blank"><i class="fas fa-link"></i>&nbsp;網址</a></td>
                                             {% else %}
                                                 <td></td>
                                             {% endif %}
                                             <td>{{i.uniform_numbers}}</td>
-                                            <!-- <td>代理資訊</td> -->
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -261,11 +109,127 @@
         </div>
     </div>
 </div>
-<!-- /page content -->
+<!-- / 廠商列表 -->
 
+<!-- 廠商管理 -->
+<div class="container" role="main" id="company_info" style="display: none;">
 
+    <div class="company_info_lightbox">
+        <div class="company_info_content">
+            <div>
+                <h5>確定要刪除？</h5><br>
+                <div>
+                    <button class="btn btn-success" id='company_info_delete_true'>確認</button>
+                    <button class="btn btn-danger" id="close_company_info_delete_check">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-1">
+        {% csrf_token %}
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>廠商資料更新</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-12 col-12">
+                            <h6>廠商＊</h6>
+                            <input class="form-control" type="text" id="company_name">
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h6>縣 / 市</h6>
+                            <input class="form-control" type="text" id="region">
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h6>鄉 / 鎮 / 區</h6>
+                            <input class="form-control" type="text" id="town">
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <h6>地址</h6>
+                            <input class="form-control" type="text" id="address">
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-8 col-8">
+                            <h6>公司電話</h6>
+                            <input class="form-control" type="text" id="phone">
+                        </div>
+                        <div class="col-lg-1 col-md-4 col-4">
+                            <h6>分機</h6>
+                            <input class="form-control" type="text" id="ext">
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-12">
+                            <h6>公司聯絡人</h6>
+                            <input class="form-control" type="text" id="contact_person">
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-12">
+                            <h6>Email&nbsp;&nbsp;&nbsp;<small id="email_check" style="color: brown;"></small></h6>
+                            <input class="form-control" type="email" id="email">
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-8 col-8">
+                            <h6>手機</h6>
+                            <input class="form-control" type="text" id="mobile_phone">
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-4">
+                            <h6>聯絡人</h6>
+                            <input class="form-control" type="text" id="mobile_contact_person">
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-12">
+                            <h6>Email&nbsp;&nbsp;&nbsp;<small id="mobile_email_check" style="color: brown;"></small></h6>
+                            <input class="form-control" type="email" id="mobile_email">
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>公司網址</h6>
+                            <input class="form-control" type="text" id="url" >
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>統一編號</h6>
+                            <input class="form-control" type="text" id="uniform_numbers">
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>其他資訊</h6>
+                            <textarea style="width:100%;height:200px;" id='info'></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" id="company_info_update">更新</button>
+                    <button class="btn btn-danger" id="company_info_close" onclick="company_info_close()">關閉</button>
+                    <button class="btn btn-danger" id="company_info_delete">刪除廠商</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!-- / 廠商管理 -->
 
 {% endblock %}
+
+
 {% block js %}
     <!-- iCheck -->
     <script src="{% static '/dashboard_plugin/datatable/iCheck/icheck.min.js' %}"></script>
@@ -281,184 +245,175 @@
     <script src="{% static '/dashboard_plugin/datatable/pdfmake/build/pdfmake.min.js' %}"></script>
     <script src="{% static '/dashboard_plugin/datatable/pdfmake/build/vfs_fonts.js' %}"></script>
 
-    <script> 
+    <script>
 
-        $('#delete_check').click(function(){          //確認刪除lightbox
-            $('.lightbox2').addClass('active')      
-        });
-
-        $('#close_delete_check').click(function(){      //關閉確認刪除lightbox
-            $(".lightbox2").removeClass("active");
-        });
-
-        $('#delete_true').click(function(){   
-            var company_id = _id    //公司 id
+    //廠商管理
+        var company_update_id =''
+        function company_info_btn(company_id){
+            company_update_id = company_id
             $.ajax({
-                url: '/company_delete/', 
+                url: '/company/get_update_company/', 
                 type: 'POST',  
                 headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                 data: {
-                    company_id:company_id
-                },
+                    company_id: company_id
+                },  
                 success: function (data) {
                     var data = JSON.parse(data);
-                    if(data.data == 'success'){
-                        alert ('刪除成功')
-                        window.location.reload();
-                    }else if(data.data == 'error'){
-                        alert ('刪除失敗')
-                        window.location.reload();
-                    }
-                }
-            });
-            
-        });
-
-        var _id = ''
-        function get_id(company_id){
-            _id = company_id
-            $.ajax({
-                url: '/company_list/', 
-                type: 'POST',  
-                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
-                data: {
-                    company_id:company_id
-                },
-                success: function (data) {
-                    var data = JSON.parse(data);
-                    if(data.data.legth != 0){
-                        $('#company_name').val(data.data.company_name);
-                        $('#company_region').val(data.data.company_region);
-                        $('#company_town').val(data.data.company_town);
-                        $('#company_address').val(data.data.company_address);
-                        $('#company_phone').val(data.data.company_phone);
-                        $('#company_ext').val(data.data.company_ext);
-                        $('#company_contact_person').val(data.data.company_contact_person);
-                        $('#company_email').val(data.data.company_email);
-                        $('#mobile_phone').val(data.data.mobile_phone);
-                        $('#mobile_contact_person').val(data.data.mobile_contact_person);
-                        $('#mobile_email').val(data.data.mobile_email);
-                        $('#uniform_numbers').val(data.data.uniform_numbers);
-                        $('#company_url').val(data.data.company_url);
-                        $('#company_info').val(data.data.company_info);
-                        $('#company_contact_person').val(data.data.company_contact_person);
-                        $('.lightbox').addClass('active')
-                    }
+                    $('#company_name').val(data.data.name);
+                    $('#region').val(data.data.region);
+                    $('#town').val(data.data.town);
+                    $('#address').val(data.data.address);
+                    $('#phone').val(data.data.phone);
+                    $('#ext').val(data.data.ext);
+                    $('#contact_person').val(data.data.contact_person);
+                    $('#email').val(data.data.email);
+                    $('#mobile_phone').val(data.data.mobile_phone);
+                    $('#mobile_contact_person').val(data.data.mobile_contact_person);
+                    $('#mobile_email').val(data.data.mobile_email);
+                    $('#uniform_numbers').val(data.data.uniform_numbers);
+                    $('#url').val(data.data.url);
+                    $('#info').val(data.data.info);
+                    document.getElementById('company_list').style.display = 'none'
+                    document.getElementById('chevron').className = 'fa fa-chevron-down'
+                    document.getElementById('company_info').style.display = 'block'
                 }
             });
         };
 
 
+        var email_true = true
+        $(document).ready(function(){
+            $("body").on("change", "#email", function (){
+                $('#email_check').empty();
+                $Emailchecking=IsEmail($("#email").val());
+                if($Emailchecking==false){
+                    document.getElementById('email_check').innerHTML += '<i class="fas fa-exclamation-circle" style="color: brown;"></i>請填寫正確的E-MAIL格式'
+    
+                }          
+            })
+            function IsEmail(email) { 
+                var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if(!regex.test(email)  && email != '') {
+                        email_true = false; 
+                        return false;
+                    }else{
+                        email_true = true; 
+                        return true;
+                } 
+            }              
+        });
+    
+        var mobile_email_true = true
+        $(document).ready(function(){
+            $("body").on("change", "#mobile_email", function (){
+                $('#mobile_email_check').empty();
+                $Emailchecking=IsEmail($("#mobile_email").val());
+                if($Emailchecking==false){
+                    document.getElementById('mobile_email_check').innerHTML += '<i class="fas fa-exclamation-circle" style="color: brown;"></i>請填寫正確的E-MAIL格式'
+                }          
+            })
+            function IsEmail(email) { 
+                var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                    if(!regex.test(email)  && email != '') {
+                        mobile_email_true = false; 
+                        return false;
+                    }else{
+                        mobile_email_true = true;
+                        return true;
+                } 
+            }              
+        });
+
         function get_data(){
-            var company_name = $('#company_name').val();
-            var company_region = $('#company_region').val();
-            var company_town = $('#company_town').val();
-            var company_address = $('#company_address').val();
-            var company_phone = $('#company_phone').val();
-            var company_ext = $('#company_ext').val();
-            var company_contact_person = $('#company_contact_person').val();
-            var company_email = $('#company_email').val();
+            var name = $('#company_name').val();
+            var region = $('#region').val();
+            var town = $('#town').val();
+            var address = $('#address').val();
+            var phone = $('#phone').val();
+            var ext = $('#ext').val();
+            var contact_person = $('#contact_person').val();
+            var email = $('#email').val();
             var mobile_phone = $('#mobile_phone').val();
             var mobile_contact_person = $('#mobile_contact_person').val();
             var mobile_email = $('#mobile_email').val();
             var uniform_numbers = $('#uniform_numbers').val();
-            var company_url = $('#company_url').val();
-            var company_info = $('#company_info').val();
-            return {'company_name':company_name,'company_region':company_region, 'company_town': company_town, 
-            'company_address':company_address,'company_phone':company_phone, 'company_ext': company_ext,
-            'company_contact_person':company_contact_person,'company_email':company_email, 'mobile_phone': mobile_phone,
+            var url = $('#url').val();
+            var info = $('#info').val();
+            return {'id':company_update_id, 'name':name,'region':region, 'town': town, 
+            'address':address,'phone':phone, 'ext': ext,
+            'contact_person':contact_person,'email':email, 'mobile_phone': mobile_phone,
             'mobile_contact_person':mobile_contact_person,'mobile_email':mobile_email, 'uniform_numbers': uniform_numbers,
-            'company_url':company_url,'company_info':company_info}
+            'url':url,'info':info}
         }
 
-        $('#sub').click(function(){
-            var data = get_data();
-            if(!data['company_name'] || data['company_name'].trim().length === 0){
+        $('#company_info_update').click(function(){
+            var data = get_data()
+            console.log(data)
+            if(!data['name'] || data['name'].trim().length === 0){
                 alert ('請輸入廠商名')
+            }else if(email_true == false){
+                alert ('請填寫正確的E-MAIL格式')
+            }else if(mobile_email_true == false){
+                alert ('請填寫正確的E-MAIL格式')
             }
             else{
                 $.ajax({
-                    url: '/company_update/', 
+                    url: '/company/update_company/', 
                     type: 'POST',  
                     headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                     data: {
-                        _id: _id,
-                        data: JSON.stringify(data)
+                        data: JSON.stringify(data),
                     },  
                     success: function (data) {
                         var data = JSON.parse(data);
                         if(data.data == 'success'){
-                            alert ('更新成功')
-                            window.location.reload();
-                        }else if(data.data == 'error'){
-                            alert ('新增失敗')
+                            alert('更新成功')
                             window.location.reload();
                         }else if(data.data == 'exists'){
                             alert ('公司已存在')
                         }
-    
                     }
                 });
             }
-           
         });
 
-
-        //按鈕關閉
-        $('.close').click(function(){
-            $(".lightbox").removeClass("active");
+        $('#company_info_delete_true').click(function(){
+            $.ajax({
+                url: '/company/delete_company/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    company_id: company_update_id,
+                },  
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert('刪除成功')
+                        window.location.reload();
+                    }else if(data.data == 'error'){
+                        alert('刪除失敗')
+                    }
+                }
+            });
         });
 
-        $('#close').click(function(){
-            $(".lightbox").removeClass("active");
+        $('#company_info_delete').click(function(){
+            $('.company_info_lightbox').addClass('active')
         });
 
-
-        $(document).ready(function(){
-            $("body").on("change", "#company_email", function (){
-                $Emailchecking=IsEmail($("#company_email").val());
-                if($Emailchecking==false){
-                    alert("請填寫正確的E-MAIL格式");
-                    $("#company_email").blur(); //離開焦點
-                }          
-            })
-            function IsEmail(email) { 
-                var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-                    if(!regex.test(email)) { 
-                        return false;
-                    }else{
-                return true;
-                } 
-            }              
-        });
-    
-        $(document).ready(function(){
-            $("body").on("change", "#mobile_email", function (){
-                $Emailchecking=IsEmail($("#mobile_email").val());
-                if($Emailchecking==false){
-                    alert("請填寫正確的E-MAIL格式");
-                    $("#mobile_email").blur(); //離開焦點
-                }          
-            })
-            function IsEmail(email) { 
-                var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-                    if(!regex.test(email)) { 
-                        return false;
-                    }else{
-                return true;
-                } 
-            }              
+        $('#close_company_info_delete_check').click(function(){
+            $('.company_info_lightbox').removeClass('active')
         });
 
-        $('#reset').click(function(){
-            var in_ = $('input.form-control.g')
-            for(i=0; i<in_.length; i++){
-                $('#' + in_[i].id).val('');
-            }
-            $('#company_info').val('');
-        });
+        function company_info_close(){
+            document.getElementById('company_info').style.display = 'none'
+            document.getElementById('chevron').className = 'fa fa-chevron-up'
+            document.getElementById('company_list').style.display = 'block'
+        }
 
+
+    //廠商管理
     </script>
-
 
 {% endblock %}

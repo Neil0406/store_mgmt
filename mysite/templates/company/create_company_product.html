@@ -1,0 +1,411 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} 
+<title>新增商品</title>
+{% endblock %}
+
+{% block css %}
+<style>
+    .show_image{
+        width: auto;
+        height: auto;
+        max-width: 50%;
+        max-height: 50%;	
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- 新增商品 -->
+<div class="container" role="main">
+    <h4>新增商品</h4><a href="/company/company_product_list"><button class="btn-success">商品資訊</button></a>
+    <div class="row my-1">
+        {% csrf_token %}
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>新增商品</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>廠商＊</h6>
+                            <select id="company_id" class="form-control">
+                                <option hidden value="">廠商</option>
+                                {% for i in company_list%}
+                                <option value="{{i.id}}">{{i.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>類別＊</h6>
+                            <select id="types" class="form-control"  style="display: blcok;">
+                                <option hidden value="">類別</option>
+                                <option value="custom">自行新增</option>
+                            </select>
+                            <input id="types_custom" type="text" class="form-control" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>品牌＊</h6>
+                            <select id="brand" class="form-control" style="display: blcok;">
+                                <option hidden value="">品牌</option>
+                                <option value="custom">自行新增</option>
+                            </select>
+                            <input id="brand_custom" type="text" class="form-control" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>型號 / 編號＊</h6>
+                            <select id="model" class="form-control" style="display: blcok;">
+                                <option hidden value="">型號 / 編號</option>
+                                <option value="custom">自行新增</option>
+                            </select>
+                            <input id="model_custom" type="text" class="form-control" style="display: none;">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>品名＊</h6>
+                            <select id="name" class="form-control" style="display: blcok;">
+                                <option hidden value="">品名</option>
+                                <option value="custom">自行新增</option>
+                            </select>
+                            <input id="name_custom" type="text" class="form-control" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>進價(單價)＊</h6>
+                            <input id="purchase_price" type="number" class="form-control" type="number" step=any>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售價(單價)＊</h6>
+                            <input id="selling_price" type="number" class="form-control" type="number" step=any>
+                        </div>
+                    </div>
+
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片1</h6>
+                            <img src="" alt="" id="show_image1" class="show_image"><br>
+                            <button type="btn" class="btn-danger" id="delete_image1" onclick="delete_image(1)" style="display: none;">刪除照片</button>
+                            <input type="file" id="image1" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片2</h6>
+                            <img src="" alt="" id="show_image2" class="show_image"><br>
+                            <button type="btn" class="btn-danger" id="delete_image2" onclick="delete_image(2)" style="display: none;">刪除照片</button>
+                            <input type="file" id="image2" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片3</h6>
+                            <img src="" alt="" id="show_image3" class="show_image"><br>
+                            <button type="btn" class="btn-danger" id="delete_image3"  onclick="delete_image(3)"  style="display: none;">刪除照片</button>
+                            <input type="file" id="image3" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
+                        </div>
+                    </div>
+
+
+                    <div class="row my-2">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>其他資訊</h6>
+                            <textarea id="info" style="width:100%;height:100px;"></textarea>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="create_product">送出</button>
+                    <button class="btn btn-danger" id="create_product_reset" >清除</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!-- / 新增商品 -->
+{% endblock %}
+
+{% block js %}
+
+<script>
+    //新增商品
+
+    function get_image(){
+        var upload_image = []
+        var image_list = $("*[class='image_up']")
+        console.log(image_list)
+        for(i=0; i<image_list.length; i++){
+            var input = image_list[i]
+            if(input.files && input.files[0]){
+                upload_image.push(input.files[0])
+            }else{
+                upload_image.push('')
+            }
+        }
+        return upload_image
+    }
+    
+    function delete_image(num){
+        num = String(num)
+        document.getElementById('show_image'+ num).src = ''
+        $('#image'+ num).val('');
+        document.getElementById('delete_image' + num).style.display = 'none'
+    }
+
+    $("*[class='image_up']").change(function(){
+        var image_list = $("*[class='image_up']")
+        for(i=0; i<image_list.length; i++){
+            var input = image_list[i]
+            if(input.files && input.files[0]){
+                var _id = image_list[i].id
+                console.log(_id)
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#show_"+_id).attr('src', e.target.result);
+                }
+                document.getElementById('delete_image'+ String(i+1)).style.display = 'block'
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    })
+
+
+
+    //選取後重置下面所有資料成下拉選單//
+    function switch_f(a='', b='', c='', d=''){
+        var l = [a, b, c, d]
+        for(i=0; i< l.length; i++){
+            if(l[i] != ''){
+                document.getElementById(l[i]).style.display = 'block'
+                document.getElementById(l[i]+'_custom').style.display = 'none'
+                $('#'+l[i]+'_custom').val('');
+                var d = {'types':'類別', 'brand':'品牌', 'model':'型號 / 編號', 'name':'品名'}
+                document.getElementById(l[i]).innerHTML = '<option hidden select value="">'+d[l[i]]+'</option><option value="custom">自行新增</option>'
+            }
+        }
+    }
+    //選取自訂後重置下面所有資料成自訂//
+    function switch_c(a='', b='', c='', d=''){
+        var l = [a, b, c, d]
+        for(i=0; i< l.length; i++){
+            if(l[i] != ''){
+                document.getElementById(l[i]).style.display = 'none'
+                document.getElementById(l[i]+'_custom').style.display = 'block'
+                $('#'+l[i]).val('');
+            }
+        }
+    }
+
+
+    $('#company_id').change(function(){
+        var id_ = $('#company_id').val();
+        switch_f('types', 'brand', 'model', 'name');
+        $.ajax({
+            url: '/company/get_company_product_types/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0 && data.data != 'error'){
+                    var show_types = '<option hidden select value="">類別</option><option value="custom">自行新增</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('types').innerHTML = show_types
+                }
+            }
+        });
+    });
+
+    $('#types').change(function(){
+        var id_ = $('#company_id').val();
+        var types = $('#types').val();
+        switch_f('brand', 'model', 'name');
+
+        $.ajax({
+            url: '/company/get_company_product_brand/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_,
+                types: types
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0 && data.data != 'error'){
+                    var show_types = '<option hidden select value="">品牌</option><option value="custom">自行新增</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('brand').innerHTML = show_types
+                }
+            }
+        });
+    });
+
+
+    $('#brand').change(function(){
+        var id_ = $('#company_id').val();
+        var types = $('#types').val();
+        var brand = $('#brand').val();
+        switch_f('model', 'name');
+        $.ajax({
+            url: '/company/get_company_product_model/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_,
+                types: types,
+                brand: brand
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0 && data.data != 'error'){
+                    var show_types = '<option hidden select value="">型號 / 編號</option><option value="custom">自行新增</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('model').innerHTML = show_types
+                }
+            }
+        });
+    });
+
+
+
+    $('#model').change(function(){
+        var id_ = $('#company_id').val();
+        var types = $('#types').val();
+        var brand = $('#brand').val();
+        var model = $('#model').val();
+        switch_f('name');
+        $.ajax({
+            url: '/company/get_company_product_name/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                company_id: id_,
+                types: types,
+                brand: brand,
+                model:model
+            },
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data.length != 0){
+                    var show_types = '<option hidden select value="">品名</option><option value="custom">自行新增</option>'
+                    for(i=0; i<data.data.length; i++){
+                        show_types += '<option value="'+data.data[i]+'">'+data.data[i]+'</option>'
+                    }
+                    document.getElementById('name').innerHTML = show_types
+                }
+            }
+        });
+    });
+
+
+    $("#types").change(function(){
+        if($("#types").val() == 'custom'){
+            switch_c('types', 'brand', 'model', 'name');
+        }
+    });
+
+    $("#brand").change(function(){
+        if($("#brand").val() == 'custom'){
+            switch_c('brand', 'model', 'name');
+        }
+    });
+
+
+    $("#model").change(function(){
+        if($("#model").val() == 'custom'){
+            switch_c('model', 'name');
+        }
+    });
+
+    $("#name").change(function(){
+        if($("#name").val() == 'custom'){
+            switch_c('name');
+        }
+    });
+
+    $('#create_product_reset').click(function(){
+        window.location.reload();
+    });
+
+    function get_data(){
+        var id_ = $('#company_id').val();
+        var types = $('#types').val() + $('#types_custom').val();
+        var brand = $('#brand').val() + $('#brand_custom').val();
+        var model = $('#model').val() + $('#model_custom').val();
+        var name = $('#name').val() + $('#name_custom').val();
+        var info = $('#info').val();
+        var purchase_price = $('#purchase_price').val();
+        var selling_price = $('#selling_price').val();
+        return {'company_id':id_,'types':types, 'brand':brand, 'model':model, 'name':name, 'info':info, 'purchase_price':purchase_price, 'selling_price':selling_price}
+    }
+
+
+    $('#create_product').click(function(){
+        var data = get_data()
+        if(data['company_id'] == ''){
+            alert ('請輸入廠商')
+        }else if(!data['types'] || data['types'].trim().length === 0){
+            alert ('請輸入類別')
+        }else if(!data['brand'] || data['brand'].trim().length === 0){
+            alert ('請輸入品牌')
+        }else if(!data['model'] || data['model'].trim().length === 0){
+            alert ('請輸入型號 / 編號')
+        }else if(!data['name'] || data['name'].trim().length === 0){
+            alert ('請輸入品名')
+        }else if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
+            alert ('請輸入進價(單價)')
+        }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
+            alert ('請輸入售價(單價)')
+        }
+        else{
+            var image_data = get_image();
+            var upload = new FormData();                              // upload(因為image是file格式所以要跟json分開放 需用form的方式) 不能使用-> data:{data:JSON.stringify(data), image:image}
+            upload.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val()); 
+            upload.append("data",JSON.stringify(data));
+            for(i=0; i<image_data.length; i++){
+                upload.append("image" + String(i+1),image_data[i]);
+            }
+            $.ajax({
+                url: '/company/create_company_product/', 
+                type: 'POST',  
+                contentType: false,  
+                processData: false,   
+                data: upload,
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert ('新增成功')
+                        window.location.reload();
+                    }else if(data.data == 'error'){
+                        alert ('新增失敗')
+                    }else if(data.data == 'exists'){
+                        alert ('新增失敗 : 型號與品名重複')
+                    }else if(data.data == 'restart'){
+                        alert ('重新啟用商品')
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    });
+
+
+
+//新增商品
+</script>
+
+{% endblock %}
