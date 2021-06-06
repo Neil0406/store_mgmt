@@ -87,7 +87,7 @@ class UserControl():
 					ret = UserControlModel().create_user(data['name'], data['email'], data['auth'], data['password'], data['password_check'])
 					ret = json.dumps({'data':ret})				 
 					return HttpResponse (ret)
-				return render(request,'user_contral/create_user.html', locals())
+				return render(request,'user_control/create_user.html', locals())
 			else:
 				return redirect ('/')
 		else:
@@ -103,7 +103,7 @@ class UserControl():
 					ret = UserControlModel().get_user_by_id(user_id)
 					ret = json.dumps({'data':ret})
 					return HttpResponse(ret)
-				return render(request,'user_contral/user_control.html', locals())
+				return render(request,'user_control/user_control.html', locals())
 			else:
 				return redirect ('/')
 		else:
@@ -363,5 +363,15 @@ class Company():
 				ret = CompanyModel().delete_company_product(company_product_id)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+		else:
+			return redirect ('/')
+
+# 進貨
+class Purchase():
+	def create_purchase_product(self, request):
+		user, check = session_check(request)
+		if check == True :
+			company_list = CompanyInfo.objects.all().filter(active=True)
+			return render(request,'product/create_purchase_product.html', locals())
 		else:
 			return redirect ('/')

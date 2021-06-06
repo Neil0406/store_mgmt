@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from store_mgmt.models import CompanyInfo, CompanyProductInfo
-from store_mgmt.utils.password_encode import PasswordEncode
 from django.forms.models import model_to_dict
 import os
 
@@ -250,6 +249,7 @@ class CompanyModel():
         company_product = CompanyProductInfo.objects.get(id=company_product_id)
         try:
             company_product.active = False
+            # print(company_product.company)
             company_product.save()
             ret = 'success'
         except:

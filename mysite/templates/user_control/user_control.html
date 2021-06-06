@@ -153,9 +153,9 @@
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>權限</h6>
                             <select id="auth" class="form-control">
-                                <option value="low">低</option>
+                                <!-- <option value="low">低</option>
                                 <option value="medium">中</option>
-                                <option value="hight">高</option>
+                                <option value="hight">高</option> -->
                             </select>
                         </div>
                     </div>
@@ -221,6 +221,15 @@
                     user = data.data
                     $('#name').val(user.name);
                     $('#email').val(user.email);
+                    if(user.auth == 'low'){
+                        user.auth = '低'
+                    }else if(user.auth == 'medium'){
+                        user.auth = '中'
+                    }
+                    else if(user.auth == 'hight'){
+                        user.auth = '高'
+                    }
+                    document.getElementById('auth').innerHTML = '<option hidden value="'+user.auth+'">'+user.auth+'</option><option value="low">低</option><option value="medium">中</option><option value="hight">高</option>'
                     document.getElementById('user_list').style.display = 'none'
                     document.getElementById('chevron').className = 'fa fa-chevron-down'
                     document.getElementById('update').style.display = 'block'

@@ -33,4 +33,7 @@ urlpatterns = [
     path('company/update_company_product/', views.Company().update_company_product), 
     path('company/delete_company_product/', views.Company().delete_company_product), 
 
+    #Purchase
+    path('product/create_purchase_product/', views.Purchase().create_purchase_product), 
+
 ]

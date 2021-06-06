@@ -7,9 +7,13 @@
 {% block header%}
     <!-- Datatables -->
     <link href="{% static '/dashboard_plugin/datatable/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'dashboard_plugin/datatable/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static '/dashboard_plugin/datatable/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
     <!-- iCheck -->
     <link href="{% static '/dashboard_plugin/datatable/iCheck/skins/flat/green.css' %}" rel="stylesheet">
+
+        <!-- fancybox -->
+        <link href="{% static '/plugin/fancybox/jquery.fancybox.min.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 
@@ -51,8 +55,15 @@
         width: auto;
         height: auto;
         max-width: 50%;
-        max-height: 50%;	
+        max-height: 50%;
     }
+    .default_image{
+        object-fit: cover;
+        width:50px;
+        height:50px;
+    }
+
+
 </style>
 {% endblock %}
 
@@ -86,6 +97,7 @@
                                             <th>品牌</th>
                                             <th>型號</th>
                                             <th>品名</th>
+                                            <th>圖片</th>
                                             <th>進價</th>
                                             <th>售價</th>
                                             <th>更新時間</th>
@@ -100,6 +112,17 @@
                                                     <td>{{i.brand}}</td>
                                                     <td>{{i.model}}</td>
                                                     <td>{{i.name}}</td>
+                                                    <td>                                                            
+                                                        {% if i.image1 %}
+                                                        <a data-fancybox="gallery" href="/{{i.image1}}"><img src="/{{i.image1}}" alt="" class="default_image"></a>&nbsp;
+                                                        {% endif %}
+                                                        {% if i.image2%}
+                                                        <a data-fancybox="gallery" href="/{{i.image2}}"><img src="/{{i.image2}}" alt="" class="default_image"></a>&nbsp;
+                                                        {% endif %}
+                                                        {% if i.image3%}
+                                                        <a data-fancybox="gallery" href="/{{i.image3}}"><img src="/{{i.image3}}" alt="" class="default_image"></a>
+                                                        {% endif %}
+                                                    </td>
                                                     <td>{{i.purchase_price |floatformat:-1 }}</td>
                                                     <td>{{i.selling_price |floatformat:-1 }}</td>
                                                     <td>{{i.updated |date:"Y-m-d" }}</td>
@@ -242,6 +265,10 @@
     <script src="{% static '/dashboard_plugin/datatable/jszip/dist/jszip.min.js' %}"></script>
     <script src="{% static '/dashboard_plugin/datatable/pdfmake/build/pdfmake.min.js' %}"></script>
     <script src="{% static '/dashboard_plugin/datatable/pdfmake/build/vfs_fonts.js' %}"></script>
+
+    <!-- fancybox -->
+    <script src="{% static '/plugin/fancybox/jquery.fancybox.min.js' %}"></script>
+
 
     <script>
         var company_product_id_ = ''
