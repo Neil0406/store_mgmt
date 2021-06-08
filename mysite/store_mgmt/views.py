@@ -303,16 +303,49 @@ class Company():
 		else:
 			return redirect ('/')
 
+	def get_company_product(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				company_id = request.POST.get('company_id')
+				types = request.POST.get('types')
+				brand = request.POST.get('brand')
+				model = request.POST.get('model')
+				name = request.POST.get('name')
+				ret = CompanyModel().get_company_product(company_id, types, brand, model, name)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')
+
 
 	def company_product_list(self, request):
 		user, check = session_check(request)
 		if check == True :
+			company_list = CompanyInfo.objects.all().filter(active=True)
+			company_product_types_list = []
 			company_product_list = []
 			for i in CompanyProductInfo.objects.all():
 				if i.company.active == True:
 					company_product_list.append(i)
-
+				if i.company.active == True and i.active == True and i.types not in company_product_types_list:
+					company_product_types_list.append(i.types)
 			return render(request,'company/company_product_list.html', locals())
+		else:
+			return redirect ('/')
+
+	def company_product_search(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				company_id = request.POST.get('company_id')
+				types = request.POST.get('types')
+				keyword = request.POST.get('keyword')
+				ret = CompanyModel().company_product_search(company_id, types, keyword)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
 		else:
 			return redirect ('/')
 

@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from store_mgmt.models import CompanyInfo, CompanyProductInfo
 from django.forms.models import model_to_dict
 import os
+from django.db.models.functions import Concat
 
 
 class CompanyModel():
@@ -139,6 +140,47 @@ class CompanyModel():
             ret = 'exists'
         return ret
 
+    def company_product_search(self, company_id, types, keyword):
+        if company_id != '' and types == '' and keyword == '':
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(active=True)
+        if company_id != '' and types != '' and keyword == '':
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True)
+        if company_id != '' and types == '' and keyword != '':
+            # company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(model__contains=model).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('model', 'name')).filter(search__icontains=keyword).filter(active=True)
+        if company_id != '' and types != '' and keyword != '':
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True)
+        if company_id == '' and types != '' and keyword == '':
+            company_product_list = CompanyProductInfo.objects.filter(types=types).filter(active=True)
+        if company_id == '' and types == '' and keyword != '':
+            # company_product_list = CompanyProductInfo.objects.filter(model__contains=model).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.annotate(search=Concat('model', 'name')).filter(search__icontains=keyword).filter(active=True)
+        if company_id == '' and types != '' and keyword != '':
+            # company_product_list = CompanyProductInfo.objects.filter(types=types).filter(model__contains=model).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('model', 'name')).filter(search__icontains=keyword).filter(active=True)
+
+
+        ret = []
+        for i in company_product_list:
+            dic = model_to_dict(i)
+            dic.update({'company_name':i.company.name})
+            ret.append(dic)
+        for i in ret:
+            i['updated'] = self.datetime_to_str(i['updated'])
+            if i['image1'] == '':
+                i['image1'] = ''
+            else:
+                i['image1'] = str(i['image1'])
+            if i['image2'] == '':
+                i['image2'] = ''
+            else:
+                i['image2'] = str(i['image2'])
+            if i['image3'] == '':
+                i['image3'] = ''
+            else:
+                i['image3'] = str(i['image3'])
+        return ret
+
 
     def get_company_product_types(self, company_id):
         try:
@@ -180,6 +222,27 @@ class CompanyModel():
             for i in company_product_list:
                 if model_to_dict(i)['name'] not in ret:
                     ret.append(model_to_dict(i)['name'])
+        except:
+            ret = 'error'
+        return ret
+    
+    def get_company_product(self, company_id, types, brand, model, name):
+        try:
+            company_product = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(brand=brand).filter(model=model).filter(name=name).filter(active=True)
+            ret = model_to_dict(company_product[0])
+            ret['updated'] = self.datetime_to_str(ret['updated'])
+            if ret['image1'] == '':
+                ret['image1'] = ''
+            else:
+                ret['image1'] = str(ret['image1'])
+            if ret['image2'] == '':
+                ret['image2'] = ''
+            else:
+                ret['image2'] = str(ret['image2'])
+            if ret['image3'] == '':
+                ret['image3'] = ''
+            else:
+                ret['image3'] = str(ret['image3'])
         except:
             ret = 'error'
         return ret
@@ -249,8 +312,8 @@ class CompanyModel():
         company_product = CompanyProductInfo.objects.get(id=company_product_id)
         try:
             company_product.active = False
-            # print(company_product.company)
-            company_product.save()
+            print(company_product)
+            # company_product.save()
             ret = 'success'
         except:
             ret = 'error'
