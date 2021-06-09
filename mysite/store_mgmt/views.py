@@ -326,11 +326,13 @@ class Company():
 			company_list = CompanyInfo.objects.all().filter(active=True)
 			company_product_types_list = []
 			company_product_list = []
-			for i in CompanyProductInfo.objects.all():
-				if i.company.active == True:
+
+			for i in CompanyProductInfo.objects.filter(company__active = True).filter(active=True).values("types").distinct():  #先過濾公司是否取動再搜尋所有 types 並且不重複
+				company_product_types_list.append(i['types'])
+
+			for i in CompanyProductInfo.objects.filter(company__active = True).filter(active=True).order_by('-updated')[:10]:    #先過濾公司是否取動再搜尋 -updated(排續新到舊) 最新的10個
 					company_product_list.append(i)
-				if i.company.active == True and i.active == True and i.types not in company_product_types_list:
-					company_product_types_list.append(i.types)
+
 			return render(request,'company/company_product_list.html', locals())
 		else:
 			return redirect ('/')
@@ -401,10 +403,10 @@ class Company():
 
 # 進貨
 class Purchase():
-	def create_purchase_product(self, request):
+	def create_purchase(self, request):
 		user, check = session_check(request)
 		if check == True :
 			company_list = CompanyInfo.objects.all().filter(active=True)
-			return render(request,'product/create_purchase_product.html', locals())
+			return render(request,'product/create_purchase.html', locals())
 		else:
 			return redirect ('/')

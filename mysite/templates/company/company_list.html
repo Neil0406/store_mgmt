@@ -14,12 +14,12 @@
 
 {% block css %}
 <style>
-    #company_info_delete{
+    #company_delete_btn{
         position: absolute;
-        bottom: 6px;
-        right: 0;
+        bottom: 20px;
+        right: 20px;
     }
-    .company_info_lightbox{
+    .company_delete_lightbox{
         z-index:9999;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -31,10 +31,10 @@
         justify-content: center;
         display: none;
     }
-    .company_info_lightbox.active{
+    .company_delete_lightbox.active{
         display: flex;
     }
-    .company_info_content{
+    .company_delete_content{
         width: 250px;
         height: 150px;
         background-color: #ccc;
@@ -42,6 +42,31 @@
         display:flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        overflow-y:auto;
+    }
+
+
+    .company_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+      
+    }
+    .company_info_lightbox.active{
+        display: flex;
+    }
+    .company_info_content{
+        width: 1200px;
+        height: 90%;
+        background-color: #ccc;
         position: relative;
         overflow-y:auto;
     }
@@ -55,86 +80,24 @@
 {% block body %} 
 <!-- 廠商列表 -->
 <div class="container" role="main">
-    <h4>廠商資訊</h4><a href="/company/create_company"><button class="btn-success">新增廠商</button></a>
-    <div class="row my-1">
-        <div class="col-md-12 col-sm-12 ">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>廠商列表</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up" id="chevron"></i></a></li>
-                      </ul>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content" id="company_list">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="card-box table-responsive">
-                                <p class="text-muted font-13 m-b-30">
-                                    廠商列表
-                                </p>
-                                <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>廠商</th>
-                                            <th>地址</th>
-                                            <th>電話</th>
-                                            <th>Email</th>
-                                            <th>網址</th>
-                                            <th>統編</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for i in company_list%}
-                                        <tr>
-                                            <td><a href="#" onclick="company_info_btn('{{i.id}}')">{{i.name}}</a></td>
-                                            <td><a href="https://www.google.com.tw/maps/place/{{i.region}}{{i.town}}{{i.address}}" target="_blank">{{i.region}}{{i.town}}{{i.address}}</a></td>
-                                            <td>{{i.phone}}</td>
-                                            <td><a href="mailto:{{i.email}}">{{i.email}}</a></td>
-                                            {% if i.url %}
-                                                <td><a href="{{i.url}}" target="_blank"><i class="fas fa-link"></i>&nbsp;網址</a></td>
-                                            {% else %}
-                                                <td></td>
-                                            {% endif %}
-                                            <td>{{i.uniform_numbers}}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- / 廠商列表 -->
-
-<!-- 廠商管理 -->
-<div class="container" role="main" id="company_info" style="display: none;">
-
-    <div class="company_info_lightbox">
-        <div class="company_info_content">
+    <div class="company_delete_lightbox">
+        <div class="company_delete_content">
             <div>
                 <h5>確定要刪除？</h5><br>
                 <div>
-                    <button class="btn btn-success" id='company_info_delete_true'>確認</button>
-                    <button class="btn btn-danger" id="close_company_info_delete_check">取消</button>
+                    <button class="btn btn-success" id='company_delete_true'>確認</button>
+                    <button class="btn btn-danger" id="close_company_delete_check">取消</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row my-1">
-        {% csrf_token %}
-        <div class="col-md-12 col-sm-12 ">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>廠商資料更新</small></h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
+    <div class="company_info_lightbox">
+        <div class="company_info_content">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 style="text-align: center;">廠商資料更新</h4><hr>
                     <div class="row my-3">
                         <div class="col-lg-3 col-md-12 col-12">
                             <h6>廠商＊</h6>
@@ -151,9 +114,6 @@
                             <h6>鄉 / 鎮 / 區</h6>
                             <input class="form-control" type="text" id="town">
                         </div>
-                    </div>
-    
-                    <div class="row my-3">
                         <div class="col-lg-6 col-md-12 col-sm-12">
                             <h6>地址</h6>
                             <input class="form-control" type="text" id="address">
@@ -217,15 +177,64 @@
                     <br>
                     <button class="btn btn-primary" id="company_info_update">更新</button>
                     <button class="btn btn-danger" id="company_info_close" onclick="company_info_close()">關閉</button>
-                    <button class="btn btn-danger" id="company_info_delete">刪除廠商</button>
+                    <button class="btn btn-danger" id="company_delete_btn">刪除廠商</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <h4>廠商資訊</h4><a href="/company/create_company"><button class="btn-success">新增廠商</button></a>
+    <div class="row my-1">
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>廠商列表</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content" id="company_list">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                <p class="text-muted font-13 m-b-30">
+                                    廠商列表
+                                </p>
+                                <table id="datatable-buttons" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>廠商</th>
+                                            <th>地址</th>
+                                            <th>電話</th>
+                                            <th>Email</th>
+                                            <th>網址</th>
+                                            <th>統編</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in company_list%}
+                                        <tr>
+                                            <td><a href="#" onclick="company_info_btn('{{i.id}}')">{{i.name}}</a></td>
+                                            <td><a href="https://www.google.com.tw/maps/place/{{i.region}}{{i.town}}{{i.address}}" target="_blank">{{i.region}}{{i.town}}{{i.address}}</a></td>
+                                            <td>{{i.phone}}</td>
+                                            <td><a href="mailto:{{i.email}}">{{i.email}}</a></td>
+                                            {% if i.url %}
+                                                <td><a href="{{i.url}}" target="_blank"><i class="fas fa-link"></i>&nbsp;網址</a></td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                            <td>{{i.uniform_numbers}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<br>
-<!-- / 廠商管理 -->
+<!-- / 廠商列表 -->
 
 {% endblock %}
 
@@ -274,9 +283,7 @@
                     $('#uniform_numbers').val(data.data.uniform_numbers);
                     $('#url').val(data.data.url);
                     $('#info').val(data.data.info);
-                    document.getElementById('company_list').style.display = 'none'
-                    document.getElementById('chevron').className = 'fa fa-chevron-down'
-                    document.getElementById('company_info').style.display = 'block'
+                    $('.company_info_lightbox').addClass('active')
                 }
             });
         };
@@ -378,7 +385,7 @@
             }
         });
 
-        $('#company_info_delete_true').click(function(){
+        $('#company_delete_true').click(function(){
             $.ajax({
                 url: '/company/delete_company/', 
                 type: 'POST',  
@@ -398,18 +405,16 @@
             });
         });
 
-        $('#company_info_delete').click(function(){
-            $('.company_info_lightbox').addClass('active')
+        $('#company_delete_btn').click(function(){
+            $('.company_delete_lightbox').addClass('active')
         });
 
-        $('#close_company_info_delete_check').click(function(){
-            $('.company_info_lightbox').removeClass('active')
+        $('#close_company_delete_check').click(function(){
+            $('.company_delete_lightbox').removeClass('active')
         });
 
         function company_info_close(){
-            document.getElementById('company_info').style.display = 'none'
-            document.getElementById('chevron').className = 'fa fa-chevron-up'
-            document.getElementById('company_list').style.display = 'block'
+            $('.company_info_lightbox').removeClass('active')
         }
 
 

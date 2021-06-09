@@ -12,7 +12,6 @@
     <link href="{% static 'plugin/font-awesome/css/font-awesome.min.css'%}" rel="stylesheet">
     <link href="{% static 'plugin/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <link href="{% static 'custom_css/login.css' %}" rel="stylesheet">
-   
 </head>
 <body>
 
@@ -22,21 +21,19 @@
                 <br>
                 <h5>登入</h5>
                 <br>
-                <form action="/" method="POST">
+                <form action="" method="POST">
                     {% csrf_token %}
                     <div class="card">
                         <div class="card-body form-group">
                             <h6>帳號</h6>
-                            <input type="text" class="form-control my-1" name='email'>
+                            <input type="text" class="form-control my-1" name='email' placeholder="email@example.com" required>
                             <h6>密碼</h6>
-                            <input type="password" class="form-control my-1" name='password'>
+                            <input type="password" class="form-control my-1" name='password' required>
                             <br>
                             <button class="btn btn-primary">送出</button>
                             <button type='reset' class="btn btn-danger">清除</button>
                             <br><br>
-                            {% if info  != '' %}
-                                <small><i class="fas fa-exclamation-circle" style="color: brown;"></i>{{info}}</small>
-                            {% endif %}
+                            <a href="#">忘記密碼</a>
                         </div>
                     </div>
                 </form>

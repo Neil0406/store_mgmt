@@ -147,17 +147,17 @@ class CompanyModel():
             company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True)
         if company_id != '' and types == '' and keyword != '':
             # company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(model__contains=model).filter(active=True)
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('model', 'name')).filter(search__icontains=keyword).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(active=True)
         if company_id != '' and types != '' and keyword != '':
             company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True)
         if company_id == '' and types != '' and keyword == '':
             company_product_list = CompanyProductInfo.objects.filter(types=types).filter(active=True)
         if company_id == '' and types == '' and keyword != '':
             # company_product_list = CompanyProductInfo.objects.filter(model__contains=model).filter(active=True)
-            company_product_list = CompanyProductInfo.objects.annotate(search=Concat('model', 'name')).filter(search__icontains=keyword).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(active=True)
         if company_id == '' and types != '' and keyword != '':
             # company_product_list = CompanyProductInfo.objects.filter(types=types).filter(model__contains=model).filter(active=True)
-            company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('model', 'name')).filter(search__icontains=keyword).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(active=True)
 
 
         ret = []
@@ -313,7 +313,7 @@ class CompanyModel():
         try:
             company_product.active = False
             print(company_product)
-            # company_product.save()
+            company_product.save()
             ret = 'success'
         except:
             ret = 'error'

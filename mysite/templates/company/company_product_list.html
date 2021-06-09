@@ -25,12 +25,36 @@
         right: 10px;
     }
 
-    #update_company_product_info_delete{
-        position: absolute;
-        bottom: 6px;
-        right: 0;
+    .company_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+      
     }
-    .update_company_product_info_lightbox{
+    .company_info_lightbox.active{
+        display: flex;
+    }
+    .company_info_content{
+        width: 1200px;
+        height: 90%;
+        background-color: #ccc;
+        position: relative;
+        overflow-y:auto;
+    }
+
+    #company_product_delete_btn{
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+    }
+    .company_product_delete_lightbox{
         z-index:9999;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -42,10 +66,10 @@
         justify-content: center;
         display: none;
     }
-    .update_company_product_info_lightbox.active{
+    .company_product_delete_lightbox.active{
         display: flex;
     }
-    .update_company_product_info_content{
+    .company_product_delete_content{
         width: 250px;
         height: 150px;
         background-color: #ccc;
@@ -56,6 +80,31 @@
         position: relative;
         overflow-y:auto;
     }
+
+    .company_product_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;	  
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+    }
+    .company_product_info_lightbox.active{
+        display: flex;
+    }
+    .company_product_info_content{
+        width: 1200px;
+        height: 90%;
+        background-color: #ccc;
+        position: relative;
+        overflow-y:auto;
+    }
+
+
   
     .show_image{
         width: auto;
@@ -69,7 +118,6 @@
         height:50px;
     }
 
-
 </style>
 {% endblock %}
 
@@ -77,6 +125,189 @@
 {% block body %}
 <!-- 商品列表 -->
 <div class="container" role="main">
+
+    <div class="company_info_lightbox">
+        <div class="company_info_content">
+            <div class="card">
+                <div class="card-body">
+                    <h4 style="text-align: center;">廠商資訊</h4><hr>
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-12 col-12">
+                            <h6>廠商</h6>
+                            <input class="form-control" type="text" id="company_name_" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h6>縣 / 市</h6>
+                            <input class="form-control" type="text" id="region" disabled>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h6>鄉 / 鎮 / 區</h6>
+                            <input class="form-control" type="text" id="town" disabled>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <h6>地址</h6>
+                            <input class="form-control" type="text" id="address" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-8 col-8">
+                            <h6>公司電話</h6>
+                            <input class="form-control" type="text" id="phone" disabled>
+                        </div>
+                        <div class="col-lg-1 col-md-4 col-4">
+                            <h6>分機</h6>
+                            <input class="form-control" type="text" id="ext" disabled>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-12">
+                            <h6>公司聯絡人</h6>
+                            <input class="form-control" type="text" id="contact_person" disabled>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-12">
+                            <h6>Email&nbsp;&nbsp;&nbsp;<small id="email_check" style="color: brown;"></small></h6>
+                            <input class="form-control" type="email" id="email" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-8 col-8">
+                            <h6>手機</h6>
+                            <input class="form-control" type="text" id="mobile_phone" disabled>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-4">
+                            <h6>聯絡人</h6>
+                            <input class="form-control" type="text" id="mobile_contact_person" disabled>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-12">
+                            <h6>Email&nbsp;&nbsp;&nbsp;<small id="mobile_email_check" style="color: brown;"></small></h6>
+                            <input class="form-control" type="email" id="mobile_email" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>公司網址</h6>
+                            <input class="form-control" type="text" id="url" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>統一編號</h6>
+                            <input class="form-control" type="text" id="uniform_numbers" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>其他資訊</h6>
+                            <textarea style="width:100%;height:200px;" id='info_' disabled></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger" id="company_info_close" onclick="company_info_close()">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="company_product_delete_lightbox">
+        <div class="company_product_delete_content">
+            <div>
+                <h5>確定要刪除？</h5><br>
+                <div>
+                    <button class="btn btn-success" id='company_product_delete_true'>確認</button>
+                    <button class="btn btn-danger" id="close_company_product_delete_check">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="company_product_info_lightbox">
+        <div class="company_product_info_content">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-body">
+                    <h4 style="text-align: center;">商品資料更新</h4><hr>
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>廠商</h6>
+                            <input type="text" id="company_name" class="form-control" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>類別</h6>
+                            <input type="text" id="types" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>品牌</h6>
+                            <input type="text" id="brand" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>型號 / 編號</h6>
+                            <input type="text" id="model" class="form-control">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>品名＊</h6>
+                            <input type="text" id="name" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>進價(單價)＊</h6>
+                            <input id="purchase_price" type="number" class="form-control" type="number" step=any>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售價(單價)＊</h6>
+                            <input id="selling_price" type="number" class="form-control" type="number" step=any>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片1</h6>
+                            <img src="" alt="" id="show_image1" class="show_image"><br>
+                            <button type="btn" class="btn-danger" id="delete_image1" onclick="delete_image(1)" style="display: none;">刪除照片</button>
+                            <input type="file" id="image1" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片2</h6>
+                            <img src="" alt="" id="show_image2" class="show_image"><br>
+                            <button type="btn" class="btn-danger" id="delete_image2" onclick="delete_image(2)" style="display: none;">刪除照片</button>
+                            <input type="file" id="image2" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片3</h6>
+                            <img src="" alt="" id="show_image3" class="show_image"><br>
+                            <button type="btn" class="btn-danger" id="delete_image3"  onclick="delete_image(3)"  style="display: none;">刪除照片</button>
+                            <input type="file" id="image3" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>其他資訊</h6>
+                            <textarea id="info" style="width:100%;height:200px;"></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" id="update_company_product">更新</button>
+                    <button class="btn btn-danger" id="company_product_info_close">關閉</button>
+                    <button class="btn btn-danger" id="company_product_delete_btn">刪除商品</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <h4>商品資訊</h4><a href="/company/create_company_product"><button class="btn-success">新增商品</button></a>
     <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
@@ -109,7 +340,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-6">
-                                    <h6>型號</h6>
+                                    <h6>關鍵字</h6>
                                     <input id="search_keyword" type="text" class="form-control">
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-6" id='search'>
@@ -133,9 +364,6 @@
             <div class="x_panel">
                 <div class="x_title">
                     <h2>商品列表</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up" id="chevron"></i></a></li>
-                      </ul>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content" id="company_product_list">
@@ -151,23 +379,23 @@
                                             <th>廠商</th>
                                             <th>種類</th>
                                             <th>品牌</th>
-                                            <th>型號</th>
-                                            <th>品名</th>
-                                            <th>圖片</th>
+                                            <th style="width:200px">型號</th>
+                                            <th style="width:200px">品名</th>
+                                            <th style="width:200px">圖片</th>
                                             <th>進價</th>
                                             <th>售價</th>
-                                            <th>更新時間</th>
+                                            <th style="width:80px">更新時間</th>
                                         </tr>
                                     </thead>
                                     <tbody id = 'show_search'>
-                                        <!-- {% for i in company_product_list%}
+                                        {% for i in company_product_list%}
                                             {% if i.active == True %}
                                                 <tr>
-                                                    <td><a href="#" onclick="get_company_product_id('{{i.id}}','{{i.company.id}}')">{{i.company.name}}</a></td>
+                                                    <td><a href="#" onclick="get_company_info('{{i.company.id}}')">{{i.company.name}}</a></td>
                                                     <td>{{i.types}}</td>
                                                     <td>{{i.brand}}</td>
                                                     <td>{{i.model}}</td>
-                                                    <td>{{i.name}}</td>
+                                                    <td><span class="badge bg-danger" style="color: #ccc;">New</span>&nbsp;<a href="#" onclick="get_company_product_id('{{i.id}}','{{i.company.id}}')">{{i.name}}</a></td>
                                                     <td>                                                            
                                                         {% if i.image1 %}
                                                         <a data-fancybox="gallery" href="/{{i.image1}}"><img src="/{{i.image1}}" alt="" class="default_image"></a>&nbsp;
@@ -184,7 +412,7 @@
                                                     <td>{{i.updated |date:"Y-m-d" }}</td>
                                                 </tr>
                                             {% endif %}
-                                        {% endfor %} -->
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
@@ -195,116 +423,9 @@
         </div>
     </div>
 </div>
+<br>
 <!-- / 商品列表 -->
 
-<!-- / 商品管理 -->
-<div class="container" role="main" id="company_product_info" style="display: none;">
-
-    <div class="update_company_product_info_lightbox">
-        <div class="update_company_product_info_content">
-            <div>
-                <h5>確定要刪除？</h5><br>
-                <div>
-                    <button class="btn btn-success" id='update_company_product_info_delete_true'>確認</button>
-                    <button class="btn btn-danger" id="close_update_company_product_info_delete_check">取消</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row my-1">
-        {% csrf_token %}
-        <div class="col-md-12 col-sm-12 ">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>商品資料更新</small></h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    <!-- <div class="row">
-
-                        <div class="col-lg-6 col-md-12 col-12"> -->
-                            <div class="row my-2">
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>廠商</h6>
-                                    <input type="text" id="company_name" class="form-control" disabled>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>類別</h6>
-                                    <input type="text" id="types" class="form-control">
-                                </div>
-                            </div>
-        
-                            <div class="row my-2">
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>品牌</h6>
-                                    <input type="text" id="brand" class="form-control">
-                                </div>
-                            </div>
-        
-                            <div class="row my-2">
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>型號 / 編號</h6>
-                                    <input type="text" id="model" class="form-control">
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>品名＊</h6>
-                                    <input type="text" id="name" class="form-control">
-                                </div>
-                            </div>
-        
-                            <div class="row my-2">
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>進價(單價)＊</h6>
-                                    <input id="purchase_price" type="number" class="form-control" type="number" step=any>
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>售價(單價)＊</h6>
-                                    <input id="selling_price" type="number" class="form-control" type="number" step=any>
-                                </div>
-                            </div>
-
-                            <div class="row my-2">
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>圖片1</h6>
-                                    <img src="" alt="" id="show_image1" class="show_image"><br>
-                                    <button type="btn" class="btn-danger" id="delete_image1" onclick="delete_image(1)" style="display: none;">刪除照片</button>
-                                    <input type="file" id="image1" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>圖片2</h6>
-                                    <img src="" alt="" id="show_image2" class="show_image"><br>
-                                    <button type="btn" class="btn-danger" id="delete_image2" onclick="delete_image(2)" style="display: none;">刪除照片</button>
-                                    <input type="file" id="image2" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
-                                </div>
-                                <div class="col-lg-3 col-md-6 col-6">
-                                    <h6>圖片3</h6>
-                                    <img src="" alt="" id="show_image3" class="show_image"><br>
-                                    <button type="btn" class="btn-danger" id="delete_image3"  onclick="delete_image(3)"  style="display: none;">刪除照片</button>
-                                    <input type="file" id="image3" accept="image/gif, image/jpeg, image/png" multiple="multiple" class="image_up">
-                                </div>
-                            </div>
-        
-                            <div class="row my-2">
-                                <div class="col-lg-6 col-md-12 col-12">
-                                    <h6>其他資訊</h6>
-                                    <textarea id="info" style="width:100%;height:200px;"></textarea>
-                                </div>
-                            </div>
-                        <!-- </div>  
-                    </div> -->
-                    <br>
-                    <button class="btn btn-primary" id="update_company_product">更新</button>
-                    <button class="btn btn-danger" id="update_company_product_info_close">關閉</button>
-                    <button class="btn btn-danger" id="update_company_product_info_delete">刪除商品</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-<!-- / 商品管理 -->
 {% endblock %}
 
 {% block js %}
@@ -327,6 +448,47 @@
 
 
     <script>
+        window.onload = new_product_list
+        function new_product_list(){
+            $('#datatable-button').DataTable().destroy();
+            $('#datatable-button').DataTable().draw();
+        }
+
+
+        function get_company_info(company_id){
+            $.ajax({
+                url: '/company/get_update_company/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    company_id: company_id
+                },  
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    $('#company_name_').val(data.data.name);
+                    $('#region').val(data.data.region);
+                    $('#town').val(data.data.town);
+                    $('#address').val(data.data.address);
+                    $('#phone').val(data.data.phone);
+                    $('#ext').val(data.data.ext);
+                    $('#contact_person').val(data.data.contact_person);
+                    $('#email').val(data.data.email);
+                    $('#mobile_phone').val(data.data.mobile_phone);
+                    $('#mobile_contact_person').val(data.data.mobile_contact_person);
+                    $('#mobile_email').val(data.data.mobile_email);
+                    $('#uniform_numbers').val(data.data.uniform_numbers);
+                    $('#url').val(data.data.url);
+                    $('#info_').val(data.data.info);
+                    $('.company_info_lightbox').addClass('active')
+                }
+            });
+        }
+
+        function company_info_close(){
+            $('.company_info_lightbox').removeClass('active')
+        }
+
+
 
         $('#search_btn_reset').click(function(){
             $('#search_company').val('');
@@ -335,51 +497,49 @@
         });
 
         $('#search_btn').click(function(){
-            $('#show_search').empty();
             var company_id = $('#search_company').val();
             var types = $('#search_types').val();
             var keyword = $('#search_keyword').val();
             if(company_id.trim().length === 0 && types.trim().length === 0 && keyword.trim().length === 0){
                 alert ('請輸入搜尋')
-            }
-            $.ajax({
-                url: '/company/company_product_search/', 
-                type: 'POST',  
-                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
-                data: {
-                    company_id: company_id,
-                    types:types,
-                    keyword:keyword
-                },  
-                success: function (data) {
-                    var data = JSON.parse(data);
-                    if (data.data.length != 0){
-                        var s = ''
-                        for(i=0; i< data.data.length; i++){
-                            s += '<tr><td><a href="#" onclick="get_company_product_id('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td>'+data.data[i].name+'</td><td>'
-                            if(data.data[i].image1 != ''){
-                                s +='<a data-fancybox="gallery" href="/'+data.data[i].image1+'"><img src="/'+data.data[i].image1+'" alt="" class="default_image"></a>&nbsp;'
+            }else{
+                $.ajax({
+                    url: '/company/company_product_search/', 
+                    type: 'POST',  
+                    headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                    data: {
+                        company_id: company_id,
+                        types:types,
+                        keyword:keyword
+                    },  
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        if (data.data.length != 0){
+                            var s = ''
+                            for(i=0; i< data.data.length; i++){
+                                s += '<tr><td><a href="#" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="#" onclick="get_company_product_id('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
+                                if(data.data[i].image1 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image1+'"><img src="/'+data.data[i].image1+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                if(data.data[i].image2 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image2+'"><img src="/'+data.data[i].image2+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                if(data.data[i].image3 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].updated+'</td></tr>'
                             }
-                            if(data.data[i].image2 != ''){
-                                s +='<a data-fancybox="gallery" href="/'+data.data[i].image2+'"><img src="/'+data.data[i].image2+'" alt="" class="default_image"></a>&nbsp;'
-                            }
-                            if(data.data[i].image3 != ''){
-                                s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
-                            }
-                            s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].updated+'</td></tr>'
+                            $('#datatable-button').DataTable().destroy();
+                            $('#show_search').empty();
+                            $('#datatable-button').find('tbody').append(s);
+                            $('#datatable-button').DataTable().draw();
+                        }else{
+                            alert ('查無資料')
                         }
-                        $('#show_search').html(s);
-                        $('#datatable-button').DataTable().ajax.reload
-                        
-                    }else{
-                        alert ('查無資料')
                     }
-                }
-            });
-
+                });
+            }
         });
-
-
 
 
         var company_product_id_ = ''
@@ -425,9 +585,7 @@
                         document.getElementById('delete_image3').style.display = 'block'
                     }
 
-                    document.getElementById('company_product_list').style.display = 'none'
-                    document.getElementById('chevron').className = 'fa fa-chevron-down'
-                    document.getElementById('company_product_info').style.display = 'block'
+                    $('.company_product_info_lightbox').addClass('active')
 
                 }
             });
@@ -538,7 +696,7 @@
         });
 
 
-        $('#update_company_product_info_delete_true').click(function(){
+        $('#company_product_delete_true').click(function(){
             $.ajax({
                 url: '/company/delete_company_product/', 
                 type: 'POST',  
@@ -558,18 +716,16 @@
             });
         });
 
-        $('#update_company_product_info_delete').click(function(){
-            $('.update_company_product_info_lightbox').addClass('active')
+        $('#company_product_delete_btn').click(function(){
+            $('.company_product_delete_lightbox').addClass('active')
         })
 
-        $('#close_update_company_product_info_delete_check').click(function(){
-            $('.update_company_product_info_lightbox').removeClass('active')
+        $('#close_company_product_delete_check').click(function(){
+            $('.company_product_delete_lightbox').removeClass('active')
         })
 
-        $('#update_company_product_info_close').click(function(){
-            document.getElementById('company_product_info').style.display = 'none'
-            document.getElementById('chevron').className = 'fa fa-chevron-up'
-            document.getElementById('company_product_list').style.display = 'block'
+        $('#company_product_info_close').click(function(){
+            $('.company_product_info_lightbox').removeClass('active')
         });
 
     </script>
