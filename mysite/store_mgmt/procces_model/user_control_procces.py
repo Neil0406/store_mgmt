@@ -23,10 +23,10 @@ class UserControlModel():
     def get_user_by_id(self, user_id):
         user = MgmtUser.objects.get(id=user_id)
         user = model_to_dict(user)
-        ret = {'id':user['id'], 'name':user['name'], 'email':user['email'], 'auth':user['auth']}
+        ret = {'id':user['id'], 'name':user['name'], 'email':user['email'], 'auth':user['auth'], 'active':user['active']}
         return ret
 
-    def create_user(self, name, email, auth, password, password_check):
+    def create_user(self, name, email, auth, password, password_check, active):
         check = self.email_check(email)
         if check == 'success':
             key, ciphered = PasswordEncode().encrypt(password)
@@ -38,6 +38,7 @@ class UserControlModel():
                 private_key = ciphered,
                 session_expire = self.get_datetime(),
                 action = self.get_datetime(),
+                active = active,
                 updated = self.get_datetime(),
                 created = self.get_datetime(),
             )
@@ -47,7 +48,7 @@ class UserControlModel():
             ret = 'exists'
         return ret
 
-    def update_user(self, user_id, name, email, auth, password, password_check):
+    def update_user(self, user_id, name, email, auth, password, password_check, active):
         user = MgmtUser.objects.get(id=user_id)
         '''
         1. email檢查
@@ -62,6 +63,11 @@ class UserControlModel():
             user.name = name
             user.email = email
             user.auth = auth
+            if active == 'true':
+                active = True
+            else:
+                active = False
+            user.active = active
             if password != '':
                 key, ciphered = PasswordEncode().encrypt(password)
                 user.public_key = key

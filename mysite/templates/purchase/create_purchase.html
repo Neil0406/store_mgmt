@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} 
-<title>商品資訊</title>
+{% block title %}
+<title>商品進貨</title>
 {% endblock %}
+
 
 {% block header%}
     <!-- Datatables -->
@@ -49,11 +50,6 @@
         overflow-y:auto;
     }
 
-    #company_product_delete_btn{
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-    }
     .company_product_delete_lightbox{
         z-index:9999;
         position: fixed;
@@ -104,8 +100,6 @@
         overflow-y:auto;
     }
 
-
-  
     .show_image{
         width: auto;
         height: auto;
@@ -117,15 +111,13 @@
         width:50px;
         height:50px;
     }
-
 </style>
-{% endblock %}
+{% endblock%}
 
 
 {% block body %}
-<!-- 商品列表 -->
-<div class="container" role="main">
 
+<div class="container" role="main">
     <div class="company_info_lightbox">
         <div class="company_info_content">
             <div class="card">
@@ -231,33 +223,33 @@
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
-                    <h4 style="text-align: center;">商品資料更新</h4><hr>
+                    <h4 style="text-align: center;">商品進貨</h4><hr>
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>廠商</h6>
                             <input type="text" id="company_name" class="form-control" disabled>
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>類別＊</h6>
-                            <input type="text" id="types" class="form-control">
+                            <h6>類別</h6>
+                            <input type="text" id="types" class="form-control" disabled>
                         </div>
                     </div>
 
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>品牌＊</h6>
-                            <input type="text" id="brand" class="form-control">
+                            <h6>品牌</h6>
+                            <input type="text" id="brand" class="form-control" disabled>
                         </div>
                     </div>
 
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>型號 / 編號＊</h6>
-                            <input type="text" id="model" class="form-control">
+                            <h6>型號 / 編號</h6>
+                            <input type="text" id="model" class="form-control" disabled>
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
-                            <h6>品名＊</h6>
-                            <input type="text" id="name" class="form-control">
+                            <h6>品名</h6>
+                            <input type="text" id="name" class="form-control" disabled>
                         </div>
                     </div>
 
@@ -269,6 +261,20 @@
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)＊</h6>
                             <input id="selling_price" type="number" class="form-control" type="number" step=any>
+                        </div>
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>進貨數量＊</h6>
+                            <input class="form-control" type="number" step=any id="amount">
+                        </div>
+                    </div>
+                    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>進貨日期＊</h6>
+                            <input class="form-control" type="date" id="purchase_date">
                         </div>
                     </div>
 
@@ -296,25 +302,29 @@
                     <div class="row my-2">
                         <div class="col-lg-6 col-md-12 col-12">
                             <h6>簡介</h6>
-                            <textarea id="info" style="width:100%;height:200px;"></textarea>
+                            <textarea id="info" style="width:100%;height:200px;" disabled></textarea>
+                        </div>
+
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>備註</h6>
+                            <textarea id="remark" style="width:100%;height:200px;"></textarea>
                         </div>
                     </div>
                     <br>
-                    <button class="btn btn-primary" id="update_company_product">更新</button>
+                    <button class="btn btn-primary" id="sub">確認進貨</button>
                     <button class="btn btn-danger" onclick="company_product_info_close()">關閉</button>
-                    <button class="btn btn-danger" id="company_product_delete_btn">刪除商品</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <h4>商品資訊</h4>
-        <a href="/company/create_company_product"><button class="btn-primary">新增商品</button></a>
+    <h4>商品進貨</h4>
+        <a href="/purchase/purchase_list"><button class="btn-danger">庫存資訊</button></a>
     <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>商品查詢</small></h2>
+                    <h2>商品搜尋</small></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -387,33 +397,7 @@
                                             <th style="width:80px">更新時間</th>
                                         </tr>
                                     </thead>
-                                    <tbody id = 'show_search'>
-                                        {% for i in company_product_list%}
-                                            {% if i.active == True %}
-                                                <tr>
-                                                    <td><a href="#" onclick="get_company_info('{{i.company.id}}')">{{i.company.name}}</a></td>
-                                                    <td>{{i.types}}</td>
-                                                    <td>{{i.brand}}</td>
-                                                    <td>{{i.model}}</td>
-                                                    <td><span class="badge bg-danger" style="color: #ccc;">New</span>&nbsp;<a href="#" onclick="get_company_product_id('{{i.id}}','{{i.company.id}}')">{{i.name}}</a></td>
-                                                    <td>                                                            
-                                                        {% if i.image1 %}
-                                                        <a data-fancybox="gallery" href="/{{i.image1}}"><img src="/{{i.image1}}" alt="" class="default_image"></a>&nbsp;
-                                                        {% endif %}
-                                                        {% if i.image2%}
-                                                        <a data-fancybox="gallery" href="/{{i.image2}}"><img src="/{{i.image2}}" alt="" class="default_image"></a>&nbsp;
-                                                        {% endif %}
-                                                        {% if i.image3%}
-                                                        <a data-fancybox="gallery" href="/{{i.image3}}"><img src="/{{i.image3}}" alt="" class="default_image"></a>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>{{i.purchase_price |floatformat:-1 }}</td>
-                                                    <td>{{i.selling_price |floatformat:-1 }}</td>
-                                                    <td>{{i.updated |date:"Y-m-d" }}</td>
-                                                </tr>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </tbody>
+                                    <tbody id = 'show_search'></tbody>
                                 </table>
                             </div>
                         </div>
@@ -428,7 +412,8 @@
 
 {% endblock %}
 
-{% block js %}
+
+{% block js%}
     <!-- iCheck -->
     <script src="{% static '/dashboard_plugin/datatable/iCheck/icheck.min.js' %}"></script>
     <!-- Datatables -->
@@ -446,8 +431,21 @@
     <!-- fancybox -->
     <script src="{% static '/plugin/fancybox/jquery.fancybox.min.js' %}"></script>
 
-
     <script>
+        
+        window.onload=today;
+        function today() {
+            var NowDate = new Date();
+            var y = NowDate.getFullYear();
+            var m = NowDate.getMonth() + 1;
+            var d = NowDate.getDate();
+            m = ("0" + m).slice(-2);
+            d = ("0" + d).slice(-2);
+            var purchase_date = y + '-'+ m + '-' + d;
+            return purchase_date
+        };
+
+        
         window.onload = new_product_list
         function new_product_list(){
             $('#datatable-button').DataTable().destroy();
@@ -569,8 +567,9 @@
                     $('#name').val(data.name);
                     $('#purchase_price').val(data.purchase_price);
                     $('#selling_price').val(data.selling_price);
+                    $('#amount').val(1);
+                    $('#purchase_date').val(today());
                     $('#info').val(data.info);
-
                     if(data.image1 != ''){
                         $('#show_image1').attr('src', '/'+data.image1)
                         document.getElementById('delete_image1').style.display = 'block'
@@ -628,72 +627,7 @@
             }
         })
 
-        function get_data(){
-            var types = $('#types').val();
-            var brand = $('#brand').val();
-            var model = $('#model').val();
-            var name = $('#name').val();
-            var info = $('#info').val();
-            var purchase_price = $('#purchase_price').val();
-            var selling_price = $('#selling_price').val();
-            return {'company_id':company_id_,'company_product_id':company_product_id_,'types':types, 'brand':brand, 'model':model, 'name':name, 'info':info, 'purchase_price':purchase_price, 'selling_price':selling_price}
-        }
-    
-    
-        $('#update_company_product').click(function(){
-            var data = get_data()
-            if(!data['types'] || data['types'].trim().length === 0){
-                alert ('請輸入類別')
-            }else if(!data['brand'] || data['brand'].trim().length === 0){
-                alert ('請輸入品牌')
-            }else if(!data['model'] || data['model'].trim().length === 0){
-                alert ('請輸入型號 / 編號')
-            }else if(!data['name'] || data['name'].trim().length === 0){
-                alert ('請輸入品名')
-            }else if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
-                alert ('請輸入進價(單價)')
-            }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
-                alert ('請輸入售價(單價)')
-            }
-            else{
-                var url = window.location.href
-                var image_data = get_image();
-                var upload = new FormData();                              // upload(因為image是file格式所以要跟json分開放 需用form的方式) 不能使用-> data:{data:JSON.stringify(data), image:image}
-                upload.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val()); 
-                upload.append("data",JSON.stringify(data));
-                for(i=0; i<image_data.length; i++){
-                    if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src + '#' != url){
-                        //不更新
-                        upload.append("image" + String(i+1), 'no_update');
-                    }else if(image_data[i] != ''){
-                        //更新
-                        upload.append("image" + String(i+1),image_data[i]);
-                    }else if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src + '#' == url){
-                        //刪除 / 不新增
-                        upload.append("image"+ String(i+1), '');
-                    }
-                }
-                $.ajax({
-                    url: '/company/update_company_product/', 
-                    type: 'POST',  
-                    contentType: false,  
-                    processData: false,   
-                    data: upload,
-                    success: function (data) {
-                        var data = JSON.parse(data);
-                        if(data.data == 'success'){
-                            alert ('更新成功')
-                            //window.location.reload();
-                            company_product_info_close();
-                        }else if(data.data == 'error'){
-                            alert ('更新失敗')
-                        }else if(data.data == 'exists'){
-                            alert ('更新失敗 : 型號與品名重複')
-                        }
-                    }
-                });
-            }
-        });
+
 
 
         $('#company_product_delete_true').click(function(){
@@ -716,9 +650,68 @@
             });
         });
 
-        $('#company_product_delete_btn').click(function(){
-            $('.company_product_delete_lightbox').addClass('active')
-        })
+
+        function get_data(){
+            var purchase_price = $('#purchase_price').val();
+            var selling_price = $('#selling_price').val();
+            var amount = $('#amount').val();
+            var purchase_date = $('#purchase_date').val();
+            var remark = $('#remark').val()
+            return {'company_id':company_id_,'company_product_id':company_product_id_, 'purchase_price':purchase_price, 'selling_price':selling_price, 'amount':amount, 'purchase_date':purchase_date, 'remark':remark}
+        }
+
+        
+        $('#sub').click(function(){
+            var data = get_data()
+            if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
+                alert ('請輸入進價(單價)')
+            }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
+                alert ('請輸入售價(單價)')
+            }else if(!data['amount'] || data['amount'].trim().length === 0){
+                alert ('請輸入數量')
+            }else if(!data['purchase_date'] || data['purchase_date'].trim().length === 0){
+                alert ('請輸入進貨日期')
+            }
+            else{
+                var url = window.location.href
+                var image_data = get_image();
+                var upload = new FormData();                              // upload(因為image是file格式所以要跟json分開放 需用form的方式) 不能使用-> data:{data:JSON.stringify(data), image:image}
+                upload.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val()); 
+                upload.append("data",JSON.stringify(data));
+                for(i=0; i<image_data.length; i++){
+                    if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src + '#' != url){
+                        //不更新
+                        upload.append("image" + String(i+1), 'no_update');
+                    }else if(image_data[i] != ''){
+                        //更新
+                        upload.append("image" + String(i+1),image_data[i]);
+                    }else if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src + '#' == url){
+                        //刪除 / 不新增
+                        upload.append("image"+ String(i+1), '');
+                    }
+                }
+                $.ajax({
+                    url: '/product/create_purchase/', 
+                    type: 'POST',  
+                    contentType: false,  
+                    processData: false,   
+                    data: upload,
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        if(data.length != 0){
+                            if(data.data == 'success'){
+                                alert ('新增成功');
+                                company_product_info_close();
+                            }
+                            if(data.data == 'error'){
+                                alert ('新增失敗');
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
 
         $('#close_company_product_delete_check').click(function(){
             $('.company_product_delete_lightbox').removeClass('active')
@@ -728,6 +721,7 @@
         function company_product_info_close(){
             $('.company_product_info_lightbox').removeClass('active')
         }
+
 
     </script>
 

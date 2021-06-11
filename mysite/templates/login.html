@@ -28,12 +28,16 @@
                             <h6>帳號</h6>
                             <input type="text" class="form-control my-1" name='email' placeholder="email@example.com" required>
                             <h6>密碼</h6>
-                            <input type="password" class="form-control my-1" name='password' required>
+                            <input type="password" class="form-control my-1" name='password' minlength="6" required>
                             <br>
                             <button class="btn btn-primary">送出</button>
                             <button type='reset' class="btn btn-danger">清除</button>
                             <br><br>
-                            <a href="#">忘記密碼</a>
+                            <a href="#" id="forgot_password">忘記密碼</a>
+                            <a href="/sign_up" id="sign_up">申請帳號</a>
+                            {% if info %}
+                                <small><i class="fas fa-exclamation-circle" style="color: brown;"></i>&nbsp;{{info}}</small>
+                            {% endif %}
                         </div>
                     </div>
                 </form>

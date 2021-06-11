@@ -1,81 +1,90 @@
-{% extends 'base.html'%}
-
-{% block title %}
-<title>新增使用</title>
-{% endblock %}
-
-{% block css %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>註冊</title>
+    <link rel="shortcut icon" href="#" />
+    <link rel="stylesheet" href="{% static 'plugin/bootstrap-5.0.0/css/bootstrap.min.css' %}">
+    <!-- Font Awesome -->
+    <link href="{% static 'plugin/font-awesome/css/font-awesome.min.css'%}" rel="stylesheet">
+    <link href="{% static 'plugin/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
     <style>
-        span{
-            color: #fff;
+        *{
+            font-family:"Arial","蘋方體","微軟正黑體",sans-serif
+          }
+        body {
+            background-color:rgb(241, 241, 241);
         }
-        p{
-            color: black;
+        .lightbox{
+            position: fixed;
+            left: 0;          /* 靠左上角定位 */
+            top: 0;	  
+            width: 100%;
+            height: 100vh;    /* view-width. height  */
+            align-items: center;
+            justify-content: center;
+            background-color: rgb(191, 186, 186);
+            display: flex;
         }
+        .content{
+            width: 500px;
+            height: 550px;
+            position: relative;
+            border-radius: 10px;
+            background-color: rgb(230, 230, 230);
+            border:1px #373737 solid;
+        }
+        
+        h5{
+            text-align: center;
+        }
+
+        #return{
+            position: absolute;
+            top: 60px;    
+        }
+
     </style>
-{% endblock %}
-
-{% block body %}
-<div class="container">
-    <h4>新增使用者</h4><a href="/user_control/"><button class="btn-success">使用者管理</button></a>
-    <div class="card">
-        <div class="card-body">
-            {% csrf_token %}
-            <div class="row my-2">
-                <div class="col-lg-3 col-md-6 col-6">
-                    <h6>名稱</h6>
-                    <input type="text" class="form-control" id="name">
-                </div> 
-                <div class="col-lg-3 col-md-6 col-6">
-                    <h6>Email&nbsp;&nbsp;&nbsp;<small id="email_check"></small></h6>
-                    <input type="text" class="form-control" id="email" placeholder="Email@example.com">
+</head>
+<body>
+    <div class="lightbox">
+        <div class="content" >
+            <div class="container">
+                <br>
+                <h5>註冊</h5>
+                <br><br>
+                <a href="/" class="btn btn-primary" id="return">回上一頁</a>
+                {% csrf_token %}
+                <div class="card">
+                    <div class="card-body form-group">
+                        <h6>名稱</h6>
+                        <input type="text" class="form-control my-2" id='name'>
+                        <h6>帳號&nbsp;&nbsp;&nbsp;<small id="email_check"></small></h6>
+                        <input type="text" class="form-control my-2" id='email' placeholder="email@example.com">
+                        <h6>密碼&nbsp;(大於6位數)&nbsp;&nbsp;&nbsp;<small id="password_len"></small></h6>
+                        <input type="password" class="form-control my-2" id='password'>
+                        <h6>密碼確認&nbsp;&nbsp;&nbsp;<small id="password_check_len"></small></h6>
+                        <input type="password" class="form-control my-2" id='password_check'>
+                        <br>
+                        <button class="btn btn-primary" id="sub">送出</button>
+                        <button class="btn btn-danger" id='reset'>清除</button>
+                        <br><br>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-lg-3 col-md-6 col-6">
-                    <h6>權限</h6>
-                    <select id="auth" class="form-control">
-                        <option value="low">低</option>
-                        <option value="medium">中</option>
-                        <option value="hight">高</option>
-                    </select>
-                </div>
-            </div>      
-
-            <div class="row my-3">
-                <div class="col-lg-3 col-md-6 col-6">
-                    <h6>密碼 (大於6位數)&nbsp;&nbsp;&nbsp;<small id="password_len"></small></h6>
-                    <input type="password" class="form-control" id="password" minlength="6">
-                </div>
-                <div class="col-lg-3 col-md-6 col-6">
-                    <h6>密碼確認&nbsp;&nbsp;&nbsp;<small id="password_check_len"></small></h6>
-                    <input type="password" class="form-control" id="password_check" minlength="6">
-                </div>
-            </div>
-
-
-            <div class="row my-3">
-                <div class="col-lg-3 col-md-6 col-6">
-                    <p>權限設置說明</p>
-                    <span class="badge bg-secondary">高 : 新增 / 修改 / 刪除 / 觀看</span>
-                    <span class="badge bg-secondary">中 : 新增 / 觀看</span>
-                    <span class="badge bg-secondary">低 : 觀看</span>
-                </div>
-            </div>
-            <br>
-
-            <button class="btn btn-primary" id="sub">送出</button>
-            <button class="btn btn-danger" id="reset">清除</button>
+        
+            </div>     
         </div>
     </div>
-</div>
-{% endblock %}
+
+    <script src="{% static 'plugin/bootstrap-5.0.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'plugin/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugin/ajax/ajax.js'%}"></script>
 
 
-{% block js %}
-<script>
-
+    <script>
     var email_true = false
     $(document).ready(function(){
         $("body").on("change", "#email", function (){
@@ -126,13 +135,13 @@
         }) 
     });
 
+
     function get_data(){
         var name = $('#name').val();
         var email = $('#email').val();
-        var auth = $('#auth').val();
         var password = $('#password').val();
         var password_check = $('#password_check').val();
-        return {'name':name, 'email':email, 'auth':auth, 'password':password, 'password_check':password_check}
+        return {'name':name, 'email':email, 'password':password, 'password_check':password_check}
     }
 
 
@@ -145,8 +154,6 @@
             alert ('請輸入Email')
         }else if(email_true == false){
             alert ('請填寫正確的E-MAIL格式')
-        }else if(!data['auth'] || data['auth'].trim().length === 0){
-            alert ('請選擇權限')
         }else if(!data['password'] || data['password'].trim().length === 0){
             alert ('請輸入密碼')
         }else if(!data['password_check'] || data['password_check'].trim().length === 0){
@@ -158,7 +165,7 @@
         }
         else{
             $.ajax({
-                url: '/create_user/', 
+                url: '/sign_up/', 
                 type: 'POST',  
                 headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                 data: {
@@ -167,7 +174,7 @@
                 success: function (data) {
                     var data = JSON.parse(data);
                     if(data.data == 'success'){
-                        alert ('新增成功')
+                        alert ('申請成功 : 請等待授權')
                         window.location.reload();
                     }else if(data.data == 'exists'){
                         alert ('Email已存在')
@@ -177,11 +184,23 @@
         }
     });
 
+
+
+
     $('#reset').click(function(){
-        window.location.reload();
+        $('#email_check').empty();
+        $('#password_len').empty();
+        $('#password_check_len').empty();
+        $('#name').val('');
+        $('#email').val('');
+        $('#password').val('');
+        $('#password_check').val('');
     });
 
 
-</script>
 
-{% endblock %}
+    </script>
+
+
+</body>
+</html>

@@ -16,7 +16,7 @@ body {
     display: flex;
 }
 .content{
-    width: 400px;
+    width: 450px;
     height: 400px;
     position: relative;
     border-radius: 10px;
@@ -28,8 +28,14 @@ h5{
     text-align: center;
 }
 
-a{  
+#forgot_password{  
     position: absolute;
-    bottom: 40px;
+    top: 195px;
+    right: 100px;
+}
+
+#sign_up{  
+    position: absolute;
+    top: 195px;
     right: 20px;
 }

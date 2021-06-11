@@ -12,6 +12,7 @@ class MgmtUser(models.Model):
     session_expire = models.DateTimeField(auto_now_add=False)
     image = models.ImageField(upload_to='./static/user_images', storage=ImageStorage())
     action = models.DateTimeField(auto_now_add=False)
+    active = models.BooleanField(blank=True, null=True)
     updated = models.DateTimeField(auto_now_add=False)
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):     
@@ -33,7 +34,7 @@ class CompanyInfo(models.Model):
     mobile_email = models.CharField(blank=True, null=True ,max_length=100)               #手機聯絡人email
     uniform_numbers = models.CharField(blank=True, null=True ,max_length=50)             #公司統編
     url = models.URLField(blank=True, null=True)                                 #公司網址
-    info = models.TextField(blank=True, null=True)                               #另外資訊
+    info = models.TextField(blank=True, null=True)                               #其他資訊
     active = models.BooleanField(blank=True, null=True)                          #廠商是否有效                  
     updated = models.DateTimeField(auto_now_add=False)                                  
     created = models.DateTimeField(auto_now_add=True)
@@ -53,7 +54,7 @@ class CompanyProductInfo(models.Model):
     image1 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
     image2 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
     image3 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
-    info = models.TextField(blank=True, null=True)                   #另外資訊
+    info = models.TextField(blank=True, null=True)                   #簡介
     active = models.BooleanField(blank=True, null=True)               
     updated = models.DateTimeField(auto_now_add=False)                                  
     created = models.DateTimeField(auto_now_add=True)
@@ -75,8 +76,7 @@ class PurchaseInfo(models.Model):
     amount = models.FloatField(blank=True, null=True)
     product_in_stock = models.FloatField(blank=True, null=True)      #庫存數量
     purchase_date = models.DateTimeField(auto_now_add=False)         #進貨日
-    info = models.TextField(blank=True, null=True)                   #另外資訊
-
+    remark = models.TextField(blank=True, null=True)                 #備註
     active = models.BooleanField(blank=True, null=True)               
     updated = models.DateTimeField(auto_now_add=False)                                  
     created = models.DateTimeField(auto_now_add=True)

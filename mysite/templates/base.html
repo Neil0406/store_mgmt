@@ -76,17 +76,18 @@
               <ul class="nav side-menu">
                 <li><a href="/"><i class="fa fa-home"></i> Home </a></li>
 
-                <li><a><i class="fa fa-edit"></i> 商品管理 <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-edit"></i> 庫存管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
-                    <li><a href="/product/create_purchase">進貨</a></li>
+                    <li><a href="/purchase/purchase_list">庫存資訊</a></li>
+                    <li><a href="/purchase/create_purchase">商品進貨</a></li>
                   </ul>
                 </li>
 
                 <li><a><i class="fa fa-edit"></i> 廠商管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/company/company_list">廠商資訊</a></li>
-                    <li><a href="/company/company_product_list">商品資訊</a></li>
                     <!-- <li><a href="/company/create_company">新增廠商</a></li> -->
+                    <li><a href="/company/company_product_list">商品資訊</a></li>
                     <!-- <li><a href="/company/create_company_product">新增商品</a></li> -->
                   </ul>
                 </li>
@@ -200,10 +201,21 @@
                         Film festivals used to be do-or-die moments for movie makers. They were where...
                       </span>
                     </a>
+
+                    <a class="dropdown-item">
+                      <span class="image"><img src="https://fakeimg.pl/50x50/####" alt="Profile Image" /></span>
+                      <span>
+                        <span>John Smith</span>
+                        <span class="time">3 mins ago</span>
+                      </span>
+                      <span class="message">
+                        Film festivals used to be do-or-die moments for movie makers. They were where...
+                      </span>
+                    </a>
                   </li>
                   <li class="nav-item">
                     <div class="text-center">
-                      <a class="dropdown-item">
+                      <a class="dropdown-item" href="/user_control">
                         <strong>See All Alerts</strong>
                         <i class="fa fa-angle-right"></i>
                       </a>

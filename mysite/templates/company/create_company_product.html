@@ -18,7 +18,8 @@
 {% block body %}
 <!-- 新增商品 -->
 <div class="container" role="main">
-    <h4>新增商品</h4><a href="/company/company_product_list"><button class="btn-success">商品資訊</button></a>
+    <h4>新增商品</h4>
+        <a href="/company/company_product_list"><button class="btn-primary">商品資訊</button></a>
     <div class="row my-1">
         {% csrf_token %}
         <div class="col-md-12 col-sm-12 ">
@@ -114,7 +115,7 @@
 
                     <div class="row my-2">
                         <div class="col-lg-6 col-md-12 col-12">
-                            <h6>其他資訊</h6>
+                            <h6>簡介</h6>
                             <textarea id="info" style="width:100%;height:200px;"></textarea>
                         </div>
                     </div>

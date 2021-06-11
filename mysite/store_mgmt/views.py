@@ -10,7 +10,7 @@ import json
 from .procces_model.user_control_procces import UserControlModel
 from .procces_model.user_procces import UserModel
 from .procces_model.company_procces import CompanyModel
-
+from .procces_model.purchase_proccess import PurchaseModel
 
 def session_check(request):
 	if 'email' in request.session:
@@ -21,7 +21,7 @@ def session_check(request):
 			now = datetime.now()
 			user.action = now                 #紀錄動作時間
 			user.save()
-			if session_expire > now:
+			if session_expire > now and user.active == True:
 				return user, True
 			else:
 				return None, False
@@ -44,7 +44,7 @@ def login(request):
 		try:
 			user = MgmtUser.objects.get(email=email)
 			password_check = PasswordEncode().decrypt(user.public_key, user.private_key)
-			if password == password_check:
+			if password == password_check and user.active == True:
 				request.session['email']= email
 				time_ = datetime.now()
 				day = timedelta(days=7)
@@ -52,6 +52,9 @@ def login(request):
 				user.session_expire = session_expire
 				user.save()
 				return redirect ('home/')
+			elif password == password_check and user.active == False:
+				info = '帳號尚未啟用'
+				return render(request,'login.html', locals())
 			else:
 				info = '帳號或密碼錯誤'
 				return render(request,'login.html', locals())
@@ -60,6 +63,22 @@ def login(request):
 			return render(request,'login.html', locals())
 	else:
 		return render(request,'login.html', locals())
+
+def sign_up(request):
+	info =''
+	user, check = session_check(request)
+	if check == True:
+		return redirect ('/')
+	elif request.method == 'POST':
+		data = request.POST.get('data')
+		data = json.loads(data)
+		auth = 'low'
+		active = False
+		ret = UserControlModel().create_user(data['name'], data['email'], auth, data['password'], data['password_check'], active)
+		ret = json.dumps({'data':ret})				 
+		return HttpResponse (ret)
+	else:
+		return render(request,'user/sign_up.html', locals())
 
 def logout(request):
 	if 'email' in request.session and request.method == 'GET':
@@ -76,6 +95,7 @@ def home(request):
 	else:
 		return redirect ('/')
 
+
 class UserControl():
 	def create_user(self, request):
 		user, check = session_check(request)
@@ -84,7 +104,8 @@ class UserControl():
 				if request.method == 'POST':
 					data = request.POST.get('data')
 					data = json.loads(data)
-					ret = UserControlModel().create_user(data['name'], data['email'], data['auth'], data['password'], data['password_check'])
+					active = True
+					ret = UserControlModel().create_user(data['name'], data['email'], data['auth'], data['password'], data['password_check'], active)
 					ret = json.dumps({'data':ret})				 
 					return HttpResponse (ret)
 				return render(request,'user_control/create_user.html', locals())
@@ -116,7 +137,7 @@ class UserControl():
 				if request.method == 'POST':
 					data = request.POST.get('data')
 					data = json.loads(data)
-					ret = UserControlModel().update_user(data['user_id'], data['name'], data['email'], data['auth'], data['password'], data['password_check'])
+					ret = UserControlModel().update_user(data['user_id'], data['name'], data['email'], data['auth'], data['password'], data['password_check'], data['active'])
 					ret = json.dumps({'data':ret})
 					return HttpResponse(ret)
 			else:
@@ -406,7 +427,39 @@ class Purchase():
 	def create_purchase(self, request):
 		user, check = session_check(request)
 		if check == True :
-			company_list = CompanyInfo.objects.all().filter(active=True)
-			return render(request,'product/create_purchase.html', locals())
+			if request.method == 'POST':
+				try:
+					image1 = request.FILES['image1']
+				except:
+					image1 = request.POST.get('image1')
+				try:
+					image2 = request.FILES['image2']
+				except:
+					image2 = request.POST.get('image2')
+				try:
+					image3 = request.FILES['image3']
+				except:
+					image3 = request.POST.get('image3')
+				data = request.POST.get('data')	
+				data = json.loads(data)
+				data['image1'] = image1
+				data['image2'] = image2
+				data['image3'] = image3
+				ret = PurchaseModel().create_purchase(**data)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+			else:
+				company_list = CompanyInfo.objects.all().filter(active=True)
+				company_product_types_list = []
+				for i in CompanyProductInfo.objects.filter(company__active = True).filter(active=True).values("types").distinct():  #先過濾公司是否取動再搜尋所有 types 並且不重複
+					company_product_types_list.append(i['types'])
+				return render(request,'purchase/create_purchase.html', locals())
+		else:
+			return redirect ('/')
+	
+	def purchase_list(self, request):
+		user, check = session_check(request)
+		if check == True :
+			return render(request,'purchase/purchase_list.html', locals())
 		else:
 			return redirect ('/')

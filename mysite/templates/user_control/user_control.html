@@ -16,7 +16,12 @@
 {% block css %}
 
 <style>
-    .lightbox{
+    #user_delete_btn{
+        position: absolute;
+        right: 20px;
+    }
+
+    .user_delete_lightbox{
         z-index:9999;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -28,10 +33,10 @@
         justify-content: center;
         display: none;
     }
-    .lightbox.active{
+    .user_delete_lightbox.active{
         display: flex;
     }
-    .content{
+    .user_delete_content{
         width: 250px;
         height: 150px;
         background-color: #ccc;
@@ -43,13 +48,35 @@
         overflow-y:auto;
     }
 
-    #delete{
-        position: absolute;
-        bottom: 6px;
-        right: 0;
+
+    .user_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+      
+    }
+    .user_info_lightbox.active{
+        display: flex;
+    }
+    .user_info_content{
+        width: 70%;
+        height: 50%;
+        background-color: #ccc;
+        position: relative;
+        overflow-y:auto;
     }
 
-
+    #active{
+        position: absolute;
+        top: 40px;
+    }
 </style>
 {% endblock%}
 
@@ -58,17 +85,74 @@
 <!-- page content -->
 <div class="container" role="main">
 
-    <div class="lightbox">
-        <div class="content">
+    <div class="user_delete_lightbox">
+        <div class="user_delete_content">
             <div>
                 <h5>確定要刪除？</h5><br>
                 <div>
-                    <button class="btn btn-success" id='delete_true'>確認</button>
-                    <button class="btn btn-danger" id="close_delete_check">取消</button>
+                    <button class="btn btn-success" id='user_delete_true'>確認</button>
+                    <button class="btn btn-danger" id="close_user_delete_check">取消</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="user_info_lightbox">
+        <div class="user_info_content">
+            {% csrf_token %}
+            <div class="card" style="height: 100%;">
+                <div class="card-body">
+                    <h4 style="text-align: center;">資料變更</h4><hr>
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>名稱</h6>
+                            <input type="text" class="form-control" id='name'>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>Email&nbsp;&nbsp;&nbsp;<small id="email_check"></small></h6>
+                            <input type="text" class="form-control" id='email'>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>權限</h6>
+                            <select id="auth" class="form-control"></select>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>帳號狀態</h6>
+                            <p id="active">
+                                <input type="radio" name="active" value="true">&nbsp;啟用&nbsp;
+                                <input type="radio" name="active" value="false">&nbsp;未啟用
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>密碼 (大於6位數)&nbsp;&nbsp;&nbsp;<small id="password_len"></small></h6>
+                            <input type="password" class="form-control" id="password" minlength="6" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>密碼確認&nbsp;&nbsp;&nbsp;<small id="password_check_len"></small></h6>
+                            <input type="password" class="form-control" id="password_check" minlength="6" disabled>
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <br>
+                            <button class="btn btn-success" id="change_password">密碼變更</button>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" id="sub">更新</button>
+                    <button class="btn btn-danger" id="user_info_close">關閉</button>
+                    <button class="btn btn-danger" id="user_delete_btn">刪除使用者</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <h4>使用者管理</h4><a href="/create_user/"><button class="btn-success">新增使用者</button></a>
     <div class="row my-1">
@@ -76,9 +160,6 @@
             <div class="x_panel">
                 <div class="x_title">
                     <h2>使用者列表</small></h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li><a class="collapse-link"><i class="fa fa-chevron-up" id="chevron"></i></a></li>
-                      </ul>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content" id="user_list">
@@ -94,6 +175,7 @@
                                             <th>名稱</th>
                                             <th>Email</th>
                                             <th>權限</th>
+                                            <th>帳號狀態</th>
                                             <th>最後上線時間</th>
                                         </tr>
                                     </thead>
@@ -113,6 +195,11 @@
                                                 {% else %}
                                                     <td style="color: green">{{i.auth}}</td>
                                                 {% endif %}
+                                                {% if i.active == True %}
+                                                    <td>啟用</td>
+                                                {% else %}
+                                                    <td style="color: brown;">未啟用</td>
+                                                {% endif %}
                                                 <td>{{i.action | date:"Y-m-d H:i:s" }}</td>
                                             </tr>
                                         {% endfor %}
@@ -126,66 +213,8 @@
         </div>
     </div>
 </div>
-<!-- /page content -->
-
-
-<div class="container" id="update" role="main" style="display: none;">
-    <div class="row my-1">
-        <div class="col-md-12 col-sm-12 ">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>資料變更</small></h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                    {% csrf_token %}
-                    <div class="row my-2">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>名稱</h6>
-                            <input type="text" class="form-control" id='name'>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>Email&nbsp;&nbsp;&nbsp;<small id="email_check" style="color: brown;"></small></h6>
-                            <input type="text" class="form-control" id='email'>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>權限</h6>
-                            <select id="auth" class="form-control">
-                                <!-- <option value="low">低</option>
-                                <option value="medium">中</option>
-                                <option value="hight">高</option> -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>密碼 (大於6位數)&nbsp;&nbsp;&nbsp;<small id="password_len" style="color: brown;"></small></h6>
-                            <input type="password" class="form-control" id="password" minlength="6" disabled>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>密碼確認&nbsp;&nbsp;&nbsp;<small id="password_check_len" style="color: brown;"></small></h6>
-                            <input type="password" class="form-control" id="password_check" minlength="6" disabled>
-                        </div>
-
-                        <div class="col-lg-3 col-md-6 col-12">
-                            <br>
-                            <button class="btn btn-success" id="change_password">密碼變更</button>
-                        </div>
-                    </div>
-
-                    <button class="btn btn-primary" id="sub">更新</button>
-                    <button class="btn btn-danger" id="close">關閉</button>
-                    <button class="btn btn-danger" id="delete">刪除使用者</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <br>
-
+<!-- /page content -->
 {% endblock %}
 
 
@@ -221,26 +250,28 @@
                     user = data.data
                     $('#name').val(user.name);
                     $('#email').val(user.email);
+                    var auth = ''
                     if(user.auth == 'low'){
-                        user.auth = '低'
+                        auth = '低'
                     }else if(user.auth == 'medium'){
-                        user.auth = '中'
+                        auth = '中'
                     }
                     else if(user.auth == 'hight'){
-                        user.auth = '高'
+                        auth = '高'
                     }
-                    document.getElementById('auth').innerHTML = '<option hidden value="'+user.auth+'">'+user.auth+'</option><option value="low">低</option><option value="medium">中</option><option value="hight">高</option>'
-                    document.getElementById('user_list').style.display = 'none'
-                    document.getElementById('chevron').className = 'fa fa-chevron-down'
-                    document.getElementById('update').style.display = 'block'
+                    document.getElementById('auth').innerHTML = '<option hidden value="'+user.auth+'">'+auth+'</option><option value="low">低</option><option value="medium">中</option><option value="hight">高</option>'
+                    if(user.active == true){
+                        $('[name="active"]')[0].checked = true;
+                    }else{
+                        $('[name="active"]')[1].checked = true;
+                    }
+                    $('.user_info_lightbox').addClass('active')
                 }
             });  
         };
 
-        $('#close').click(function(){
-            document.getElementById('update').style.display = 'none'
-            document.getElementById('chevron').className = 'fa fa-chevron-up'
-            document.getElementById('user_list').style.display = 'block'
+        $('#user_info_close').click(function(){
+            $('.user_info_lightbox').removeClass('active')
         });
 
         var email_true = false
@@ -330,7 +361,15 @@
             var auth = $('#auth').val();
             var password = $('#password').val();
             var password_check = $('#password_check').val();
-            return {'user_id':_id, 'name':name, 'email':email, 'auth':auth, 'password':password, 'password_check':password_check}
+
+            var active = ''
+            var radio_ = $('[name="active"]')
+            for(i=0; i< radio_.length; i++){
+                if (radio_[i].checked == true){
+                    active = radio_[i].value
+                }
+            }
+            return {'user_id':_id, 'name':name, 'email':email, 'auth':auth, 'active':active, 'password':password, 'password_check':password_check}
         }
 
         $('#sub').click(function(){
@@ -354,7 +393,6 @@
                 };
                 return p
             }
-            
             if (!data['name'] || data['name'].trim().length === 0){
                 alert ('請輸入名稱')
             }else if(!data['email'] || data['email'].trim().length === 0){
@@ -363,6 +401,8 @@
                 alert ('請填寫正確的E-MAIL格式')
             }else if(!data['auth'] || data['auth'].trim().length === 0){
                 alert ('請選擇權限')
+            }else if (!data['active'] || data['active'].trim().length === 0){
+                alert ('請選擇授權')
             }else if(pwd() != 'pass'){
             }
             else{
@@ -387,15 +427,15 @@
         });
 
 
-        $('#delete').click(function(){
-            $('.lightbox').addClass('active')
+        $('#user_delete_btn').click(function(){
+            $('.user_delete_lightbox').addClass('active')
         });
 
-        $('#close_delete_check').click(function(){
-            $('.lightbox').removeClass('active')
+        $('#close_user_delete_check').click(function(){
+            $('.user_delete_lightbox').removeClass('active')
         });
 
-        $('#delete_true').click(function(){
+        $('#user_delete_true').click(function(){
             $.ajax({
                 url: '/user_control/delete_user/', 
                 type: 'POST', 

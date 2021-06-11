@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from store_mgmt.models import CompanyInfo, CompanyProductInfo
+from store_mgmt.models import CompanyInfo, CompanyProductInfo, PurchaseInfo
 from django.forms.models import model_to_dict
 import os
 from django.db.models.functions import Concat
@@ -97,7 +97,6 @@ class CompanyModel():
             ret = 'success'
         except Exception as e:
             company.delete()
-            print('刪除')
             ret = 'success'
         return ret 
 
@@ -311,10 +310,17 @@ class CompanyModel():
     def delete_company_product(self, company_product_id):
         company_product = CompanyProductInfo.objects.get(id=company_product_id)
         try:
+            PurchaseInfo.objects.get(product_id = company_product_id)
             company_product.active = False
-            print(company_product)
             company_product.save()
             ret = 'success'
         except:
-            ret = 'error'
+            if company_product.image1 != '':
+                self.delete_image(company_product.image1)
+            if company_product.image2 != '':
+                self.delete_image(company_product.image2)
+            if company_product.image3 != '':
+                self.delete_image(company_product.image3)
+            company_product.delete()
+            ret = 'success'
         return ret
