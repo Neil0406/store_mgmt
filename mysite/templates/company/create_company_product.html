@@ -140,7 +140,6 @@
     function get_image(){
         var upload_image = []
         var image_list = $("*[class='image_up']")
-        console.log(image_list)
         for(i=0; i<image_list.length; i++){
             var input = image_list[i]
             if(input.files && input.files[0]){
@@ -165,7 +164,6 @@
             var input = image_list[i]
             if(input.files && input.files[0]){
                 var _id = image_list[i].id
-                console.log(_id)
                 var reader = new FileReader();
                 reader.onload = function (e) {
                     $("#show_"+_id).attr('src', e.target.result);
@@ -387,6 +385,7 @@
                 processData: false,   
                 data: upload,
                 success: function (data) {
+                    console.log(data)
                     var data = JSON.parse(data);
                     if(data.data == 'success'){
                         alert ('新增成功')

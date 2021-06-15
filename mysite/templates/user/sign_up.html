@@ -175,7 +175,7 @@
                     var data = JSON.parse(data);
                     if(data.data == 'success'){
                         alert ('申請成功 : 請等待授權')
-                        window.location.reload();
+                        window.location.replace("/");
                     }else if(data.data == 'exists'){
                         alert ('Email已存在')
                     }

@@ -71,6 +71,29 @@
         overflow-y:auto;
     }
 
+    .show_company_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+      
+    }
+    .show_company_info_lightbox.active{
+        display: flex;
+    }
+    .show_company_info_content{
+        width: 70%;
+        height: 90%;
+        background-color: #ccc;
+        position: relative;
+        overflow-y:auto;
+    }
 
 
 </style>
@@ -78,8 +101,7 @@
 
 
 {% block body %} 
-<!-- 廠商列表 -->
-<div class="container" role="main">
+<div class="container">
     <div class="company_delete_lightbox">
         <div class="company_delete_content">
             <div>
@@ -183,6 +205,98 @@
         </div>
     </div>
 
+
+    <div class="show_company_info_lightbox">
+        <div class="show_company_info_content">
+            <div class="card">
+                <div class="card-body">
+                    <h4 style="text-align: center;">廠商資料</h4><hr>
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-12 col-12">
+                            <h6>廠商</h6>
+                            <input class="form-control" type="text" id="show_company_name" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h6>縣 / 市</h6>
+                            <input class="form-control" type="text" id="show_region" disabled>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-6">
+                            <h6>鄉 / 鎮 / 區</h6>
+                            <input class="form-control" type="text" id="show_town" disabled>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <h6>地址</h6>
+                            <input class="form-control" type="text" id="show_address" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-8 col-8">
+                            <h6>公司電話</h6>
+                            <input class="form-control" type="text" id="show_phone" disabled>
+                        </div>
+                        <div class="col-lg-1 col-md-4 col-4">
+                            <h6>分機</h6>
+                            <input class="form-control" type="text" id="show_ext" disabled>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-12">
+                            <h6>公司聯絡人</h6>
+                            <input class="form-control" type="text" id="show_contact_person" disabled>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-12">
+                            <h6>Email</h6>
+                            <input class="form-control" type="email" id="show_email" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-3 col-md-8 col-8">
+                            <h6>手機</h6>
+                            <input class="form-control" type="text" id="show_mobile_phone" disabled>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-4">
+                            <h6>聯絡人</h6>
+                            <input class="form-control" type="text" id="show_mobile_contact_person" disabled>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-12">
+                            <h6>Email</h6>
+                            <input class="form-control" type="email" id="show_mobile_email" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>公司網址</h6>
+                            <input class="form-control" type="text" id="show_url" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>統一編號</h6>
+                            <input class="form-control" type="text" id="show_uniform_numbers" disabled>
+                        </div>
+                    </div>
+    
+                    <div class="row my-3">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>其他資訊</h6>
+                            <textarea style="width:100%;height:200px;" id='show_info' disabled></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger" onclick="show_company_info_close()">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 廠商列表 -->
+<div class="container" role="main">
     <h4>廠商資訊</h4>
         <a href="/company/create_company"><button class="btn-success">新增廠商</button></a>
     <div class="row my-1">
@@ -208,12 +322,13 @@
                                             <th>Email</th>
                                             <th>網址</th>
                                             <th>統編</th>
+                                            <th style="width:40px">更新</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for i in company_list%}
                                         <tr>
-                                            <td><a href="#" onclick="company_info_btn('{{i.id}}')">{{i.name}}</a></td>
+                                            <td><a href="#" onclick="show_company_info('{{i.id}}')">{{i.name}}</a></td>
                                             <td><a href="https://www.google.com.tw/maps/place/{{i.region}}{{i.town}}{{i.address}}" target="_blank">{{i.region}}{{i.town}}{{i.address}}</a></td>
                                             <td>{{i.phone}}</td>
                                             <td><a href="mailto:{{i.email}}">{{i.email}}</a></td>
@@ -223,6 +338,7 @@
                                                 <td></td>
                                             {% endif %}
                                             <td>{{i.uniform_numbers}}</td>
+                                            <td><button class="btn-primary"  onclick="company_info_btn('{{i.id}}')">更新</button></td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -288,6 +404,39 @@
                 }
             });
         };
+
+        function show_company_info(company_id){
+            $.ajax({
+                url: '/company/get_update_company/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    company_id: company_id
+                },  
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    $('#show_company_name').val(data.data.name);
+                    $('#show_region').val(data.data.region);
+                    $('#show_town').val(data.data.town);
+                    $('#show_address').val(data.data.address);
+                    $('#show_phone').val(data.data.phone);
+                    $('#show_ext').val(data.data.ext);
+                    $('#show_contact_person').val(data.data.contact_person);
+                    $('#show_email').val(data.data.email);
+                    $('#show_mobile_phone').val(data.data.mobile_phone);
+                    $('#show_mobile_contact_person').val(data.data.mobile_contact_person);
+                    $('#show_mobile_email').val(data.data.mobile_email);
+                    $('#show_uniform_numbers').val(data.data.uniform_numbers);
+                    $('#show_url').val(data.data.url);
+                    $('#show_info').val(data.data.info);
+                    $('.show_company_info_lightbox').addClass('active')
+                }
+            });
+        };
+
+        function show_company_info_close(){
+            $('.show_company_info_lightbox').removeClass('active')
+        }
 
 
         var email_true = true

@@ -1,6 +1,8 @@
 import pymysql
 from datetime import datetime, timedelta
 from cryptography.fernet import Fernet
+import os
+import configparser
 
 class PasswordEncode():
     def generate_key(self):
@@ -40,17 +42,19 @@ class PasswordEncode():
 
 class CreateSuperuser():
     def __init__(self):
-        self.host = '127.0.0.1'
-        self.port = 3306
-        self.user = 'root'
-        self.passwd='' 
-        self.db='store_mgmt'
+        config = configparser.ConfigParser()
+        config.read(os.getcwd() +'/config.ini')
+        self.db = config['Database']['db_name']
+        self.user = config['Database']['db_user']
+        self.passwd = config['Database']['db_password']
+        self.host = config['Database']['db_host']
+        self.port = config['Database']['db_port']
     
     def insert_data(self, name, public_key, private_key, email):
         time_ = datetime.now()
         day = timedelta(days=7)
         session_expire = day + time_
-        conn = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd, db=self.db, charset='utf8')
+        conn = pymysql.connect(host=self.host, port=int(self.port), user=self.user, passwd=self.passwd, db=self.db, charset='utf8')
         # 建立遊標, 查詢資料預設為元組型別
         cursor = conn.cursor()
 

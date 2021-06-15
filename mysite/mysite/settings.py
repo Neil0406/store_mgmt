@@ -12,6 +12,16 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import pymysql
+import configparser
+
+config = configparser.ConfigParser()
+config.read(os.getcwd() +'/config.ini')
+db_name = config['Database']['db_name']
+db_user = config['Database']['db_user']
+db_password = config['Database']['db_password']
+db_host = config['Database']['db_host']
+db_port = config['Database']['db_port']
+
 pymysql.version_info = (1, 4, 13, "final", 0)      ##需自行新增
 pymysql.install_as_MySQLdb()                       #####
 
@@ -80,11 +90,11 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'store_mgmt',
-        'USER': 'root',
-        'PASSWORD': 'Aa495378',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': db_name,
+        'USER': db_user,
+        'PASSWORD': db_password,
+        'HOST': db_host,
+        'PORT': db_port,
     }
 }
 

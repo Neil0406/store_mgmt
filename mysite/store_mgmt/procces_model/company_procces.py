@@ -92,7 +92,6 @@ class CompanyModel():
         try:
             company_product = CompanyProductInfo.objects.get(company_id=company_id)
             company.active = False
-            print('更新')
             company.save()
             ret = 'success'
         except Exception as e:
@@ -103,7 +102,7 @@ class CompanyModel():
     def create_company_product(self, **kwargs):
         ret = CompanyProductInfo.objects.filter(company_id=kwargs['company_id']).filter(types=kwargs['types']).filter(brand=kwargs['brand']).filter(model=kwargs['model']).filter(name=kwargs['name'])
         l = [model_to_dict(i) for i in ret]
-        if len(l) == 0:    
+        def create(kwargs):
             try:
                 data = CompanyProductInfo(
                         company_id = kwargs['company_id'],
@@ -124,6 +123,10 @@ class CompanyModel():
                 ret = 'success'
             except Exception as e:
                 ret = 'error'
+            return ret
+        if len(l) == 0:    
+            ret = create(kwargs)
+
         elif l[0]['active'] == False:
             company_product = CompanyProductInfo.objects.get(id=l[0]['id'])
             company_product.active = True
@@ -137,6 +140,8 @@ class CompanyModel():
             ret = 'restart'
         elif l[0]['name'] == kwargs['name'] and l[0]['model'] == kwargs['model']:
             ret = 'exists'
+        elif l[0]['active'] == True:
+            ret = create(kwargs)
         return ret
 
     def company_product_search(self, company_id, types, keyword):
@@ -148,7 +153,7 @@ class CompanyModel():
             # company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(model__contains=model).filter(active=True)
             company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(active=True)
         if company_id != '' and types != '' and keyword != '':
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(types=types).filter(active=True)
         if company_id == '' and types != '' and keyword == '':
             company_product_list = CompanyProductInfo.objects.filter(types=types).filter(active=True)
         if company_id == '' and types == '' and keyword != '':
@@ -157,7 +162,6 @@ class CompanyModel():
         if company_id == '' and types != '' and keyword != '':
             # company_product_list = CompanyProductInfo.objects.filter(types=types).filter(model__contains=model).filter(active=True)
             company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(active=True)
-
 
         ret = []
         for i in company_product_list:
@@ -310,17 +314,21 @@ class CompanyModel():
     def delete_company_product(self, company_product_id):
         company_product = CompanyProductInfo.objects.get(id=company_product_id)
         try:
-            PurchaseInfo.objects.get(product_id = company_product_id)
-            company_product.active = False
-            company_product.save()
+            purchase = PurchaseInfo.objects.filter(product_id = company_product_id)
+            if len(purchase) == 0:
+                if company_product.image1 != '':
+                    self.delete_image(company_product.image1)
+                if company_product.image2 != '':
+                    self.delete_image(company_product.image2)
+                if company_product.image3 != '':
+                    self.delete_image(company_product.image3)
+                company_product.delete()
+                # print('刪除')
+            else:
+                company_product.active = False
+                company_product.save()
+                # print('修改')
             ret = 'success'
         except:
-            if company_product.image1 != '':
-                self.delete_image(company_product.image1)
-            if company_product.image2 != '':
-                self.delete_image(company_product.image2)
-            if company_product.image3 != '':
-                self.delete_image(company_product.image3)
-            company_product.delete()
-            ret = 'success'
+            pass
         return ret

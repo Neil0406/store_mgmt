@@ -41,5 +41,9 @@ urlpatterns = [
     path('purchase/create_purchase/', views.Purchase().create_purchase), 
     #Purchase List
     path('purchase/purchase_list/', views.Purchase().purchase_list), 
+    path('purchase/purchase_search/', views.Purchase().purchase_search), 
+    path('purchase/get_update_purchase/', views.Purchase().get_update_purchase),
+    path('purchase/update_purchase/', views.Purchase().update_purchase),
+    path('purchase/delete_purchase/', views.Purchase().delete_purchase),
 
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, HttpResponse
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from .models import MgmtUser, CompanyInfo, CompanyProductInfo
+from .models import MgmtUser, CompanyInfo, CompanyProductInfo, PurchaseInfo
 from .utils.password_encode import PasswordEncode
 from datetime import datetime, timedelta
 from django.forms.models import model_to_dict
@@ -268,6 +268,7 @@ class Company():
 				data['image2'] = image2
 				data['image3'] = image3
 				ret = CompanyModel().create_company_product(**data)
+				print(ret)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
 			return render(request,'company/create_company_product.html', locals())
@@ -460,6 +461,77 @@ class Purchase():
 	def purchase_list(self, request):
 		user, check = session_check(request)
 		if check == True :
+			company_list = CompanyInfo.objects.all()
+			company_product_types_list = []
+			purchase_list = []
+			for i in CompanyProductInfo.objects.values("types").distinct(): 
+				company_product_types_list.append(i['types'])
+			for i in PurchaseInfo.objects.filter(product_in_stock__gt=0).order_by('-updated')[:30]:  #過濾庫存量大於0
+					purchase_list.append(i)
 			return render(request,'purchase/purchase_list.html', locals())
 		else:
 			return redirect ('/')
+
+	def purchase_search(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				company_id = request.POST.get('company_id')
+				types = request.POST.get('types')
+				keyword = request.POST.get('keyword')
+				ret = PurchaseModel().purchase_search(company_id, types, keyword)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')	
+
+	def get_update_purchase(self, request):
+		user, check = session_check(request)
+		if check == True :
+			purchase_id = request.POST.get('purchase_id') 
+			ret = PurchaseModel().get_update_purchase(purchase_id)
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect ('/')
+
+	def update_purchase(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				try:
+					image1 = request.FILES['image1']
+				except:
+					image1 = request.POST.get('image1')
+				try:
+					image2 = request.FILES['image2']
+				except:
+					image2 = request.POST.get('image2')
+				try:
+					image3 = request.FILES['image3']
+				except:
+					image3 = request.POST.get('image3')
+				data = request.POST.get('data')	
+				data = json.loads(data)
+				data['image1'] = image1
+				data['image2'] = image2
+				data['image3'] = image3
+				ret = PurchaseModel().update_purchase(**data)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')	
+
+
+	def delete_purchase(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				purchase_id = request.POST.get('purchase_id')
+				ret = PurchaseModel().delete_purchase(purchase_id)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')	
+

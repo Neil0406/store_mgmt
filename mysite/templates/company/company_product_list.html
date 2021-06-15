@@ -21,7 +21,7 @@
 <style>
     #search{
         position: absolute;
-        bottom: -4px;
+        top: 26px;
         right: 10px;
     }
 
@@ -104,8 +104,30 @@
         overflow-y:auto;
     }
 
+    .show_company_product_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;	  
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+    }
+    .show_company_product_info_lightbox.active{
+        display: flex;
+    }
+    .show_company_product_info_content{
+        width: 70%;
+        height: 90%;
+        background-color: #ccc;
+        position: relative;
+        overflow-y:auto;
+    }
 
-  
+
     .show_image{
         width: auto;
         height: auto;
@@ -123,9 +145,8 @@
 
 
 {% block body %}
-<!-- 商品列表 -->
-<div class="container" role="main">
 
+<div class="container">
     <div class="company_info_lightbox">
         <div class="company_info_content">
             <div class="card">
@@ -208,11 +229,86 @@
                         </div>
                     </div>
                     <br>
-                    <button class="btn btn-danger" id="company_info_close" onclick="company_info_close()">關閉</button>
+                    <button class="btn btn-danger" onclick="company_info_close()">關閉</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="show_company_product_info_lightbox">
+        <div class="show_company_product_info_content">
+            <div class="card">
+                <div class="card-body">
+                    <h4 style="text-align: center;">商品資料</h4><hr>
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>廠商</h6>
+                            <input type="text" id="show_company_name" class="form-control" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>類別</h6>
+                            <input type="text" id="show_types" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>品牌</h6>
+                            <input type="text" id="show_brand" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>型號 / 編號</h6>
+                            <input type="text" id="show_model" class="form-control" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>品名</h6>
+                            <input type="text" id="show_name" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>進價(單價)</h6>
+                            <input id="show_purchase_price" type="number" class="form-control" type="number" step=any disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售價(單價)</h6>
+                            <input id="show_selling_price" type="number" class="form-control" type="number" step=any disabled>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片1</h6>
+                            <img src="" alt="" id="show_image1_" class="show_image"><br>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片2</h6>
+                            <img src="" alt="" id="show_image2_" class="show_image"><br>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>圖片3</h6>
+                            <img src="" alt="" id="show_image3_" class="show_image"><br>
+                        </div>
+                    </div>
+
+                    <div class="row my-2">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>簡介</h6>
+                            <textarea id="show_info" style="width:100%;height:200px;" disabled></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-danger" onclick="show_company_product_info_close()">關閉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="company_product_delete_lightbox">
         <div class="company_product_delete_content">
@@ -225,6 +321,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="company_product_info_lightbox">
         <div class="company_product_info_content">
@@ -307,7 +404,9 @@
             </div>
         </div>
     </div>
+</div>
 
+<div class="container" role="main">
     <h4>商品資訊</h4>
         <a href="/company/create_company_product"><button class="btn-primary">新增商品</button></a>
     <div class="row my-1">
@@ -385,17 +484,18 @@
                                             <th>進價</th>
                                             <th>售價</th>
                                             <th style="width:80px">更新時間</th>
+                                            <th style="width:40px">更新</th>
                                         </tr>
                                     </thead>
                                     <tbody id = 'show_search'>
                                         {% for i in company_product_list%}
                                             {% if i.active == True %}
                                                 <tr>
-                                                    <td><a href="#" onclick="get_company_info('{{i.company.id}}')">{{i.company.name}}</a></td>
+                                                    <td><a href="javascript:void(0)" onclick="get_company_info('{{i.company.id}}')">{{i.company.name}}</a></td>
                                                     <td>{{i.types}}</td>
                                                     <td>{{i.brand}}</td>
                                                     <td>{{i.model}}</td>
-                                                    <td><span class="badge bg-danger" style="color: #ccc;">New</span>&nbsp;<a href="#" onclick="get_company_product_id('{{i.id}}','{{i.company.id}}')">{{i.name}}</a></td>
+                                                    <td><span class="badge bg-danger" style="color: #ccc;">New</span>&nbsp;<a href="javascript:void(0)" onclick="show_company_product('{{i.id}}','{{i.company.id}}')">{{i.name}}</a></td>
                                                     <td>                                                            
                                                         {% if i.image1 %}
                                                         <a data-fancybox="gallery" href="/{{i.image1}}"><img src="/{{i.image1}}" alt="" class="default_image"></a>&nbsp;
@@ -410,6 +510,9 @@
                                                     <td>{{i.purchase_price |floatformat:-1 }}</td>
                                                     <td>{{i.selling_price |floatformat:-1 }}</td>
                                                     <td>{{i.updated |date:"Y-m-d" }}</td>
+                                                    <td>
+                                                        <button class="btn-primary" onclick="get_company_product_id('{{i.id}}','{{i.company.id}}')">更新</button>
+                                                    </td>
                                                 </tr>
                                             {% endif %}
                                         {% endfor %}
@@ -484,6 +587,7 @@
             });
         }
 
+
         function company_info_close(){
             $('.company_info_lightbox').removeClass('active')
         }
@@ -516,7 +620,7 @@
                         if (data.data.length != 0){
                             var s = ''
                             for(i=0; i< data.data.length; i++){
-                                s += '<tr><td><a href="#" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="#" onclick="get_company_product_id('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
+                                s += '<tr><td><a href="javascript:void(0)" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="javascript:void(0)" onclick="show_company_product('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
                                 if(data.data[i].image1 != ''){
                                     s +='<a data-fancybox="gallery" href="/'+data.data[i].image1+'"><img src="/'+data.data[i].image1+'" alt="" class="default_image"></a>&nbsp;'
                                 }
@@ -526,7 +630,7 @@
                                 if(data.data[i].image3 != ''){
                                     s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
                                 }
-                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].updated+'</td></tr>'
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].updated+'</td><td><button class="btn-primary" onclick="get_company_product_id('+data.data[i].id+','+data.data[i].company+')">更新</button></td></tr>'
                             }
                             $('#datatable-button').DataTable().destroy();
                             $('#show_search').empty();
@@ -590,6 +694,46 @@
             });
         }
 
+        function show_company_product(company_product_id, company_id){
+            $('#show_image1_').attr('src','')
+            $('#show_image2_').attr('src','')
+            $('#show_image3_').attr('src','')
+            $.ajax({
+                url: '/company/get_update_company_product/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    company_product_id: company_product_id,
+                },
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    data = data.data
+                    $('#show_company_name').val(data.company);
+                    $('#show_types').val(data.types);
+                    $('#show_brand').val(data.brand);
+                    $('#show_model').val(data.model);
+                    $('#show_name').val(data.name);
+                    $('#show_purchase_price').val(data.purchase_price);
+                    $('#show_selling_price').val(data.selling_price);
+                    $('#show_info').val(data.info);
+
+                    if(data.image1 != ''){
+                        $('#show_image1_').attr('src', '/'+data.image1)
+                    }
+                    if(data.image2 != ''){
+                        $('#show_image2_').attr('src', '/'+data.image2)
+                    }
+                    if(data.image3 != ''){
+                        $('#show_image3_').attr('src', '/'+data.image3)
+                    }
+                    $('.show_company_product_info_lightbox').addClass('active')
+                }
+            });
+        }
+        function show_company_product_info_close(){
+            $('.show_company_product_info_lightbox').removeClass('active')
+        }
+
         function get_image(){
             var upload_image = []
             var image_list = $("*[class='image_up']")
@@ -617,7 +761,6 @@
                 var input = image_list[i]
                 if(input.files && input.files[0]){
                     var _id = image_list[i].id
-                    //console.log(_id)
                     var reader = new FileReader();
                     reader.onload = function (e) {
                         $("#show_"+_id).attr('src', e.target.result);
@@ -639,7 +782,7 @@
             return {'company_id':company_id_,'company_product_id':company_product_id_,'types':types, 'brand':brand, 'model':model, 'name':name, 'info':info, 'purchase_price':purchase_price, 'selling_price':selling_price}
         }
     
-    
+
         $('#update_company_product').click(function(){
             var data = get_data()
             if(!data['types'] || data['types'].trim().length === 0){
@@ -662,14 +805,17 @@
                 upload.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val()); 
                 upload.append("data",JSON.stringify(data));
                 for(i=0; i<image_data.length; i++){
-                    if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src + '#' != url){
+                    if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src != url){
                         //不更新
+                        //console.log('不更新')
                         upload.append("image" + String(i+1), 'no_update');
                     }else if(image_data[i] != ''){
                         //更新
+                        //console.log('更新')
                         upload.append("image" + String(i+1),image_data[i]);
-                    }else if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src + '#' == url){
+                    }else if(image_data[i] == '' && document.getElementById('show_image' + String(i+1)).src  == url){
                         //刪除 / 不新增
+                        //console.log('刪除 / 不新增')
                         upload.append("image"+ String(i+1), '');
                     }
                 }
