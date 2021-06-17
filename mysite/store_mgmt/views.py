@@ -11,6 +11,7 @@ from .procces_model.user_control_procces import UserControlModel
 from .procces_model.user_procces import UserModel
 from .procces_model.company_procces import CompanyModel
 from .procces_model.purchase_proccess import PurchaseModel
+from .procces_model.sell_proccess import SellModel
 
 def session_check(request):
 	if 'email' in request.session:
@@ -452,7 +453,7 @@ class Purchase():
 			else:
 				company_list = CompanyInfo.objects.all().filter(active=True)
 				company_product_types_list = []
-				for i in CompanyProductInfo.objects.filter(company__active = True).filter(active=True).values("types").distinct():  #先過濾公司是否取動再搜尋所有 types 並且不重複
+				for i in CompanyProductInfo.objects.filter(company__active = True).filter(active=True).values("types").distinct():  #先過濾公司是否啟用再搜尋所有 types 並且不重複
 					company_product_types_list.append(i['types'])
 				return render(request,'purchase/create_purchase.html', locals())
 		else:
@@ -479,7 +480,8 @@ class Purchase():
 				company_id = request.POST.get('company_id')
 				types = request.POST.get('types')
 				keyword = request.POST.get('keyword')
-				ret = PurchaseModel().purchase_search(company_id, types, keyword)
+				product_in_stock = request.POST.get('product_in_stock')
+				ret = PurchaseModel().purchase_search(company_id, types, keyword, product_in_stock)
 				# ret = ''
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
@@ -523,7 +525,6 @@ class Purchase():
 		else:
 			return redirect ('/')	
 
-
 	def delete_purchase(self, request):
 		user, check = session_check(request)
 		if check == True :
@@ -535,3 +536,40 @@ class Purchase():
 		else:
 			return redirect ('/')	
 
+class Sell():
+	def create_sell(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				data = request.POST.get('data')
+				data = json.loads(data)
+				ret = SellModel().create_sell(**data)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+			else:
+				company_list = []
+				purchase_types_list = []
+				purchase_list = []
+				for i in PurchaseInfo.objects.filter(product_in_stock__gt=0):
+					if i.company not in company_list:
+						company_list.append(i.company)
+					if i.product.types not in purchase_types_list:
+						purchase_types_list.append(i.product.types)
+				return render(request,'sell/create_sell.html', locals())
+		else:
+			return redirect ('/')	
+	
+	def purchase_search(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				company_id = request.POST.get('company_id')
+				types = request.POST.get('types')
+				keyword = request.POST.get('keyword')
+				ret = SellModel().purchase_search(company_id, types, keyword)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')	

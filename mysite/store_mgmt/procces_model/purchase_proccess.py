@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from store_mgmt.models import PurchaseInfo, CompanyProductInfo
+from store_mgmt.models import PurchaseInfo, CompanyProductInfo, SellInfo
 from django.forms.models import model_to_dict
 from django.db.models.functions import Concat
 import os
@@ -48,45 +48,81 @@ class PurchaseModel():
             ret = 'error'
         return ret
 
-    def purchase_search(self, company_id, types, keyword):
+    def purchase_search(self, company_id, types, keyword, product_in_stock):
         '''
         庫存查詢
         ### 排除庫存量為0的商品 .filter(product_in_stock__gt=0)
         '''
-        if company_id != '' and types == '' and keyword == '':
-            purchase_list = PurchaseInfo.objects.filter(company_id=company_id).filter(product_in_stock__gt=0)
-        if company_id != '' and types != '' and keyword == '':
-            purchase_list = PurchaseInfo.objects.filter(company_id=company_id).filter(product_id__types=types).filter(product_in_stock__gt=0)
-        if company_id != '' and types == '' and keyword != '':
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
-            purchase_list = []
-            for i in company_product_list:
-                for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
-                    purchase_list.append(j)
+        if  product_in_stock == 'false':
+            if company_id != '' and types == '' and keyword == '':
+                purchase_list = PurchaseInfo.objects.filter(company_id=company_id).filter(product_in_stock__gt=0)
+            if company_id != '' and types != '' and keyword == '':
+                purchase_list = PurchaseInfo.objects.filter(company_id=company_id).filter(product_id__types=types).filter(product_in_stock__gt=0)
+            if company_id != '' and types == '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
+                        purchase_list.append(j)
 
-        if company_id != '' and types != '' and keyword != '':
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(types=types).filter(active=True)
-            purchase_list = []
-            for i in company_product_list:
-                for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
-                    purchase_list.append(j)
+            if company_id != '' and types != '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(types=types).filter(active=True)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
+                        purchase_list.append(j)
 
-        if company_id == '' and types != '' and keyword == '':
-            purchase_list = PurchaseInfo.objects.filter(product_id__types=types).filter(product_in_stock__gt=0)
-        if company_id == '' and types == '' and keyword != '':
-            company_product_list = CompanyProductInfo.objects.annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
-            purchase_list = []
-            for i in company_product_list:
-                for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
-                    purchase_list.append(j)
-       
-        if company_id == '' and types != '' and keyword != '':
-            company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
-            purchase_list = []
-            for i in company_product_list:
-                for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
-                    purchase_list.append(j)
-                    
+            if company_id == '' and types != '' and keyword == '':
+                purchase_list = PurchaseInfo.objects.filter(product_id__types=types).filter(product_in_stock__gt=0)
+            if company_id == '' and types == '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
+                        purchase_list.append(j)
+        
+            if company_id == '' and types != '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id).filter(product_in_stock__gt=0):
+                        purchase_list.append(j)
+
+        if product_in_stock == 'true':
+            if company_id != '' and types == '' and keyword == '':
+                purchase_list = PurchaseInfo.objects.filter(company_id=company_id)
+            if company_id != '' and types != '' and keyword == '':
+                purchase_list = PurchaseInfo.objects.filter(company_id=company_id).filter(product_id__types=types)
+            if company_id != '' and types == '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id):
+                        purchase_list.append(j)
+
+            if company_id != '' and types != '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword).filter(types=types).filter(active=True)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id):
+                        purchase_list.append(j)
+
+            if company_id == '' and types != '' and keyword == '':
+                purchase_list = PurchaseInfo.objects.filter(product_id__types=types)
+            if company_id == '' and types == '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id):
+                        purchase_list.append(j)
+        
+            if company_id == '' and types != '' and keyword != '':
+                company_product_list = CompanyProductInfo.objects.filter(types=types).annotate(search=Concat('types','brand','model', 'name')).filter(search__icontains=keyword)
+                purchase_list = []
+                for i in company_product_list:
+                    for j in PurchaseInfo.objects.filter(product_id = i.id):
+                        purchase_list.append(j)
+        
         ret = []
         for i in purchase_list:
             dic = model_to_dict(i)
@@ -187,25 +223,32 @@ class PurchaseModel():
         os.remove(path)
 
     def delete_purchase(self, purchase_id):
+        '''
+        先查詢銷售紀錄是否有商品
+        '''
         try:
-            purchase = PurchaseInfo.objects.get(id=purchase_id)
-            if purchase.image1 != '':
-                if purchase.product.image1 == purchase.image1:
-                    pass
-                else:
-                    self.delete_image(purchase.image1)
-            if purchase.image2 != '':
-                if purchase.product.image2 == purchase.image2:
-                    pass
-                else:
-                    self.delete_image(purchase.image2)
-            if purchase.image3 != '':
-                if purchase.product.image3 == purchase.image3:
-                    pass
-                else:
-                    self.delete_image(purchase.image3)
-            purchase.delete()
-            ret = 'success'
+            try:
+                sell = SellInfo.objects.get(purchase_id=purchase_id)
+                ret = 'exists'             #需回傳刪除失敗 / 必須先刪除銷售紀錄
+            except:
+                purchase = PurchaseInfo.objects.get(id=purchase_id)
+                if purchase.image1 != '':
+                    if purchase.product.image1 == purchase.image1:
+                        pass
+                    else:
+                        self.delete_image(purchase.image1)
+                if purchase.image2 != '':
+                    if purchase.product.image2 == purchase.image2:
+                        pass
+                    else:
+                        self.delete_image(purchase.image2)
+                if purchase.image3 != '':
+                    if purchase.product.image3 == purchase.image3:
+                        pass
+                    else:
+                        self.delete_image(purchase.image3)
+                purchase.delete()
+                ret = 'success'
         except:
             ret = 'error'
         return ret

@@ -19,7 +19,7 @@
 <style>
     #search{
         position: absolute;
-        top: 26px;
+        bottom: -4px;
         right: 10px;
     }
 
@@ -46,20 +46,6 @@
         position: relative;
         overflow-y:auto;
     }
-
-    .show_purchase_info_lightbox{
-        z-index:5000;
-        position: fixed;
-        left: 0;    /* 靠左上角定位 */
-        top: 0;	  
-        width: 100%;
-        height: 100vh;    /* view-width. height  */
-        background-color: rgba(0,0,0,.5);
-        align-items: center;
-        justify-content: center;
-        display: none;
-    }
-
 
     #purchase_delete_btn{
         position: absolute;
@@ -116,6 +102,18 @@
         overflow-y:auto;
     }
 
+    .show_purchase_info_lightbox{
+        z-index:5000;
+        position: fixed;
+        left: 0;    /* 靠左上角定位 */
+        top: 0;	  
+        width: 100%;
+        height: 100vh;    /* view-width. height  */
+        background-color: rgba(0,0,0,.5);
+        align-items: center;
+        justify-content: center;
+        display: none;
+    }
     .show_purchase_info_lightbox.active{
         display: flex;
     }
@@ -286,6 +284,10 @@
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>進貨數量</h6>
                             <input class="form-control" type="number" step=any id="show_amount" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>庫存數量</h6>
+                            <input class="form-control" type="number" step=any id="show_product_in_stock" disabled>
                         </div>
                     </div>
                     
@@ -460,7 +462,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box table-responsive">
-                                <div class="col-lg-3 col-md-3 col-6">
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
                                     <h6>廠商</h6>
                                     <select id="search_company" class="form-control">
                                         <option hidden value="">廠商</option>
@@ -469,7 +471,7 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-6">
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
                                     <h6>類別</h6>
                                     <select  id="search_types" class="form-control">
                                         <option hidden value="">類別</option>
@@ -478,11 +480,13 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-6">
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
                                     <h6>關鍵字</h6>
                                     <input id="search_keyword" type="text" class="form-control">
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-6" id='search'>
+                                
+                                <div class="col-lg-3 col-md-3 col-6 my-2" id='search'>
+                                    <h6><input type="checkbox" id="product_in_stock">&nbsp;包含庫存0</h6>
                                     <button class="btn btn-primary" id="search_btn">查詢</button>
                                     <button class="btn btn-danger" id="search_btn_reset">清除</button>
                                 </div>                                                        
@@ -600,7 +604,6 @@
             $('#datatable-button').DataTable().draw();
         }
 
-
         function get_company_info(company_id){
             $.ajax({
                 url: '/company/get_update_company/', 
@@ -711,6 +714,7 @@
                     $('#show_selling_price').val(data.selling_price);
                     $('#show_purchase_date').val(data.purchase_date);
                     $('#show_amount').val(data.amount);
+                    $('#show_product_in_stock').val(data.product_in_stock)
                     $('#show_remark').val(data.remark);
                     $('#show_info').val(data.info);
                     if(data.image1 != ''){
@@ -836,14 +840,16 @@
             $('#search_company').val('');
             $('#search_types').val('');
             $('#search_keyword').val('');
+            $('#product_in_stock')[0].checked = false
         });
 
         $('#search_btn').click(function(){
             var company_id = $('#search_company').val();
             var types = $('#search_types').val();
             var keyword = $('#search_keyword').val();
+            var product_in_stock = $('#product_in_stock')[0].checked
             if(company_id.trim().length === 0 && types.trim().length === 0 && keyword.trim().length === 0){
-                alert ('請輸入搜尋')
+                alert ('請輸入查詢條件')
             }else{
                 $.ajax({
                     url: '/purchase/purchase_search/', 
@@ -852,7 +858,8 @@
                     data: {
                         company_id: company_id,
                         types:types,
-                        keyword:keyword
+                        keyword:keyword,
+                        product_in_stock:product_in_stock
                     },  
                     success: function (data) {
                         var data = JSON.parse(data);
@@ -897,6 +904,9 @@
                     if(data.data == 'success'){
                         alert ('刪除成功')
                         window.location.reload();
+                    }else if(data.data == 'exists'){
+                        alert ('刪除失敗，需先刪除銷售資訊裡的資料')
+                        $('.purchase_delete_lightbox').removeClass('active')
                     }else if(data.data == 'error'){
                         alert ('刪除失敗')
                     }

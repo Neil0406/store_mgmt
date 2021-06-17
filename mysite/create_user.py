@@ -59,7 +59,7 @@ class CreateSuperuser():
         cursor = conn.cursor()
 
         # cursor.execute("select * from mgmt_mgmtuser")
-        cursor.executemany("insert into store_mgmt_mgmtuser(name, auth, public_key, private_key, email, action ,created, updated, session_expire, image)values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [(name, 'hight', public_key, private_key,email, time_ , time_, time_, session_expire, '')])
+        cursor.executemany("insert into store_mgmt_mgmtuser(name, auth, public_key, private_key, email, action ,created, updated, session_expire, image, active)values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [(name, 'hight', public_key, private_key,email, time_ , time_, time_, session_expire, '', True)])
 
         new_id = cursor.lastrowid
         print("Id :", new_id)

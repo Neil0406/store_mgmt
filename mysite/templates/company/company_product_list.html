@@ -21,7 +21,7 @@
 <style>
     #search{
         position: absolute;
-        top: 26px;
+        bottom: -4px;
         right: 10px;
     }
 
@@ -420,8 +420,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="card-box table-responsive">
-   
-                                <div class="col-lg-3 col-md-3 col-6">
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
                                     <h6>廠商</h6>
                                     <select id="search_company" class="form-control">
                                         <option hidden value="">廠商</option>
@@ -430,7 +429,7 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-6">
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
                                     <h6>類別</h6>
                                     <select  id="search_types" class="form-control">
                                         <option hidden value="">類別</option>
@@ -439,11 +438,11 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-6">
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
                                     <h6>關鍵字</h6>
                                     <input id="search_keyword" type="text" class="form-control">
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-6" id='search'>
+                                <div class="col-lg-3 col-md-3 col-6 my-2" id='search'>
                                     <button class="btn btn-primary" id="search_btn">查詢</button>
                                     <button class="btn btn-danger" id="search_btn_reset">清除</button>
                                 </div>
@@ -604,7 +603,7 @@
             var types = $('#search_types').val();
             var keyword = $('#search_keyword').val();
             if(company_id.trim().length === 0 && types.trim().length === 0 && keyword.trim().length === 0){
-                alert ('請輸入搜尋')
+                alert ('請輸入查詢條件')
             }else{
                 $.ajax({
                     url: '/company/company_product_search/', 

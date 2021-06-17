@@ -66,17 +66,31 @@ class PurchaseInfo(models.Model):
     id = models.AutoField(primary_key=True)                           #pk                     
     company = models.ForeignKey(CompanyInfo, on_delete=models.CASCADE)
     product = models.ForeignKey(CompanyProductInfo, on_delete=models.CASCADE)
-
     purchase_price = models.FloatField(blank=True, null=True)        #進貨價
     selling_price = models.FloatField(blank=True, null=True)         #售價
     image1 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
     image2 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
     image3 = models.ImageField(upload_to='./static/product_images', storage=ImageStorage())
-    
     amount = models.FloatField(blank=True, null=True)
     product_in_stock = models.FloatField(blank=True, null=True)      #庫存數量
     purchase_date = models.DateTimeField(auto_now_add=False)         #進貨日
     remark = models.TextField(blank=True, null=True)                 #備註
+    active = models.BooleanField(blank=True, null=True)               
+    updated = models.DateTimeField(auto_now_add=False)                                  
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):     
+        return '{}'.format(self.product)
+
+#銷貨log
+class SellInfo(models.Model):
+    id = models.AutoField(primary_key=True)                           #pk                     
+    company = models.ForeignKey(CompanyInfo, on_delete=models.CASCADE)
+    product = models.ForeignKey(CompanyProductInfo, on_delete=models.CASCADE)
+    purchase = models.ForeignKey(PurchaseInfo, on_delete=models.CASCADE)
+    selling_price = models.FloatField(blank=True, null=True)         #售價
+    selling_amount = models.FloatField(blank=True, null=True)
+    selling_remark = models.TextField(blank=True, null=True)        #備註
+    selling_date = models.DateTimeField(auto_now_add=False)         #銷貨日
     active = models.BooleanField(blank=True, null=True)               
     updated = models.DateTimeField(auto_now_add=False)                                  
     created = models.DateTimeField(auto_now_add=True)
