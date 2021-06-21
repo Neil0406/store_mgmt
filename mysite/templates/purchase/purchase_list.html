@@ -23,6 +23,19 @@
         right: 10px;
     }
 
+    #search_time{
+        height: 60px;
+    }
+    #search_time_btn{
+        position: absolute;
+        top: 26px;
+    }
+    #search_time_btn_reset{
+        position: absolute;
+        top: 26px;
+        left: 78px;
+    }
+
     .company_info_lightbox{
         z-index:5000;
         position: fixed;
@@ -276,7 +289,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)</h6>
-                            <input id="show_selling_price" type="number" class="form-control" type="number" step=any disabled>
+                            <input id="show_sale_price" type="number" class="form-control" type="number" step=any disabled>
                         </div>
                     </div>
 
@@ -350,7 +363,7 @@
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
-                    <h4 style="text-align: center;">庫存資料更新</h4><hr>
+                    <h4 style="text-align: center;">庫存資訊更新</h4><hr>
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>廠商</h6>
@@ -387,7 +400,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)＊</h6>
-                            <input id="selling_price" type="number" class="form-control" type="number" step=any>
+                            <input id="sale_price" type="number" class="form-control" type="number" step=any>
                         </div>
                     </div>
 
@@ -449,7 +462,7 @@
 </div>
 
 <div class="container" role="main">
-    <h4>庫存資訊</h4>
+    <h4 style="text-align: center;">庫存資訊</h4>
         <a href="/purchase/create_purchase"><button class="btn-danger">商品進貨</button></a>
     <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
@@ -497,6 +510,43 @@
             </div>
         </div>
     </div>
+
+    <div class="row my-1">
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>庫存查詢 / 依照進貨時間</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                <p class="text-muted font-13 m-b-30">
+                                    1.只選則開始時間 -> 開始時間後所有資料&nbsp;&nbsp;&nbsp;&nbsp;
+                                    2.選則開始時間 + 結束時間 -> 區間內所有資料    
+                                </p>
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
+                                    <h6>開始時間</h6>
+                                    <input type="date" class="form-control" id="search_start_time">
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
+                                    <h6>結束時間</h6>
+                                    <input type="date" class="form-control" id="search_end_time">
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-12 my-2" id="search_time">
+                                    <h6><input type="checkbox" id="product_in_stock_time">&nbsp;包含庫存0</h6>
+                                    <button class="btn btn-primary" id="search_time_btn">查詢</button>
+                                    <button class="btn btn-danger" id="search_time_btn_reset">清除</button>
+                                </div>                                                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -514,13 +564,13 @@
                         <div class="col-sm-12">
                             <div class="card-box table-responsive">
                                 <p class="text-muted font-13 m-b-30">
-                                    庫存列表
+                                    預設為最新進貨的30筆商品
                                 </p>
                                 <table id="datatable-button" class="table table-striped table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>廠商</th>
-                                            <th>種類</th>
+                                            <th>類別</th>
                                             <th>品牌</th>
                                             <th style="width:200px">型號</th>
                                             <th style="width:200px">品名</th>
@@ -554,11 +604,11 @@
                                                         {% endif %}
                                                     </td>
                                                     <td>{{i.purchase_price |floatformat:-1 }}</td>
-                                                    <td>{{i.selling_price |floatformat:-1 }}</td>
+                                                    <td>{{i.sale_price |floatformat:-1 }}</td>
                                                     <td>{{i.amount |floatformat:-1 }}</td>
                                                     <td>{{i.product_in_stock |floatformat:-1 }}</td>
                                                     <td>{{i.purchase_date |date:"Y-m-d" }}</td>
-                                                    <td><button class="btn-primary" onclick="get_purchase_id('{{i.id}}','{{i.company.id}}')">更新</button></td>
+                                                    <td><button class="btn-primary" onclick="get_purchase_id('{{i.id}}')">更新</button></td>
                                                 </tr>
                                             {% endif %}
                                         {% endfor %}
@@ -639,10 +689,8 @@
 
 
         var purchase_id_ = ''
-        var company_id_ = ''
-        function get_purchase_id(purchase_id, company_id){
+        function get_purchase_id(purchase_id){
             purchase_id_ = purchase_id
-            company_id_ = company_id
             $('#show_image1').attr('src','')
             $('#show_image2').attr('src','')
             $('#show_image3').attr('src','')
@@ -665,7 +713,7 @@
                     $('#model').val(data.model);
                     $('#name').val(data.name);
                     $('#purchase_price').val(data.purchase_price);
-                    $('#selling_price').val(data.selling_price);
+                    $('#sale_price').val(data.sale_price);
                     $('#purchase_date').val(data.purchase_date);
                     $('#amount').val(data.amount);
                     $('#remark').val(data.remark);
@@ -711,7 +759,7 @@
                     $('#show_model').val(data.model);
                     $('#show_name').val(data.name);
                     $('#show_purchase_price').val(data.purchase_price);
-                    $('#show_selling_price').val(data.selling_price);
+                    $('#show_sale_price').val(data.sale_price);
                     $('#show_purchase_date').val(data.purchase_date);
                     $('#show_amount').val(data.amount);
                     $('#show_product_in_stock').val(data.product_in_stock)
@@ -776,11 +824,11 @@
 
         function get_data(){
             var purchase_price = $('#purchase_price').val();
-            var selling_price = $('#selling_price').val();
+            var sale_price = $('#sale_price').val();
             var amount = $('#amount').val();
             var purchase_date = $('#purchase_date').val();
             var remark = $('#remark').val()
-            return {'company_id':company_id_,'purchase_id':purchase_id_, 'purchase_price':purchase_price, 'selling_price':selling_price, 'amount':amount, 'purchase_date':purchase_date, 'remark':remark}
+            return {'purchase_id':purchase_id_, 'purchase_price':purchase_price, 'sale_price':sale_price, 'amount':amount, 'purchase_date':purchase_date, 'remark':remark}
         }
 
 
@@ -788,10 +836,12 @@
             var data = get_data()
             if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
                 alert ('請輸入進價(單價)')
-            }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
+            }else if(!data['sale_price'] || data['sale_price'].trim().length === 0){
                 alert ('請輸入售價(單價)')
             }else if(!data['amount'] || data['amount'].trim().length === 0){
                 alert ('請輸入數量')
+            }else if(data['amount'] < 0){
+                alert ('進貨數量不能是負值')
             }else if(!data['purchase_date'] || data['purchase_date'].trim().length === 0){
                 alert ('請輸入進貨日期')
             }
@@ -830,6 +880,8 @@
                             purchase_info_close();
                         }else if(data.data == 'error'){
                             alert ('更新失敗')
+                        }else{
+                            alert ('更新失敗 : 已售出 ' + data.data + ' 件商品')
                         }
                     }
                 });
@@ -876,7 +928,7 @@
                                 if(data.data[i].image3 != ''){
                                     s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
                                 }
-                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].amount+'</td><td>'+data.data[i].product_in_stock+'</td><td>'+data.data[i].purchase_date+'</td><td><button class="btn-primary" onclick="get_purchase_id('+data.data[i].id+','+data.data[i].company+')">更新</button></td></tr>'
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].sale_price+'</td><td>'+data.data[i].amount+'</td><td>'+data.data[i].product_in_stock+'</td><td>'+data.data[i].purchase_date+'</td><td><button class="btn-primary" onclick="get_purchase_id('+data.data[i].id+')">更新</button></td></tr>'
                             }
                             $('#datatable-button').DataTable().destroy();
                             $('#show_search').empty();
@@ -888,6 +940,61 @@
                     }
                 });
             }
+        });
+
+        $('#search_time_btn').click(function(){
+            var search_start_time = $('#search_start_time').val();
+            var search_end_time = $('#search_end_time').val();
+            var product_in_stock_time = $('#product_in_stock_time')[0].checked
+            if(search_start_time.trim().length === 0){
+                alert ('請輸入開始時間')
+            }else{
+                $.ajax({
+                    url: '/purchase/purchase_search_by_date/', 
+                    type: 'POST',  
+                    headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                    data: {
+                        search_start_time: search_start_time,
+                        search_end_time:search_end_time,
+                        product_in_stock_time:product_in_stock_time
+                    },  
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        console.log(data.data)
+                        if (data.data.length != 0 && data.data != 'time_error'){
+                            var s = ''
+                            for(i=0; i< data.data.length; i++){
+                                s += '<tr><td><a href="javascript:void(0)" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="javascript:void(0)" onclick="show_purchase('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
+                                if(data.data[i].image1 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image1+'"><img src="/'+data.data[i].image1+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                if(data.data[i].image2 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image2+'"><img src="/'+data.data[i].image2+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                if(data.data[i].image3 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].sale_price+'</td><td>'+data.data[i].amount+'</td><td>'+data.data[i].product_in_stock+'</td><td>'+data.data[i].purchase_date+'</td><td><button class="btn-primary" onclick="get_purchase_id('+data.data[i].id+')">更新</button></td></tr>'
+                            }
+                            $('#datatable-button').DataTable().destroy();
+                            $('#show_search').empty();
+                            $('#datatable-button').find('tbody').append(s);
+                            $('#datatable-button').DataTable().draw();
+                        }else if(data.data == 'time_error'){
+                            alert ('時間區間錯誤')
+                        }
+                        else{
+                            alert ('查無資料')
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#search_time_btn_reset').click(function(){
+            $('#search_start_time').val('');
+            $('#search_end_time').val('');
+            $('#product_in_stock_time')[0].checked = false
         });
 
 
@@ -905,7 +1012,7 @@
                         alert ('刪除成功')
                         window.location.reload();
                     }else if(data.data == 'exists'){
-                        alert ('刪除失敗，需先刪除銷售資訊裡的資料')
+                        alert ('刪除失敗，需先刪除銷售資訊資料')
                         $('.purchase_delete_lightbox').removeClass('active')
                     }else if(data.data == 'error'){
                         alert ('刪除失敗')

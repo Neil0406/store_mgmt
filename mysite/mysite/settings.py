@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import pymysql
-import configparser
 
-config = configparser.ConfigParser()
-config.read(os.getcwd() +'/config.ini')
+from store_mgmt.utils.config import config
+
+config = config()
 db_name = config['Database']['db_name']
 db_user = config['Database']['db_user']
 db_password = config['Database']['db_password']

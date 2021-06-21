@@ -18,7 +18,7 @@
 {% block body %}
 <!-- 新增商品 -->
 <div class="container" role="main">
-    <h4>新增商品</h4>
+    <h4 style="text-align: center;">新增商品</h4>
         <a href="/company/company_product_list"><button class="btn-primary">商品資訊</button></a>
     <div class="row my-1">
         {% csrf_token %}
@@ -86,7 +86,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)＊</h6>
-                            <input id="selling_price" type="number" class="form-control" type="number" step=any>
+                            <input id="sale_price" type="number" class="form-control" type="number" step=any>
                         </div>
                     </div>
 
@@ -348,8 +348,8 @@
         var name = $('#name').val() + $('#name_custom').val();
         var info = $('#info').val();
         var purchase_price = $('#purchase_price').val();
-        var selling_price = $('#selling_price').val();
-        return {'company_id':id_,'types':types, 'brand':brand, 'model':model, 'name':name, 'info':info, 'purchase_price':purchase_price, 'selling_price':selling_price}
+        var sale_price = $('#sale_price').val();
+        return {'company_id':id_,'types':types, 'brand':brand, 'model':model, 'name':name, 'info':info, 'purchase_price':purchase_price, 'sale_price':sale_price}
     }
 
 
@@ -367,7 +367,7 @@
             alert ('請輸入品名')
         }else if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
             alert ('請輸入進價(單價)')
-        }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
+        }else if(!data['sale_price'] || data['sale_price'].trim().length === 0){
             alert ('請輸入售價(單價)')
         }
         else{

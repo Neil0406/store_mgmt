@@ -8,7 +8,9 @@ urlpatterns = [
     path('logout/', views.logout),
     path('home/', views.home),
     path('sign_up/', views.sign_up),
-
+    # Home
+    path('home/realtime_content/', views.Home().realtime_content),
+    path('home/revenue_status_content/', views.Home().revenue_status_content),
     #User Control
     path('create_user/', views.UserControl().create_user),        
     path('user_control/', views.UserControl().user_control),
@@ -36,18 +38,24 @@ urlpatterns = [
     path('company/get_update_company_product/', views.Company().get_update_company_product), 
     path('company/update_company_product/', views.Company().update_company_product), 
     path('company/delete_company_product/', views.Company().delete_company_product), 
-
     #Create Purchase
     path('purchase/create_purchase/', views.Purchase().create_purchase), 
     #Purchase List
     path('purchase/purchase_list/', views.Purchase().purchase_list), 
     path('purchase/purchase_search/', views.Purchase().purchase_search), 
+    path('purchase/purchase_search_by_date/', views.Purchase().purchase_search_by_date), 
     path('purchase/get_update_purchase/', views.Purchase().get_update_purchase),
     path('purchase/update_purchase/', views.Purchase().update_purchase),
     path('purchase/delete_purchase/', views.Purchase().delete_purchase),
+    #Create sale
+    path('sale/create_sale/', views.Sale().create_sale), 
+    path('sale/purchase_search/', views.Sale().purchase_search),   #建立銷售時使用
+    #Sale List
+    path('sale/sale_list/', views.Sale().sale_list),
+    path('sale/sale_search/', views.Sale().sale_search),           #查詢 / 修改銷售時使用
+    path('sale/sale_search_by_date/', views.Sale().sale_search_by_date),           #查詢 / 修改銷售時使用
+    path('sale/get_update_sale/', views.Sale().get_update_sale),
+    path('sale/update_sale/', views.Sale().update_sale),
+    path('sale/delete_sale/', views.Sale().delete_sale),
 
-    #Create Sell
-    path('sell/create_sell/', views.Sell().create_sell), 
-    #Sell List
-    path('sell/purchase_search/', views.Sell().purchase_search), 
 ]

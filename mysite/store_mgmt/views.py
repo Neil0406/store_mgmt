@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, HttpResponse
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from .models import MgmtUser, CompanyInfo, CompanyProductInfo, PurchaseInfo
+from .models import MgmtUser, CompanyInfo, CompanyProductInfo, PurchaseInfo, SaleInfo
 from .utils.password_encode import PasswordEncode
 from datetime import datetime, timedelta
 from django.forms.models import model_to_dict
@@ -10,10 +10,15 @@ import json
 from .procces_model.user_control_procces import UserControlModel
 from .procces_model.user_procces import UserModel
 from .procces_model.company_procces import CompanyModel
-from .procces_model.purchase_proccess import PurchaseModel
-from .procces_model.sell_proccess import SellModel
+from .procces_model.purchase_procces import PurchaseModel
+from .procces_model.sale_procces import SaleModel
+from .procces_model.home_procces import HomeModel
 
 def session_check(request):
+	'''
+	 1. 確認 session 時間
+	 2. 確認帳號是否已啟用
+	'''
 	if 'email' in request.session:
 		try:
 			email = request.session['email'] 
@@ -92,9 +97,36 @@ def logout(request):
 def home(request):
 	user, check = session_check(request)
 	if check == True:
+		realtime_content = HomeModel().realtime_content('realtime_by_date')
+		revenue_status_content = HomeModel().revenue_status_content('revenue_status_week')
 		return render(request,'home.html', locals())
 	else:
 		return redirect ('/')
+
+class Home():
+	def realtime_content(self, request):
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				realtime_content = request.POST.get('realtime_content')
+				ret = HomeModel().realtime_content(realtime_content)
+				# ret = ''
+				ret = json.dumps({'data':ret})				 
+				return HttpResponse (ret)
+		else:
+			return redirect ('/')
+
+	def revenue_status_content(self, request):
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				revenue_status_content = request.POST.get('revenue_status_content')
+				ret = HomeModel().revenue_status_content(revenue_status_content)
+				# ret = ''
+				ret = json.dumps({'data':ret})				 
+				return HttpResponse (ret)
+		else:
+			return redirect ('/')
 
 
 class UserControl():
@@ -458,7 +490,7 @@ class Purchase():
 				return render(request,'purchase/create_purchase.html', locals())
 		else:
 			return redirect ('/')
-	
+
 	def purchase_list(self, request):
 		user, check = session_check(request)
 		if check == True :
@@ -467,7 +499,7 @@ class Purchase():
 			purchase_list = []
 			for i in CompanyProductInfo.objects.values("types").distinct(): 
 				company_product_types_list.append(i['types'])
-			for i in PurchaseInfo.objects.filter(product_in_stock__gt=0).order_by('-updated')[:30]:  #過濾庫存量大於0
+			for i in PurchaseInfo.objects.filter(product_in_stock__gt=0).order_by('-purchase_date')[:30]:  #過濾庫存量大於0
 					purchase_list.append(i)
 			return render(request,'purchase/purchase_list.html', locals())
 		else:
@@ -485,6 +517,19 @@ class Purchase():
 				# ret = ''
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+		else:
+			return redirect ('/')	
+
+	def purchase_search_by_date(self, request):
+		user, check = session_check(request)
+		if check == True :
+			search_start_time = request.POST.get('search_start_time')
+			search_end_time = request.POST.get('search_end_time')
+			product_in_stock_time = request.POST.get('product_in_stock_time')
+			ret = PurchaseModel().purchase_search_by_date(search_start_time, search_end_time, product_in_stock_time)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
 		else:
 			return redirect ('/')	
 
@@ -535,15 +580,15 @@ class Purchase():
 				return HttpResponse(ret)
 		else:
 			return redirect ('/')	
-
-class Sell():
-	def create_sell(self, request):
+#銷售
+class Sale():
+	def create_sale(self, request):
 		user, check = session_check(request)
 		if check == True :
 			if request.method == 'POST':
 				data = request.POST.get('data')
 				data = json.loads(data)
-				ret = SellModel().create_sell(**data)
+				ret = SaleModel().create_sale(**data)
 				# ret = ''
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
@@ -556,7 +601,7 @@ class Sell():
 						company_list.append(i.company)
 					if i.product.types not in purchase_types_list:
 						purchase_types_list.append(i.product.types)
-				return render(request,'sell/create_sell.html', locals())
+				return render(request,'sale/create_sale.html', locals())
 		else:
 			return redirect ('/')	
 	
@@ -567,9 +612,83 @@ class Sell():
 				company_id = request.POST.get('company_id')
 				types = request.POST.get('types')
 				keyword = request.POST.get('keyword')
-				ret = SellModel().purchase_search(company_id, types, keyword)
+				ret = SaleModel().purchase_search(company_id, types, keyword)
 				# ret = ''
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
 		else:
+			return redirect ('/')
+
+	def sale_search(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':	
+				company_id = request.POST.get('company_id')
+				types = request.POST.get('types')
+				keyword = request.POST.get('keyword')
+				ret = SaleModel().sale_search(company_id, types, keyword)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')
+
+	def sale_search_by_date(self, request):
+		user, check = session_check(request)
+		if check == True :
+			if request.method == 'POST':
+				search_start_time = request.POST.get('search_start_time')
+				search_end_time = request.POST.get('search_end_time')
+				ret = SaleModel().sale_search_by_date(search_start_time, search_end_time)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect ('/')
+	def sale_list(self, request):
+		user, check = session_check(request)
+		if check == True :
+			company_list = CompanyInfo.objects.all()
+			company_product_types_list = []
+			sale_list = []
+			for i in CompanyProductInfo.objects.values("types").distinct(): 
+				company_product_types_list.append(i['types'])
+			for i in SaleInfo.objects.order_by('-sale_date')[:30]:
+					sale_list.append(i)
+			return render(request,'sale/sale_list.html', locals())	
+		else:
 			return redirect ('/')	
+
+	def get_update_sale(self, request):
+		user, check = session_check(request)
+		if check == True :
+			sale_id = request.POST.get('sale_id') 
+			ret = SaleModel().get_update_sale(sale_id)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect ('/')
+	
+	def update_sale(self, request):
+		user, check = session_check(request)
+		if check == True :
+			data = request.POST.get('data')
+			data = json.loads(data)
+			ret = SaleModel().update_sale(**data)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect ('/')
+	
+	def delete_sale(self, request):
+		user, check = session_check(request)
+		if check == True :
+			sale_id = request.POST.get('sale_id')
+			ret = SaleModel().delete_sale(sale_id)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect ('/')

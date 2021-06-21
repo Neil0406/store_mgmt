@@ -111,7 +111,7 @@ class CompanyModel():
                         model=kwargs['model'].strip(),
                         name=kwargs['name'].strip(),
                         purchase_price=kwargs['purchase_price'],
-                        selling_price=kwargs['selling_price'],
+                        sale_price=kwargs['sale_price'],
                         image1=kwargs['image1'],
                         image2=kwargs['image2'],
                         image3=kwargs['image3'],
@@ -131,7 +131,7 @@ class CompanyModel():
             company_product = CompanyProductInfo.objects.get(id=l[0]['id'])
             company_product.active = True
             company_product.purchase_price=kwargs['purchase_price']
-            company_product.selling_price=kwargs['selling_price']
+            company_product.sale_price=kwargs['sale_price']
             company_product.image1=kwargs['image1']
             company_product.image2=kwargs['image2']
             company_product.image3=kwargs['image3']
@@ -187,44 +187,44 @@ class CompanyModel():
 
     def get_company_product_types(self, company_id):
         try:
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(active=True).values("types").distinct()
             ret = []
             for i in company_product_list:
-                if model_to_dict(i)['types'] not in ret:
-                    ret.append(model_to_dict(i)['types'])
+                if i['types'] not in ret:
+                    ret.append(i['types'])
         except:
             ret = 'error'
         return ret
 
     def get_company_product_brand(self, company_id, types):
         try:
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(active=True).values("brand").distinct()
             ret = []
             for i in company_product_list:
-                if model_to_dict(i)['brand'] not in ret:
-                    ret.append(model_to_dict(i)['brand'])
+                if i['brand'] not in ret:
+                    ret.append(i['brand'])
         except:
             ret = 'error'
         return ret
 
     def get_company_product_model(self, company_id, types, brand):
         try:
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(brand=brand).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(brand=brand).filter(active=True).values("model").distinct()
             ret = []
             for i in company_product_list:
-                if model_to_dict(i)['model'] not in ret:
-                    ret.append(model_to_dict(i)['model'])
+                if i['model'] not in ret:
+                    ret.append(i['model'])
         except:
             ret = 'error'
         return ret
 
     def get_company_product_name(self, company_id, types, brand, model):
         try:
-            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(brand=brand).filter(model=model).filter(active=True)
+            company_product_list = CompanyProductInfo.objects.filter(company_id=company_id).filter(types=types).filter(brand=brand).filter(model=model).filter(active=True).values("name").distinct()
             ret = []
             for i in company_product_list:
-                if model_to_dict(i)['name'] not in ret:
-                    ret.append(model_to_dict(i)['name'])
+                if i['name'] not in ret:
+                    ret.append(i['name'])
         except:
             ret = 'error'
         return ret
@@ -281,7 +281,7 @@ class CompanyModel():
             company_product.name = kwargs['name'].strip()
             company_product.info = kwargs['info'].strip()
             company_product.purchase_price = kwargs['purchase_price']
-            company_product.selling_price = kwargs['selling_price']
+            company_product.sale_price = kwargs['sale_price']
             company_product.updated= self.get_datetime()
             if kwargs['image1'] != 'no_update':
                 if company_product.image1 != '':

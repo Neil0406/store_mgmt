@@ -4,40 +4,89 @@
 <title>首頁</title>  
 {% endblock %}
 
+{% block header%}
 
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
 
   {% block body %}
     <div class="row my-2">
       <div class="col-12">
-        <a href="/selling" type="btn" class="btn btn-danger">售出 / 銷貨</a>
-        <a href="/product_list" type="btn" class="btn btn-success">庫存資訊</a>
-        <a href="/company_list" type="btn" class="btn btn-success">廠商資訊</a>
+        <a href="/sale/create_sale" type="btn" class="btn btn-danger">銷售 / 銷貨</a>
+        <a href="/sale/sale_list" type="btn" class="btn btn-danger">銷售 / 銷貨紀錄</a>
+        <a href="/purchase/purchase_list" type="btn" class="btn btn-primary">庫存資訊</a>
+        <a href="/company/company_product_list" type="btn" class="btn btn-primary">商品資訊</a>
+        <a href="/company/company_list" type="btn" class="btn btn-success">廠商資訊</a>
       </div>
     </div>
     <!-- /三格sample -->
       <div class="row my-2">
-        <div class="col-md-4 col-sm-4 ">
-          <div class="x_panel fixed_height_320"> 
-            <h5>週報表 05/23 ~ 05/30</h5>
+        {% csrf_token %}
+        <div class="col-lg-4 col-md-12 col-sm-12 ">
+          <div class="x_panel tile fixed_height_320 overflow_hidden" style="height: 385px;"> 
+            <h5>即時訊息</h5>
             <hr>
-
-            <div class="row">
-              <div class="col-12">
-    
+            <div class="row my-2">
+              <div class="col-lg-6 col-md-6 col-6">
+                  <select id="realtime_content" class="form-control">
+                      <option hidden value="">日</option>
+                      <option value="realtime_by_date">日</option>
+                      <option value="realtime_by_week">週</option>
+                      <option value="realtime_by_month">月</option>
+                      <option value="realtime_by_year">年</option>
+                  </select>
               </div>
             </div>
 
+            <div class="row my-2">
+              <div class="col-12">
+                <h5>時間 : <span id="realtime_date">{{realtime_content.date}}</span></h5>
+              </div>
+              <div class="col-lg-6 col-md-6 col-6">
+                <h5><span class="badge bg-primary text-light">商品銷售額 : <span id="sale_sum">{{realtime_content.sale_sum}}</span></span><small></small></h5>
+              </div>
+              <div class="col-lg-6 col-md-6 col-6">
+                <h5><span class="badge bg-primary text-light">商品銷售總數 : <span id="sale_amount_sum">{{realtime_content.sale_amount_sum}}</span></span></h5>
+              </div>
+              <div class="col-lg-6 col-md-6 col-6">
+                <h5><span class="badge bg-primary text-light">扣除成本營收 : <span id="revenue_sum">{{realtime_content.revenue_sum}}</span></span></h5>
+              </div>
+
+              <div class="col-lg-6 col-md-6 col-6">
+                <h5><span class="badge bg-primary text-light">進貨成本 : <span id="purchase_sum">{{realtime_content.purchase_sum}}</span></span><small></small></h5>
+              </div>
+              <div class="col-lg-6 col-md-6 col-6">
+                <h5><span class="badge bg-primary text-light">進貨總數 : <span id="purchase_amount_sum">{{realtime_content.purchase_amount_sum}}</span></span></h5>
+              </div>
+              <div class="col-lg-6 col-md-6 col-6">
+                <h5><span class="badge bg-primary text-light">庫存商品總數 : <span id="purchase_in_stock_sum">{{realtime_content.purchase_in_stock_sum}}</span></span></h5>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-md-4 col-sm-4 ">
-          <div class="x_panel tile fixed_height_320 overflow_hidden"> 
-            <h5>TEST2</h5>
+        <div class="col-lg-4 col-md-12 col-sm-12 ">
+          <div class="x_panel tile fixed_height_350 overflow_hidden"> 
+            <h5>銷售狀況</h5>
             <hr>
+            <div class="row my-2">
+              <div class="col-lg-6 col-md-6 col-6">
+                  <select id="revenue_status_content" class="form-control" onchange="revenue_status_content()">
+                      <option hidden value="revenue_status_week">前7天</option>
+                      <option value="revenue_status_week">前7天</option>
+                      <option value="revenue_status_month">前30天</option>
+                      <option value="revenue_status_year">前1年</option>
+                  </select>
+              </div>
+            </div>
+            <div class="row" id="revenue_status"></div>
           </div>
         </div>
-        <div class="col-md-4 col-sm-4 ">
+        <div class="col-lg-4 col-md-12 col-sm-12">
           <div class="x_panel tile fixed_height_320">
-            <h5>TEST3</h5>
+            <h5>熱銷總類</h5>
             <hr>
           </div>
         </div>
@@ -46,9 +95,77 @@
  {% endblock %}
 
  {% block js %}
-
-
+   <!-- Chart.js -->
+   <script src="{% static 'plugin/Chart.js/dist/Chart.min.js' %}"></script>
  <script>
+  window.onload =  revenue_status_content();
+  function revenue_status_content(){
+        var revenue_status_content = $('#revenue_status_content').val();
+        $.ajax({
+          url: '/home/revenue_status_content/', 
+          type: 'POST',  
+          headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+          data: {
+            revenue_status_content : revenue_status_content
+          },  
+          success: function (data) {
+              var data = JSON.parse(data);
+              // Bar chart
+              $('#revenue_status_bar').remove();
+              $('#revenue_status').append('<canvas id="revenue_status_bar"></canvas>')
+              new Chart(document.getElementById("revenue_status_bar"), {
+                type: 'bar',
+                data: {
+                  labels: data.data.labels,
+                  datasets: [
+                    {
+                      label: "商品銷售額",
+                      backgroundColor: data.data.bgc,
+                      data: data.data.data
+                    }
+                  ]
+                },
+                options: {
+                  legend: { display: false },
+                  title: {
+                    display: true,
+                    text: '商品銷售額'
+                  }
+                }
+              });
+          }
+      });
+  }
+
+
+
+  
+
+    //realtime//
+      $('#realtime_content').change(function(){
+        var realtime_content = $('#realtime_content').val();
+        $.ajax({
+          url: '/home/realtime_content/', 
+          type: 'POST',  
+          headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+          data: {
+            realtime_content : realtime_content
+          },  
+          success: function (data) {
+              var data = JSON.parse(data);
+              $('#realtime_date').html(data.data.date);
+              $('#sale_sum').html(data.data.sale_sum);
+              $('#sale_amount_sum').html(data.data.sale_amount_sum);
+              $('#revenue_sum').html(data.data.revenue_sum);
+              $('#purchase_sum').html(data.data.purchase_sum);
+              $('#purchase_amount_sum').html(data.data.purchase_amount_sum);
+              $('#purchase_in_stock_sum').html(data.data.purchase_in_stock_sum);
+          }
+      });
+      });
+
+    // end realtime //
+      
 
  </script>
  {% endblock %}

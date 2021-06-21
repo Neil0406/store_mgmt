@@ -269,7 +269,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)</h6>
-                            <input id="show_selling_price" type="number" class="form-control" type="number" step=any disabled>
+                            <input id="show_sale_price" type="number" class="form-control" type="number" step=any disabled>
                         </div>
                     </div>
 
@@ -344,7 +344,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)＊</h6>
-                            <input id="selling_price" type="number" class="form-control" type="number" step=any>
+                            <input id="sale_price" type="number" class="form-control" type="number" step=any>
                         </div>
                     </div>
 
@@ -404,7 +404,7 @@
 </div>
 
 <div class="container" role="main">
-    <h4>商品進貨</h4>
+    <h4 style="text-align: center;">商品進貨</h4>
         <a href="/purchase/purchase_list"><button class="btn-danger">庫存資訊</button></a>
     <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
@@ -472,7 +472,7 @@
                                     <thead>
                                         <tr>
                                             <th>廠商</th>
-                                            <th>種類</th>
+                                            <th>類別</th>
                                             <th>品牌</th>
                                             <th style="width:200px">型號</th>
                                             <th style="width:200px">品名</th>
@@ -610,7 +610,7 @@
                                 if(data.data[i].image3 != ''){
                                     s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
                                 }
-                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].updated+'</td><td><button class="btn-danger" onclick="get_company_product_id('+data.data[i].id+','+data.data[i].company+')">進貨</button></td></tr>'
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].sale_price+'</td><td>'+data.data[i].updated+'</td><td><button class="btn-danger" onclick="get_company_product_id('+data.data[i].id+','+data.data[i].company+')">進貨</button></td></tr>'
                             }
                             $('#datatable-button').DataTable().destroy();
                             $('#show_search').empty();
@@ -652,8 +652,8 @@
                     $('#model').val(data.model);
                     $('#name').val(data.name);
                     $('#purchase_price').val(data.purchase_price);
-                    $('#selling_price').val(data.selling_price);
-                    $('#amount').val(1);
+                    $('#sale_price').val(data.sale_price);
+                    $('#amount').val('');
                     $('#purchase_date').val(today());
                     $('#info').val(data.info);
                     if(data.image1 != ''){
@@ -692,7 +692,7 @@
                     $('#show_model').val(data.model);
                     $('#show_name').val(data.name);
                     $('#show_purchase_price').val(data.purchase_price);
-                    $('#show_selling_price').val(data.selling_price);
+                    $('#show_sale_price').val(data.sale_price);
                     $('#show_info').val(data.info);
                     if(data.image1 != ''){
                         $('#show_image1_').attr('src', '/'+data.image1)
@@ -754,7 +754,6 @@
 
 
 
-
         $('#company_product_delete_true').click(function(){
             $.ajax({
                 url: '/company/delete_company_product/', 
@@ -778,11 +777,11 @@
 
         function get_data(){
             var purchase_price = $('#purchase_price').val();
-            var selling_price = $('#selling_price').val();
+            var sale_price = $('#sale_price').val();
             var amount = $('#amount').val();
             var purchase_date = $('#purchase_date').val();
             var remark = $('#remark').val()
-            return {'company_id':company_id_,'company_product_id':company_product_id_, 'purchase_price':purchase_price, 'selling_price':selling_price, 'amount':amount, 'purchase_date':purchase_date, 'remark':remark}
+            return {'company_id':company_id_,'company_product_id':company_product_id_, 'purchase_price':purchase_price, 'sale_price':sale_price, 'amount':amount, 'purchase_date':purchase_date, 'remark':remark}
         }
 
         
@@ -790,10 +789,12 @@
             var data = get_data()
             if(!data['purchase_price'] || data['purchase_price'].trim().length === 0){
                 alert ('請輸入進價(單價)')
-            }else if(!data['selling_price'] || data['selling_price'].trim().length === 0){
+            }else if(!data['sale_price'] || data['sale_price'].trim().length === 0){
                 alert ('請輸入售價(單價)')
             }else if(!data['amount'] || data['amount'].trim().length === 0){
                 alert ('請輸入數量')
+            }else if(data['amount'] < 0){
+                alert ('進貨數量不能是負值')
             }else if(!data['purchase_date'] || data['purchase_date'].trim().length === 0){
                 alert ('請輸入進貨日期')
             }

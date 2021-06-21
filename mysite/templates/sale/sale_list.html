@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block title %}
-<title>銷售 / 銷貨</title>
-{% endblock%}
+<title>銷售 / 銷貨紀錄</title>
+{% endblock %}
 
 {% block header %}
     <!-- Datatables -->
@@ -14,7 +14,7 @@
 
     <!-- fancybox -->
     <link href="{% static '/plugin/fancybox/jquery.fancybox.min.css' %}" rel="stylesheet">
-{% endblock%}
+{% endblock %}
 
 {% block css %}
 <style>
@@ -23,12 +23,23 @@
         bottom: -4px;
         right: 10px;
     }
+    #search_time{
+        height: 60px;
+    }
+    #search_time_btn{
+        position: absolute;
+        top: 26px;
+    }
+    #search_time_btn_reset{
+        position: absolute;
+        top: 26px;
+        left: 78px;
+    }
     .default_image{
         object-fit: cover;
         width:50px;
         height:50px;
     }
-
     .company_info_lightbox{
         z-index:5000;
         position: fixed;
@@ -52,14 +63,12 @@
         position: relative;
         overflow-y:auto;
     }
-
-
-    #purchase_delete_btn{
+    #sale_delete_btn{
         position: absolute;
         bottom: 20px;
         right: 20px;
     }
-    .purchase_delete_lightbox{
+    .sale_delete_lightbox{
         z-index:9999;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -71,10 +80,10 @@
         justify-content: center;
         display: none;
     }
-    .purchase_delete_lightbox.active{
+    .sale_delete_lightbox.active{
         display: flex;
     }
-    .purchase_delete_content{
+    .sale_delete_content{
         width: 250px;
         height: 150px;
         background-color: #ccc;
@@ -86,7 +95,7 @@
         overflow-y:auto;
     }
 
-    .purchase_info_lightbox{
+    .sale_info_lightbox{
         z-index:5000;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -98,10 +107,10 @@
         justify-content: center;
         display: none;
     }
-    .purchase_info_lightbox.active{
+    .sale_info_lightbox.active{
         display: flex;
     }
-    .purchase_info_content{
+    .sale_info_content{
         width: 70%;
         height: 90%;
         background-color: #ccc;
@@ -109,7 +118,7 @@
         overflow-y:auto;
     }
 
-    .show_purchase_info_lightbox{
+    .show_sale_info_lightbox{
         z-index:5000;
         position: fixed;
         left: 0;    /* 靠左上角定位 */
@@ -121,11 +130,10 @@
         justify-content: center;
         display: none;
     }
-
-    .show_purchase_info_lightbox.active{
+    .show_sale_info_lightbox.active{
         display: flex;
     }
-    .show_purchase_info_content{
+    .show_sale_info_content{
         width: 70%;
         height: 90%;
         background-color: #ccc;
@@ -139,11 +147,12 @@
         max-width: 50%;
         max-height: 50%;
     }
+
+
 </style>
-{% endblock%}
+{% endblock %}
 
 {% block body %}
-
 <div class="container">
     <div class="company_info_lightbox">
         <div class="company_info_content">
@@ -235,11 +244,11 @@
     </div>
 
 
-    <div class="show_purchase_info_lightbox">
-        <div class="show_purchase_info_content">
+    <div class="show_sale_info_lightbox">
+        <div class="show_sale_info_content">
             <div class="card">
                 <div class="card-body">
-                    <h4 style="text-align: center;">庫存資訊</h4><hr>
+                    <h4 style="text-align: center;">銷售 / 銷貨紀錄</h4><hr>
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>廠商</h6>
@@ -249,9 +258,6 @@
                             <h6>類別</h6>
                             <input type="text" id="show_types" class="form-control" disabled>
                         </div>
-                    </div>
-
-                    <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>品牌</h6>
                             <input type="text" id="show_brand" class="form-control" disabled>
@@ -267,31 +273,6 @@
                             <h6>品名</h6>
                             <input type="text" id="show_name" class="form-control" disabled>
                         </div>
-                    </div>
-
-                    <div class="row my-2">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>進價(單價)</h6>
-                            <input id="show_purchase_price" type="number" class="form-control" type="number" step=any disabled>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>售價(單價)</h6>
-                            <input id="show_selling_price" type="number" class="form-control" type="number" step=any disabled>
-                        </div>
-                    </div>
-
-                    <div class="row my-3">
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>進貨數量</h6>
-                            <input class="form-control" type="number" step=any id="show_amount" disabled>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>庫存數量</h6>
-                            <input class="form-control" type="number" step=any id="show_product_in_stock" disabled>
-                        </div>
-                    </div>
-                    
-                    <div class="row my-3">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>進貨日期</h6>
                             <input class="form-control" type="date" id="show_purchase_date" disabled>
@@ -324,20 +305,67 @@
                             <textarea id="show_remark" style="width:100%;height:200px;" disabled></textarea>
                         </div>
                     </div>
+                    <hr>
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>進價(單價)</h6>
+                            <input id="show_purchase_price" type="number" class="form-control" type="number" step=any disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售價(單價)</h6>
+                            <input id="show_sale_price" type="number" class="form-control" type="number" step=any disabled>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售出價(單價)</h6>
+                            <input class="form-control" type="number" step=any id="show_sale_price_" disabled>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售出數量</h6>
+                            <input class="form-control" type="number" step=any id="show_sale_amount" disabled>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-lg-3 col-md-6 col-6">
+                            <h6>售出日期</h6>
+                            <input class="form-control" type="date" id="show_sale_date" disabled>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-lg-6 col-md-12 col-12">
+                            <h6>銷貨備註</h6>
+                            <textarea id="show_sale_remark" style="width:100%;height:200px;" disabled></textarea>
+                        </div>
+                    </div>
                     <br>
-                    <button class="btn btn-danger" onclick="show_company_product_info_close()">關閉</button>
+                    <button class="btn btn-danger" onclick="show_sale_info_close()">關閉</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <div class="purchase_info_lightbox">
-        <div class="purchase_info_content">
+    <div class="sale_delete_lightbox">
+        <div class="sale_delete_content">
+            <div>
+                <h5>確定要刪除？</h5>
+                <p>刪除可能造成報表錯誤</p>
+                <div>
+                    <button class="btn btn-success" id='sale_delete_true'>確認</button>
+                    <button class="btn btn-danger" id="close_sale_delete_check">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="sale_info_lightbox">
+        <div class="sale_info_content">
             {% csrf_token %}
             <div class="card">
                 <div class="card-body">
-                    <h4 style="text-align: center;">銷貨</h4><hr>
+                    <h4 style="text-align: center;">銷售 / 銷貨紀錄更新</h4><hr>
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>廠商</h6>
@@ -368,22 +396,6 @@
                         </div>
                     </div>
 
-
-                    <!-- <div class="row my-2"> -->
-                        <!-- <div class="col-lg-3 col-md-6 col-6">
-                            <h6>進貨數量</h6>
-                            <input class="form-control" type="number" step=any id="amount" disabled>
-                        </div>
-                        <div class="col-lg-3 col-md-6 col-6">
-                            <h6>庫存數量</h6>
-                            <input class="form-control" type="number" step=any id="product_in_stock" disabled>
-                        </div> -->
-                        <!-- <div class="col-lg-3 col-md-6 col-6">
-                            <h6>進貨日期</h6>
-                            <input class="form-control" type="date" id="purchase_date" disabled>
-                        </div> -->
-                    <!-- </div> -->
-                    
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>圖片1</h6>
@@ -418,7 +430,7 @@
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售價(單價)</h6>
-                            <input id="selling_price" type="number" class="form-control" type="number" step=any disabled>
+                            <input id="sale_price" type="number" class="form-control" type="number" step=any disabled>
                         </div>
                     </div>
                     <div class="row my-2">
@@ -434,11 +446,11 @@
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售出價(單價)*</h6>
-                            <input class="form-control" type="number" step=any id="selling_price_">
+                            <input class="form-control" type="number" step=any id="sale_price_">
                         </div>
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售出數量*</h6>
-                            <input class="form-control" type="number" step=any id="selling_amount">
+                            <input class="form-control" type="number" step=any id="sale_amount">
                         </div>
                         <div class="col-lg-6 col-md-12 col-12">
                             <h6>總金額</h6>
@@ -448,18 +460,19 @@
                     <div class="row my-2">
                         <div class="col-lg-3 col-md-6 col-6">
                             <h6>售出日期*</h6>
-                            <input class="form-control" type="date" id="selling_date">
+                            <input class="form-control" type="date" id="sale_date">
                         </div>
                     </div>
                     <div class="row my-2">
                         <div class="col-lg-6 col-md-12 col-12">
                             <h6>銷貨備註</h6>
-                            <textarea id="selling_remark" style="width:100%;height:200px;"></textarea>
+                            <textarea id="sale_remark" style="width:100%;height:200px;"></textarea>
                         </div>
                     </div>
                     <br>
-                    <button class="btn btn-primary" id="selling">確認銷貨</button>
-                    <button class="btn btn-danger" onclick="purchase_info_close()">關閉</button>
+                    <button class="btn btn-primary" id="update_sale">更新</button>
+                    <button class="btn btn-danger" onclick="sale_info_close()">關閉</button>
+                    <button class="btn btn-danger" id="sale_delete_btn">刪除紀錄</button>
                 </div>
             </div>
         </div>
@@ -467,16 +480,14 @@
 
 </div>
 
-
 <div class="container" role="main">
-    <h4>銷售 / 銷貨</h4>
-        <a href="#"><button class="btn-danger">銷售資訊</button></a>
+    <h4 style="text-align: center;">銷售 / 銷貨紀錄</h4>
+        <a href="/sale/create_sale"><button class="btn-danger">銷售 / 銷貨</button></a>
     <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
-            {% csrf_token %}
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>商品查詢</small></h2>
+                    <h2>銷售 / 銷貨紀錄查詢</small></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -496,7 +507,7 @@
                                     <h6>類別</h6>
                                     <select  id="search_types" class="form-control">
                                         <option hidden value="">類別</option>
-                                        {% for i in purchase_types_list%}
+                                        {% for i in company_product_types_list%}
                                             <option value="{{i}}">{{i}}</option>
                                         {% endfor %}
                                     </select>
@@ -508,7 +519,42 @@
                                 <div class="col-lg-3 col-md-3 col-6 my-2" id='search'>
                                     <button class="btn btn-primary" id="search_btn">查詢</button>
                                     <button class="btn btn-danger" id="search_btn_reset">清除</button>
+                                </div>                                                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-1">
+        <div class="col-md-12 col-sm-12 ">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>銷售 / 銷貨紀錄時間查詢</small></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card-box table-responsive">
+                                <p class="text-muted font-13 m-b-30">
+                                    1.只選則開始時間 -> 開始時間後所有資料&nbsp;&nbsp;&nbsp;&nbsp;
+                                    2.選則開始時間 + 結束時間 -> 區間內所有資料    
+                                </p>
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
+                                    <h6>開始時間</h6>
+                                    <input type="date" class="form-control" id="search_start_time">
                                 </div>
+                                <div class="col-lg-3 col-md-3 col-6 my-2">
+                                    <h6>結束時間</h6>
+                                    <input type="date" class="form-control" id="search_end_time">
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-12 my-2" id="search_time">
+                                    <button class="btn btn-primary" id="search_time_btn">查詢</button>
+                                    <button class="btn btn-danger" id="search_time_btn_reset">清除</button>
+                                </div>                                                        
                             </div>
                         </div>
                     </div>
@@ -518,13 +564,14 @@
     </div>
 </div>
 
-<!-- 庫存列表 -->
+
+<!-- 銷售列表 -->
 <div class="container" role="main">
     <div class="row my-1">
         <div class="col-md-12 col-sm-12 ">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>庫存列表</small></h2>
+                    <h2>銷售 / 銷貨列表</small></h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content" id="purchase_list">
@@ -532,26 +579,50 @@
                         <div class="col-sm-12">
                             <div class="card-box table-responsive">
                                 <p class="text-muted font-13 m-b-30">
-                                    庫存列表
+                                    預設為最近售出的30筆商品
                                 </p>
                                 <table id="datatable-button" class="table table-striped table-bordered" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th style="width:100px">廠商</th>
-                                            <th>種類</th>
+                                            <th>廠商</th>
+                                            <th>類別</th>
                                             <th>品牌</th>
                                             <th style="width:200px">型號</th>
                                             <th style="width:200px">品名</th>
                                             <th style="width:200px">圖片</th>
                                             <th>進價</th>
-                                            <th>售價</th>
-                                            <th>進貨數量</th>
-                                            <th>庫存數量</th>
-                                            <th style="width:80px">進貨時間</th>
+                                            <th>售出價(單價)</th>
+                                            <th>售出數量</th>
+                                            <th style="width:80px">售出時間</th>
                                             <th style="width: 40px;">更新</th>
                                         </tr>
                                     </thead>
                                     <tbody id = 'show_search'>
+                                        {% for i in sale_list%}
+                                            <tr>
+                                                <td><a href="javascript:void(0)" onclick="get_company_info('{{i.company.id}}')">{{i.company.name}}</a></td>
+                                                <td>{{i.product.types}}</td>
+                                                <td>{{i.product.brand}}</td>
+                                                <td>{{i.product.model}}</td>
+                                                <td><span class="badge bg-danger" style="color: #ccc;">Sale</span>&nbsp;<a href="javascript:void(0)" onclick="show_sale('{{i.id}}','{{i.company.id}}', '{{i.purchase.id}}')">{{i.product.name}}</a></td>
+                                                <td>                                                            
+                                                    {% if i.purchase.image1 %}
+                                                    <a data-fancybox="gallery" href="/{{i.purchase.image1}}"><img src="/{{i.purchase.image1}}" alt="" class="default_image"></a>&nbsp;
+                                                    {% endif %}
+                                                    {% if i.purchase.image2%}
+                                                    <a data-fancybox="gallery" href="/{{i.purchase.image2}}"><img src="/{{i.purchase.image2}}" alt="" class="default_image"></a>&nbsp;
+                                                    {% endif %}
+                                                    {% if i.purchase.image3%}
+                                                    <a data-fancybox="gallery" href="/{{i.purchase.image3}}"><img src="/{{i.purchase.image3}}" alt="" class="default_image"></a>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{i.purchase.purchase_price |floatformat:-1 }}</td>
+                                                <td>{{i.sale_price |floatformat:-1 }}</td>
+                                                <td>{{i.sale_amount |floatformat:-1 }}</td>
+                                                <td>{{i.sale_date |date:"Y-m-d" }}</td>
+                                                <td><button class="btn-primary" onclick="get_sale_id('{{i.id}}')">更新</button></td>
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
@@ -563,8 +634,9 @@
     </div>
 </div>
 <br>
-<!-- / 庫存列表 -->
-{% endblock%}
+<!-- / 銷售列表 -->
+
+{% endblock %}
 
 {% block js %}
     <!-- iCheck -->
@@ -585,7 +657,12 @@
     <script src="{% static '/plugin/fancybox/jquery.fancybox.min.js' %}"></script>
 
     <script>
-        //window.onload=today();
+        window.onload = new_product_list
+        function new_product_list(){
+            $('#datatable-button').DataTable().destroy();
+            $('#datatable-button').DataTable().draw();
+        }
+
         function today() {
             var NowDate = new Date();
             var y = NowDate.getFullYear();
@@ -593,16 +670,9 @@
             var d = NowDate.getDate();
             m = ("0" + m).slice(-2);
             d = ("0" + d).slice(-2);
-            var selling_date = y + '-'+ m + '-' + d;
-            return selling_date
+            var purchase_date = y + '-'+ m + '-' + d;
+            return purchase_date
         };
-
-        
-        window.onload = new_product_list
-        function new_product_list(){
-            $('#datatable-button').DataTable().destroy();
-            $('#datatable-button').DataTable().draw();
-        }
 
         function get_company_info(company_id){
             $.ajax({
@@ -637,27 +707,19 @@
             $('.company_info_lightbox').removeClass('active')
         }
 
-        var purchase_id_ = ''
-        var company_id_ = ''
-        var product_id_ = ''
-        function get_purchase_id(purchase_id, company_id, product_id){
-            purchase_id_ = purchase_id
-            company_id_ = company_id
-            product_id_ = product_id
-            $('#selling_price_').val('');
-            $('#selling_amount').val('');
-            $('#selling_date').val('');
-            $('#selling_remark').val('');
+        var sale_id_ = ''
+        function get_sale_id(sale_id){
+            sale_id_ = sale_id
             $('#show_sum').empty();
             $('#show_image1').attr('src','')
             $('#show_image2').attr('src','')
             $('#show_image3').attr('src','')
             $.ajax({
-                url: '/purchase/get_update_purchase/', 
+                url: '/sale/get_update_sale/', 
                 type: 'POST',  
                 headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                 data: {
-                    purchase_id:purchase_id,
+                    sale_id : sale_id
                 },  
                 success: function (data) {
                     var data = JSON.parse(data);
@@ -668,13 +730,16 @@
                     $('#model').val(data.model);
                     $('#name').val(data.name);
                     $('#purchase_price').val(data.purchase_price);
-                    $('#selling_price').val(data.selling_price);
+                    $('#sale_price').val(data.purchase_sale_price);
                     $('#purchase_date').val(data.purchase_date);
-                    $('#amount').val(data.amount);
-                    $('#product_in_stock').val(data.product_in_stock)
-                    $('#remark').val(data.remark);
+                    $('#amount').val(data.purchase_amount);
+                    $('#product_in_stock').val(data.product_in_stock + data.sale_amount)    //庫存 ＝ 還原現有庫存數量 ＋ 本筆銷售數量
+                    $('#remark').val(data.purchase_remark);
                     $('#info').val(data.info);
-                    $('#selling_date').val(today());
+                    $('#sale_price_').val(data.sale_price);
+                    $('#sale_amount').val(data.sale_amount);
+                    $('#sale_date').val(data.sale_date);
+                    $('#sale_remark').val(data.sale_remark);
                     if(data.image1 != ''){
                         $('#show_image1').attr('src', '/'+data.image1)
                     }
@@ -684,25 +749,26 @@
                     if(data.image3 != ''){
                         $('#show_image3').attr('src', '/'+data.image3)
                     }
-                    $('.purchase_info_lightbox').addClass('active')
+                    $('.sale_info_lightbox').addClass('active')
                 }
             });
         }
 
-        function purchase_info_close(){
-            $('.purchase_info_lightbox').removeClass('active')
+        function sale_info_close(){
+            $('.sale_info_lightbox').removeClass('active')
         }
 
-        function show_purchase(purchase_id){
+
+        function show_sale(sale_id){
             $('#show_image1_').attr('src','')
             $('#show_image2_').attr('src','')
             $('#show_image3_').attr('src','')
             $.ajax({
-                url: '/purchase/get_update_purchase/', 
+                url: '/sale/get_update_sale/', 
                 type: 'POST',  
                 headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                 data: {
-                    purchase_id:purchase_id,
+                    sale_id:sale_id,
                 },  
                 success: function (data) {
                     var data = JSON.parse(data);
@@ -713,13 +779,14 @@
                     $('#show_model').val(data.model);
                     $('#show_name').val(data.name);
                     $('#show_purchase_price').val(data.purchase_price);
-                    $('#show_selling_price').val(data.selling_price);
+                    $('#show_sale_price').val(data.purchase_sale_price);
                     $('#show_purchase_date').val(data.purchase_date);
-                    $('#show_amount').val(data.amount);
-                    $('#show_product_in_stock').val(data.product_in_stock)
-                    $('#show_purchase_date').val(data.show_purchase_date);
-                    $('#show_remark').val(data.remark);
+                    $('#show_remark').val(data.purchase_remark);
                     $('#show_info').val(data.info);
+                    $('#show_sale_price_').val(data.sale_price);
+                    $('#show_sale_amount').val(data.sale_amount);
+                    $('#show_sale_date').val(data.sale_date);
+                    $('#show_sale_remark').val(data.sale_remark);
                     if(data.image1 != ''){
                         $('#show_image1_').attr('src', '/'+data.image1)
                     }
@@ -728,15 +795,14 @@
                     }
                     if(data.image3 != ''){
                         $('#show_image3_').attr('src', '/'+data.image3)
-
                     }
-                    $('.show_purchase_info_lightbox').addClass('active')
+                    $('.show_sale_info_lightbox').addClass('active')
                 }
             });
         }
 
-        function show_company_product_info_close(){
-            $('.show_purchase_info_lightbox').removeClass('active')
+        function show_sale_info_close(){
+            $('.show_sale_info_lightbox').removeClass('active')
         }
 
 
@@ -754,7 +820,7 @@
                 alert ('請輸入查詢條件')
             }else{
                 $.ajax({
-                    url: '/sell/purchase_search/', 
+                    url: '/sale/sale_search/', 
                     type: 'POST',  
                     headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                     data: {
@@ -767,7 +833,7 @@
                         if (data.data.length != 0){
                             var s = ''
                             for(i=0; i< data.data.length; i++){
-                                s += '<tr><td><a href="javascript:void(0)" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="javascript:void(0)" onclick="show_purchase('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
+                                s += '<tr><td><a href="javascript:void(0)" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="javascript:void(0)" onclick="show_sale('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
                                 if(data.data[i].image1 != ''){
                                     s +='<a data-fancybox="gallery" href="/'+data.data[i].image1+'"><img src="/'+data.data[i].image1+'" alt="" class="default_image"></a>&nbsp;'
                                 }
@@ -777,7 +843,7 @@
                                 if(data.data[i].image3 != ''){
                                     s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
                                 }
-                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].selling_price+'</td><td>'+data.data[i].amount+'</td><td>'+data.data[i].product_in_stock+'</td><td>'+data.data[i].purchase_date+'</td><td><button class="btn-danger" onclick="get_purchase_id('+data.data[i].id+','+data.data[i].company+', '+data.data[i].product+')">銷貨</button></td></tr>'
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].sale_price+'</td><td>'+data.data[i].sale_amount+'</td><td>'+data.data[i].sale_date+'</td><td><button class="btn-primary" onclick="get_sale_id('+data.data[i].id+')">更新</button></td></tr>'
                             }
                             $('#datatable-button').DataTable().destroy();
                             $('#show_search').empty();
@@ -791,11 +857,65 @@
             }
         });
 
+
+        $('#search_time_btn').click(function(){
+            var search_start_time = $('#search_start_time').val();
+            var search_end_time = $('#search_end_time').val();
+            if(search_start_time.trim().length === 0){
+                alert ('請輸入開始時間')
+            }else{
+                $.ajax({
+                    url: '/sale/sale_search_by_date/', 
+                    type: 'POST',  
+                    headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                    data: {
+                        search_start_time: search_start_time,
+                        search_end_time:search_end_time,
+                    },  
+                    success: function (data) {
+                        var data = JSON.parse(data);
+                        console.log(data.data)
+                        if (data.data.length != 0 && data.data != 'time_error'){
+                            var s = ''
+                            for(i=0; i< data.data.length; i++){
+                                s += '<tr><td><a href="javascript:void(0)" onclick="get_company_info('+data.data[i].company+')">'+data.data[i].company_name+'</a></td><td>'+data.data[i].types+'</td><td>'+data.data[i].brand+'</td><td>'+data.data[i].model+'</td><td><a href="javascript:void(0)" onclick="show_sale('+data.data[i].id+','+data.data[i].company+')">'+data.data[i].name+'</a></td><td>'
+                                if(data.data[i].image1 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image1+'"><img src="/'+data.data[i].image1+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                if(data.data[i].image2 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image2+'"><img src="/'+data.data[i].image2+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                if(data.data[i].image3 != ''){
+                                    s +='<a data-fancybox="gallery" href="/'+data.data[i].image3+'"><img src="/'+data.data[i].image3+'" alt="" class="default_image"></a>&nbsp;'
+                                }
+                                s+= '</td><td>'+data.data[i].purchase_price+'</td><td>'+data.data[i].sale_price+'</td><td>'+data.data[i].sale_amount+'</td><td>'+data.data[i].sale_date+'</td><td><button class="btn-primary" onclick="get_sale_id('+data.data[i].id+','+data.data[i].company+', '+data.data[i].purchase+')">更新</button></td></tr>'
+                            }
+                            $('#datatable-button').DataTable().destroy();
+                            $('#show_search').empty();
+                            $('#datatable-button').find('tbody').append(s);
+                            $('#datatable-button').DataTable().draw();
+                        }else if(data.data == 'time_error'){
+                            alert ('時間區間錯誤')
+                        }
+                        else{
+                            alert ('查無資料')
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#search_time_btn_reset').click(function(){
+            $('#search_start_time').val('');
+            $('#search_end_time').val('');
+        });
+
+
         $('#sum_btn').click(function(){
-            var selling_price_ = $('#selling_price_').val();
-            var selling_amount = $('#selling_amount').val();
-            if (selling_price_ != '' && selling_amount != ''){
-                var sum_ = selling_price_ * selling_amount
+            var sale_price_ = $('#sale_price_').val();
+            var sale_amount = $('#sale_amount').val();
+            if (sale_price_ != '' && sale_amount != ''){
+                var sum_ = sale_price_ * sale_amount
                 $('#show_sum').html('總金額：'+sum_.toLocaleString('zh-Hant', { maximumFractionDigits: 2 }) +'元');
             }else{
                 alert('請輸入售出價(單價) / 售出數量')
@@ -803,24 +923,26 @@
         });
 
         function get_data(){
-            var selling_price_ = $('#selling_price_').val();
-            var selling_amount = $('#selling_amount').val();
-            var selling_date = $('#selling_date').val();
-            var selling_remark = $('#selling_remark').val();
-            return {'purchase_id' : purchase_id_, 'company_id':company_id_, 'product_id':product_id_,'selling_price_':selling_price_, 'selling_amount':selling_amount, 'selling_date':selling_date, 'selling_remark':selling_remark}
+            var sale_price_ = $('#sale_price_').val();
+            var sale_amount = $('#sale_amount').val();
+            var sale_date = $('#sale_date').val();
+            var sale_remark = $('#sale_remark').val();
+            return {'sale_id' : sale_id_, 'sale_price_':sale_price_, 'sale_amount':sale_amount, 'sale_date':sale_date, 'sale_remark':sale_remark}
         }
 
-        $('#selling').click(function(){
+        $('#update_sale').click(function(){
             var data = get_data()
-            if(!data['selling_price_'] || data['selling_price_'].trim().length === 0){
+            if(!data['sale_price_'] || data['sale_price_'].trim().length === 0){
                 alert ('請輸入售出價(單價)')
-            }else if(!data['selling_amount'] || data['selling_amount'].trim().length === 0){
+            }else if(!data['sale_amount'] || data['sale_amount'].trim().length === 0){
                 alert ('請輸入售出數量')
-            }else if(!data['selling_date'] || data['selling_date'].trim().length === 0){
+            }else if(data['sale_amount'] < 0){
+                alert ('售出數量不能是負值')
+            }else if(!data['sale_date'] || data['sale_date'].trim().length === 0){
                 alert ('請輸入銷售日期')
             }else{
                 $.ajax({
-                    url: '/sell/create_sell/', 
+                    url: '/sale/update_sale/', 
                     type: 'POST',  
                     headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
                     data: {
@@ -829,21 +951,51 @@
                     success: function (data) {
                         var data = JSON.parse(data);
                         if(data.data == 'success'){
-                            alert ('銷貨成功');
-                            purchase_info_close();
+                            alert ('更新成功');
+                            sale_info_close();
                         }else if (data.data == '庫存數量不足'){
                             alert ('庫存數量不足');
+                        }else if(data.data == 'return'){
+                            alert ('退貨成功');
+                            window.location.reload();
                         }else if(data.data == 'error'){
-                            alert ('銷貨失敗');
+                            alert ('更新失敗');
                         }
                     }
                 });
             }
-            
         });
 
 
+        $('#sale_delete_true').click(function(){
+            $.ajax({
+                url: '/sale/delete_sale/', 
+                type: 'POST',  
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                data: {
+                    sale_id : sale_id_
+                },  
+                success: function (data) {
+                    var data = JSON.parse(data);
+                    if(data.data == 'success'){
+                        alert ('刪除成功');
+                        window.location.reload();
+                    }else if(data.data == 'error'){
+                        alert ('刪除失敗');
+                        $('.sale_delete_lightbox').removeClass('active')
+                    }
+                }
+            });
+        })
+
+
+        $('#sale_delete_btn').click(function(){
+            $('.sale_delete_lightbox').addClass('active')
+        });
+
+        $('#close_sale_delete_check').click(function(){
+            $('.sale_delete_lightbox').removeClass('active')
+        });
 
     </script>
-
-{% endblock%}
+{% endblock %}

@@ -5,6 +5,8 @@ Django==3.2.2
 Pillow==8.2.0
 pycparser==2.20
 PyMySQL==1.0.2
+python-dateutil==2.8.1
 pytz==2021.1
+six==1.16.0
 sqlparse==0.4.1
 typing-extensions==3.10.0.0
