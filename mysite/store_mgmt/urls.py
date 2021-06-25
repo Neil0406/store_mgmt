@@ -11,6 +11,9 @@ urlpatterns = [
     # Home
     path('home/realtime_content/', views.Home().realtime_content),
     path('home/revenue_status_content/', views.Home().revenue_status_content),
+    path('home/hot_sale_content/', views.Home().hot_sale_content),
+    path('home/main_revenue_content/', views.Home().main_revenue_content),
+
     #User Control
     path('create_user/', views.UserControl().create_user),        
     path('user_control/', views.UserControl().user_control),

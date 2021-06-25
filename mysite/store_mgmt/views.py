@@ -128,6 +128,29 @@ class Home():
 		else:
 			return redirect ('/')
 
+	def hot_sale_content(self, request):
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				hot_sale_content = request.POST.get('hot_sale_content')
+				ret = HomeModel().hot_sale_content(hot_sale_content)
+				# ret = ''
+				ret = json.dumps({'data':ret})				 
+				return HttpResponse (ret)
+		else:
+			return redirect ('/')
+
+	def main_revenue_content(self, request):
+		user, check = session_check(request)
+		if check == True:
+			if request.method == 'POST':
+				main_revenue_content = request.POST.get('main_revenue_content')
+				ret = HomeModel().main_revenue_content(main_revenue_content)
+				# ret = ''
+				ret = json.dumps({'data':ret})				 
+				return HttpResponse (ret)
+		else:
+			return redirect ('/')
 
 class UserControl():
 	def create_user(self, request):

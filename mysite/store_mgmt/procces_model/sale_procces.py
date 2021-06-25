@@ -288,6 +288,9 @@ class SaleModel():
     def delete_sale(self, sale_id):
         try:
             sale = SaleInfo.objects.get(id=sale_id)
+            product_in_stock = sale.purchase.product_in_stock + sale.sale_amount   #刪除會被加回庫存         
+            sale.purchase.product_in_stock = product_in_stock
+            sale.purchase.save()
             sale.delete()
             ret = 'success'
         except:

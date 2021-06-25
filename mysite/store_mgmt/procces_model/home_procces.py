@@ -5,6 +5,8 @@ from django.db.models.functions import Concat
 import os
 from django.db.models import Sum, F, Func, Count
 from django.db import models
+from dateutil.relativedelta import relativedelta
+
 
 class HomeModel():
     def get_datetime(self):
@@ -97,10 +99,11 @@ class HomeModel():
             template = '%(function)s(MONTH from %(expressions)s)'
             output_field = models.IntegerField()
 
+        date_ = date.today()
+
         ret = {}
         bgc = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"] * 10
         if revenue_status_content == 'revenue_status_week':
-            date_ = date.today()
             start_time = date_ - timedelta(days= 6)
             end_time = date_
             week_data = SaleInfo.objects.filter(sale_date__gte = start_time).filter(sale_date__lte = end_time).annotate(day=Day('sale_date')).values('day').annotate(total=Sum(F('sale_price') * F('sale_amount')))
@@ -131,7 +134,6 @@ class HomeModel():
             #         data[week_l.index(i['day'])] = int(i['total'])                         #如果存在將方補 0 的data list 利用同樣長度 week_l 將 0 改成計算出來的數值 
 
         if revenue_status_content == 'revenue_status_month':
-            date_ = date.today()
             start_time = date_ - timedelta(days= 30)
             end_time = date_
             month_data = SaleInfo.objects.filter(sale_date__gte = start_time).filter(sale_date__lte = end_time).annotate(day=Day('sale_date')).values('day').annotate(total=Sum(F('sale_price') * F('sale_amount')))
@@ -144,6 +146,7 @@ class HomeModel():
             for i in month_data:
                 if i['day'] in labels: 
                     data[labels.index(i['day'])] = int(i['total'])    
+
             # date_ = date.today()
             # month_start = datetime(date_.year, date_.month, 1)
             # month_end = datetime(date_.year, date_.month + 1, 1) - timedelta(days=1)
@@ -156,10 +159,7 @@ class HomeModel():
             #     if i['day'] in month_l:                                                    
             #         data[month_l.index(i['day'])] = int(i['total'])                   
 
-
         if revenue_status_content == 'revenue_status_year':
-            from dateutil.relativedelta import relativedelta
-            date_ = date.today()
             start_time = date_ - relativedelta(months=12)
             end_time = date_
             year_data = SaleInfo.objects.filter(sale_date__gte = start_time).filter(sale_date__lte = end_time).annotate(month=Month('sale_date')).values('month').annotate(total=Sum(F('sale_price') * F('sale_amount')))
@@ -188,12 +188,83 @@ class HomeModel():
             # data = [0 for i in range(date_.month - year_start.month + 1)]                      
             # for i in year_data:                                                        
             #     if i['month'] in year_l:                                                    
-            #         data[year_l.index(i['month'])] = int(i['total'])     
+            #         data[year_l.index(i['month'])] = int(i['total'])  
 
         ret['labels'] = labels[:len(data)]
         ret['data'] = data
         ret['bgc'] = bgc[:len(data)]
         return ret
 
+    def hot_sale_content(self, hot_sale_content):
+        date_ = date.today()
+        bgc = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"] * 3
+        ret = {}
+        if hot_sale_content == 'hot_sale_week':
+            start_time = date_ - timedelta(days= 6)
+            end_time = date_
+
+        if hot_sale_content == 'hot_sale_month':
+            start_time = date_ - timedelta(days= 30)
+            end_time = date_
+        
+        sale_data = SaleInfo.objects.filter(sale_date__gte = start_time).filter(sale_date__lte = end_time).values('product').annotate(sale_amount=Sum('sale_amount')).order_by('-sale_amount')
+        labels = []
+        data = []
+        for i in sale_data:
+            cp = CompanyProductInfo.objects.get(id=i['product'])
+            if cp.types not in labels:
+                labels.append(cp.types)
+                data.append(int(i['sale_amount']))
+            else:
+                data[labels.index(cp.types)] += int(i['sale_amount'])
+
+        zipped_lists = zip(data, labels)
+        sorted_pairs = sorted(zipped_lists, reverse=True)
+        tuples = zip(*sorted_pairs)
+        data, labels = [ list(tuple) for tuple in  tuples]
+
+        ret['labels'] = labels[:5]
+        ret['data'] = data[:5]
+        ret['bgc'] = bgc[:len(data)]
+        return ret
+
+    def main_revenue_content(self, main_revenue_content):
+        date_ = date.today()
+        bgc = ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"] * 3
+        ret = {}
+        if main_revenue_content == 'main_revenue_week':
+            start_time = date_ - timedelta(days= 6)
+            end_time = date_
+
+        if main_revenue_content == 'main_revenue_month':
+            start_time = date_ - timedelta(days= 30)
+            end_time = date_
+
+        sale_data = SaleInfo.objects.filter(sale_date__gte = start_time).filter(sale_date__lte = end_time)
+        sale_amount = sale_data.values('purchase').annotate(sale_amount=Sum('sale_amount'))
+        sale_price = sale_data.values('purchase').annotate(sale_price=Sum(F('sale_price') * F('sale_amount')))
+        sale_data = zip(sale_amount, sale_price)
+        labels = []
+        data = []
+        for sale_amount,  sale_price in sale_data:
+            s = sale_price['sale_price'] / sale_amount['sale_amount']    #銷售單價 = 總銷售額 / 總銷售數量
+            purchase = PurchaseInfo.objects.get(id=sale_amount['purchase'])
+            revenue = (s - purchase.purchase_price) * sale_amount['sale_amount']
+            # print(purchase.product.types, sale_amount, sale_price['sale_price'], '營收：', int(revenue))    #錄音介面 {'purchase': 2, 'sale_amount': 3.0} 69500.0 營收： 14000
+            if purchase.product.types not in labels:
+                labels.append(purchase.product.types)
+                data.append(int(revenue))
+            else:
+                data[labels.index(purchase.product.types)] += int(revenue)
+
+        zipped_lists = zip(data, labels)
+        sorted_pairs = sorted(zipped_lists, reverse=True)
+        tuples = zip(*sorted_pairs)
+        data, labels = [ list(tuple) for tuple in  tuples]
+
+        ret['labels'] = labels[:5]
+        ret['data'] = data[:5]
+        ret['bgc'] = bgc[:len(data)]
+        return ret
 
 

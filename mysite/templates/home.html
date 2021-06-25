@@ -9,7 +9,19 @@
 {% endblock %}
 
 {% block css %}
+  <style>
+    #hot_sale_text{
+      position:absolute;
+      top: 25%;
+      right: 10px;
+    }
+    #main_revenue_text{
+      position:absolute;
+      top: 25%;
+      right: 10px;
+    }
 
+  </style>
 {% endblock %}
 
   {% block body %}
@@ -25,8 +37,8 @@
     <!-- /三格sample -->
       <div class="row my-2">
         {% csrf_token %}
-        <div class="col-lg-4 col-md-12 col-sm-12 ">
-          <div class="x_panel tile fixed_height_320 overflow_hidden" style="height: 385px;"> 
+        <div class="col-lg-4 col-md-12 col-sm-12 my-2">
+          <div class="x_panel tile fixed_height_320 overflow_hidden" style="height: 100%;"> 
             <h5>即時訊息</h5>
             <hr>
             <div class="row my-2">
@@ -67,8 +79,9 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-4 col-md-12 col-sm-12 ">
-          <div class="x_panel tile fixed_height_350 overflow_hidden"> 
+
+        <div class="col-lg-4 col-md-12 col-sm-12 my-2">
+          <div class="x_panel tile fixed_height_320 overflow_hidden" style="height: 100%;"> 
             <h5>銷售狀況</h5>
             <hr>
             <div class="row my-2">
@@ -84,44 +97,96 @@
             <div class="row" id="revenue_status"></div>
           </div>
         </div>
-        <div class="col-lg-4 col-md-12 col-sm-12">
-          <div class="x_panel tile fixed_height_320">
-            <h5>熱銷總類</h5>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 my-2">
+          <div class="x_panel tile fixed_height_320 overflow_hidden" style="height: 100%;">
+            <h5>熱銷商品</h5>
             <hr>
+            <div class="row my-2">
+              <div class="col-lg-6 col-md-6 col-6">
+                  <select id="hot_sale_content" class="form-control" onchange="hot_sale_content()">
+                      <option hidden value="hot_sale_week">前7天</option>
+                      <option value="hot_sale_week">前7天</option>
+                      <option value="hot_sale_month">前30天</option>
+                  </select>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                  <div id="hot_sale_doughnut">
+                  </div>
+                </div>
+                <div class="col-6">
+                  <table class="tile_info" id="hot_sale_text"></table>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-sm-12 my-2">
+          <div class="x_panel tile fixed_height_320 overflow_hidden" style="height: 100%;"> 
+            <h5>主要營收來源</h5>
+            <hr>
+                <div class="row my-2">
+                  <div class="col-lg-6 col-md-6 col-6">
+                      <select id="main_revenue_content" class="form-control" onchange="main_revenue_content()">
+                          <option hidden value="main_revenue_week">前7天</option>
+                          <option value="main_revenue_week">前7天</option>
+                          <option value="main_revenue_month">前30天</option>
+                      </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <div id="main_revenue_doughnut">
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <table class="tile_info" id="main_revenue_text"></table>
+                  </div>
+                </div>
           </div>
         </div>
       </div>
     <!-- /三格sample end -->
+    <br>
+    <br>
  {% endblock %}
 
  {% block js %}
    <!-- Chart.js -->
    <script src="{% static 'plugin/Chart.js/dist/Chart.min.js' %}"></script>
  <script>
-  window.onload =  revenue_status_content();
-  function revenue_status_content(){
-        var revenue_status_content = $('#revenue_status_content').val();
+    window.onload = main_revenue_content();
+    // main_revenue //
+      function main_revenue_content(){
+        var main_revenue_content = $('#main_revenue_content').val();
         $.ajax({
-          url: '/home/revenue_status_content/', 
+          url: '/home/main_revenue_content/', 
           type: 'POST',  
           headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
           data: {
-            revenue_status_content : revenue_status_content
+            main_revenue_content : main_revenue_content
           },  
           success: function (data) {
               var data = JSON.parse(data);
-              // Bar chart
-              $('#revenue_status_bar').remove();
-              $('#revenue_status').append('<canvas id="revenue_status_bar"></canvas>')
-              new Chart(document.getElementById("revenue_status_bar"), {
-                type: 'bar',
+              var s = ''
+              for(i=0; i< data.data.bgc.length; i++){
+                s += '<tr><td><p><i class="fa fa-square" style="color: '+data.data.bgc[i]+';"></i>'+data.data.labels[i]+'</p></td><td>'+data.data.data[i].toLocaleString('zh-Hant', { maximumFractionDigits: 2 })+'</td></tr>'
+              }
+              $('#main_revenue_text').html(s); 
+              
+              $('#main_revenue').remove();
+              $('#main_revenue_doughnut').append('<canvas id="main_revenue"  height="140" width="140"></canvas>')
+              new Chart(document.getElementById("main_revenue"), {
+                type: 'doughnut',
                 data: {
                   labels: data.data.labels,
                   datasets: [
                     {
-                      label: "商品銷售額",
-                      backgroundColor: data.data.bgc,
-                      data: data.data.data
+                      label: "Top 5 類別",
+                      backgroundColor:  data.data.bgc,
+                      data:  data.data.data
                     }
                   ]
                 },
@@ -129,17 +194,15 @@
                   legend: { display: false },
                   title: {
                     display: true,
-                    text: '商品銷售額'
+                    text: 'Top 5 類別'
                   }
                 }
               });
           }
       });
-  }
+      }
+    // end main_revenue //
 
-
-
-  
 
     //realtime//
       $('#realtime_content').change(function(){
@@ -166,6 +229,95 @@
 
     // end realtime //
       
+    // bar //
+    window.onload =  revenue_status_content();
+    function revenue_status_content(){
+          var revenue_status_content = $('#revenue_status_content').val();
+          $.ajax({
+            url: '/home/revenue_status_content/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+              revenue_status_content : revenue_status_content
+            },  
+            success: function (data) {
+                var data = JSON.parse(data);
+                // Bar chart
+                $('#revenue_status_bar').remove();
+                $('#revenue_status').append('<canvas id="revenue_status_bar"></canvas>')
+                new Chart(document.getElementById("revenue_status_bar"), {
+                  type: 'bar',
+                  data: {
+                    labels: data.data.labels,
+                    datasets: [
+                      {
+                        label: "商品銷總售額",
+                        backgroundColor: data.data.bgc,
+                        data: data.data.data
+                      }
+                    ]
+                  },
+                  options: {
+                    legend: { display: false },
+                    title: {
+                      display: true,
+                      text: '商品銷總售額'
+                    }
+                  }
+                });
+            }
+        });
+    }
+    // end bar //
+
+
+  
+    // doughnut //
+    window.onload = hot_sale_content();
+    function hot_sale_content(){
+        var hot_sale_content = $('#hot_sale_content').val();
+        $.ajax({
+          url: '/home/hot_sale_content/', 
+          type: 'POST',  
+          headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+          data: {
+            hot_sale_content : hot_sale_content
+          },  
+          success: function (data) {
+              var data = JSON.parse(data);
+              var s = ''
+              for(i=0; i< data.data.bgc.length; i++){
+                s += '<tr><td><p><i class="fa fa-square" style="color: '+data.data.bgc[i]+';"></i>'+data.data.labels[i]+'</p></td><td>'+data.data.data[i]+'件</td></tr>'
+              }
+              $('#hot_sale_text').html(s); 
+           
+              $('#hot_sale').remove();
+              $('#hot_sale_doughnut').append('<canvas id="hot_sale"  height="140" width="140"></canvas>')
+              new Chart(document.getElementById("hot_sale"), {
+                type: 'doughnut',
+                data: {
+                  labels: data.data.labels,
+                  datasets: [
+                    {
+                      label: "Top 5 類別",
+                      backgroundColor:  data.data.bgc,
+                      data:  data.data.data
+                    }
+                  ]
+                },
+                options: {
+                  legend: { display: false },
+                  title: {
+                    display: true,
+                    text: 'Top 5 類別'
+                  }
+                }
+              });
+          }
+      });
+    }
+    // end doughnut //
+
 
  </script>
  {% endblock %}
