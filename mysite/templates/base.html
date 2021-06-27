@@ -87,7 +87,9 @@
                 <li><a><i class="fa fa-edit"></i> 庫存管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/purchase/purchase_list">庫存資訊</a></li>
-                    <li><a href="/purchase/create_purchase">商品進貨</a></li>
+                    {% if user.auth == 'hight'%}
+                      <li><a href="/purchase/create_purchase">商品進貨</a></li>
+                    {% endif %}
                   </ul>
                 </li>
 
@@ -95,14 +97,18 @@
                 <li><a><i class="fa fa-edit"></i> 商品管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/company/company_product_list">商品資訊</a></li>
-                    <li><a href="/company/create_company_product">新增商品</a></li>
+                    {% if user.auth == 'hight'%}
+                      <li><a href="/company/create_company_product">新增商品</a></li>
+                    {% endif %}
                   </ul>
                 </li>
 
                 <li><a><i class="fa fa-edit"></i> 廠商管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/company/company_list">廠商資訊</a></li>
-                    <li><a href="/company/create_company">新增廠商</a></li>
+                    {% if user.auth == 'hight'%}
+                      <li><a href="/company/create_company">新增廠商</a></li>
+                    {% endif %}
                   </ul>
                 </li>
 
@@ -138,10 +144,10 @@
                     <ul class="nav child_menu">
                       <li><a href="/create_user">新增使用者</a></li>
                       <li><a href="/user_control">使用者管理</a></li>
+                      <li><a href="/auth_control">權限設定</a></li>
                     </ul>
                   </li>
                 {% endif %}
-
               </ul>
             </div>
 

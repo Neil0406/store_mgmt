@@ -17,6 +17,8 @@ urlpatterns = [
     #User Control
     path('create_user/', views.UserControl().create_user),        
     path('user_control/', views.UserControl().user_control),
+    path('auth_control/', views.UserControl().auth_control),
+
     path('user_control/update_user/', views.UserControl().update_user),
     path('user_control/delete_user/', views.UserControl().delete_user),
     #User Update

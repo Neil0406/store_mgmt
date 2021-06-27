@@ -243,6 +243,7 @@ class HomeModel():
         sale_data = SaleInfo.objects.filter(sale_date__gte = start_time).filter(sale_date__lte = end_time)
         sale_amount = sale_data.values('purchase').annotate(sale_amount=Sum('sale_amount'))
         sale_price = sale_data.values('purchase').annotate(sale_price=Sum(F('sale_price') * F('sale_amount')))
+        # print(sale_amount, sale_price)
         sale_data = zip(sale_amount, sale_price)
         labels = []
         data = []

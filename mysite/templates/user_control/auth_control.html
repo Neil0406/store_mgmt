@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+<title>權限設定</title>
+{% endblock%}
+
+{% block body %}
+<div class="container">
+    <h4 style="text-align: center;">權限設定</h4>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <div class="col-lg-12 col-md-12 col-12 my-1">
+                <h5>中等</h5>
+            </div>
+                <div class="col-lg-4 col-md-6 col-6 my-1">
+                    <div class="card">
+                        <div class="card-body row">
+                            <h6 class="col-12">使用者管理<hr></h6>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">新增使用者</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">使用者管理</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">權限管理</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+                <div class="col-lg-4 col-md-6 col-6 my-1">
+                    <div class="card">
+                        <div class="card-body row">
+                            <h6 class="col-12">廠商管理<hr></h6>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">新增廠商</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">廠商資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">廠商資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">廠商資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+                <div class="col-lg-4 col-md-6 col-6 my-1">
+                    <div class="card">
+                        <div class="card-body row">
+                            <h6 class="col-12">商品管理<hr></h6>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">新增商品</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">商品資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">商品資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">商品資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">商品成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-6 my-1">
+                    <div class="card">
+                        <div class="card-body row">
+                            <h6 class="col-12">庫存管理<hr></h6>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">商品進貨</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">庫存資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">庫存資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">庫存資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">進貨成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-6 my-1">
+                    <div class="card">
+                        <div class="card-body row">
+                            <h6 class="col-12">銷售管理<hr></h6>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">銷售/銷貨</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">銷售紀錄</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">銷售紀錄更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">銷售紀錄刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-primary text-light">進貨成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" name="active" value="true"></h5>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+
+        </div>
+    </div>
+</div>
+{% endblock%}
