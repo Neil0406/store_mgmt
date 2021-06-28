@@ -1,6 +1,7 @@
 from django.db import models
 from .utils.storage import ImageStorage
 
+
 #使用者
 class MgmtUser(models.Model):            
     id = models.AutoField(primary_key=True)                              
@@ -96,3 +97,41 @@ class SaleInfo(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):     
         return '{}'.format(self.product)
+
+
+#自訂權限
+class AuthControl(models.Model):
+    id = models.AutoField(primary_key=True)
+    auth = models.CharField(blank=True, null=True ,max_length=50)
+    user_control_main = models.BooleanField(blank=True, null=True)
+    create_user = models.BooleanField(blank=True, null=True)
+    user_control= models.BooleanField(blank=True, null=True)
+    auth_control= models.BooleanField(blank=True, null=True)
+
+    create_company = models.BooleanField(blank=True, null=True)
+    company_list = models.BooleanField(blank=True, null=True)
+    update_company = models.BooleanField(blank=True, null=True)
+    delete_company = models.BooleanField(blank=True, null=True)
+
+    company_product_main = models.BooleanField(blank=True, null=True)
+    create_company_product = models.BooleanField(blank=True, null=True)
+    update_company_product = models.BooleanField(blank=True, null=True)
+    delete_company_product = models.BooleanField(blank=True, null=True)
+    show_company_product_purchase_price = models.BooleanField(blank=True, null=True)
+
+    purchase_main= models.BooleanField(blank=True, null=True)
+    create_purchase = models.BooleanField(blank=True, null=True)
+    purchase_list = models.BooleanField(blank=True, null=True)
+    update_purchase = models.BooleanField(blank=True, null=True)
+    delete_purchase = models.BooleanField(blank=True, null=True)
+    show_purchase_purchase_price = models.BooleanField(blank=True, null=True)
+    sale_main = models.BooleanField(blank=True, null=True)
+    create_sale = models.BooleanField(blank=True, null=True)
+    sale_list = models.BooleanField(blank=True, null=True)
+    update_sale = models.BooleanField(blank=True, null=True)
+    delete_sale = models.BooleanField(blank=True, null=True)
+    show_sale_purchase_price = models.BooleanField(blank=True, null=True)
+    updated = models.DateTimeField(auto_now_add=False)                                  
+    created = models.DateTimeField(auto_now_add=True)
+    def __str__(self):     
+        return '{}'.format(self.auth)

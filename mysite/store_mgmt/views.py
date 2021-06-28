@@ -46,12 +46,12 @@ def session_check(func):
 		user, check = session_check_func(request)
 		if check == True:
 			# print('裝飾器: if')
-			ret = func(request, user)
+			return func(request, user)     #func 代表裝飾器下的function
 		else:
 			# print('裝飾器: else')
-			ret = redirect ('/')
-		return ret
+			return redirect ('/')
 	return wrapper
+
 
 def login(request):
 	info =''
@@ -125,6 +125,8 @@ class Home():
 			# ret = ''
 			ret = json.dumps({'data':ret})				 
 			return HttpResponse (ret)
+		else:
+			return redirect ('/')
 
 	@staticmethod
 	@session_check
@@ -135,6 +137,8 @@ class Home():
 			# ret = ''
 			ret = json.dumps({'data':ret})				 
 			return HttpResponse (ret)
+		else:
+			return redirect ('/')
 
 	@staticmethod
 	@session_check
@@ -145,6 +149,8 @@ class Home():
 			# ret = ''
 			ret = json.dumps({'data':ret})				 
 			return HttpResponse (ret)
+		else:
+			return redirect ('/')
 
 	@staticmethod
 	@session_check
@@ -155,7 +161,8 @@ class Home():
 			# ret = ''
 			ret = json.dumps({'data':ret})				 
 			return HttpResponse (ret)
-
+		else:
+			return redirect ('/')
 
 class UserControl():
 	@staticmethod
@@ -197,6 +204,8 @@ class UserControl():
 				ret = UserControlModel().update_user(data['user_id'], data['name'], data['email'], data['auth'], data['password'], data['password_check'], data['active'])
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
 
@@ -215,10 +224,10 @@ class UserControl():
 				ret = UserControlModel().delete_user(user_id)
 				ret = json.dumps({'data':ret})
 				return HttpResponse(ret)
+			else:
+				return redirect ('/')
 		else:
 			return redirect ('/')
-
-
 
 class User():
 	@staticmethod
@@ -240,12 +249,14 @@ class User():
 	@staticmethod
 	@session_check
 	def update_user_password(request, user):
-		data = request.POST.get('data')
-		data = json.loads(data)
-		ret = UserModel().update_user_password(**data)
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
-
+		if request.method == 'POST':
+			data = request.POST.get('data')
+			data = json.loads(data)
+			ret = UserModel().update_user_password(**data)
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect ('/')
 
 class Company():
 	@staticmethod
@@ -259,7 +270,6 @@ class Company():
 			return HttpResponse(ret)
 		return render(request,'company/create_company.html', locals())
 
-
 	@staticmethod
 	@session_check
 	def company_list(request, user):
@@ -269,30 +279,36 @@ class Company():
 	@staticmethod
 	@session_check
 	def get_update_company(request, user):
-		company_id = request.POST.get('company_id')
-		ret = CompanyModel().get_update_company(company_id)
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
-
+		if request.method == 'POST':	
+			company_id = request.POST.get('company_id')
+			ret = CompanyModel().get_update_company(company_id)
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def update_company(request, user):
-		data = request.POST.get('data')
-		data = json.loads(data)
-		ret = CompanyModel().update_company(**data)
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
-
+		if request.method == 'POST':		
+			data = request.POST.get('data')
+			data = json.loads(data)
+			ret = CompanyModel().update_company(**data)
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def delete_company(request, user):
-		company_id = request.POST.get('company_id')
-		ret = CompanyModel().delete_company(company_id)
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
-
+		if request.method == 'POST':		
+			company_id = request.POST.get('company_id')
+			ret = CompanyModel().delete_company(company_id)
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -317,11 +333,10 @@ class Company():
 			data['image2'] = image2
 			data['image3'] = image3
 			ret = CompanyModel().create_company_product(**data)
-			print(ret)
+			# print(ret)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
 		return render(request,'company/create_company_product.html', locals())
-
 
 	@staticmethod
 	@session_check
@@ -331,7 +346,8 @@ class Company():
 			ret = CompanyModel().get_company_product_types(company_id)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -342,6 +358,8 @@ class Company():
 			ret = CompanyModel().get_company_product_brand(company_id, types)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -353,7 +371,8 @@ class Company():
 			ret = CompanyModel().get_company_product_model(company_id, types, brand)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -366,7 +385,8 @@ class Company():
 			ret = CompanyModel().get_company_product_name(company_id, types, brand, model)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -381,7 +401,8 @@ class Company():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -398,7 +419,6 @@ class Company():
 
 		return render(request,'company/company_product_list.html', locals())
 
-
 	@staticmethod
 	@session_check
 	def company_product_search(request, user):
@@ -410,6 +430,8 @@ class Company():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 	
 	@staticmethod
 	@session_check
@@ -420,6 +442,8 @@ class Company():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -445,6 +469,8 @@ class Company():
 			ret = CompanyModel().update_company_product(**data)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 	
 	@staticmethod
 	@session_check
@@ -454,7 +480,8 @@ class Company():
 			ret = CompanyModel().delete_company_product(company_product_id)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 # 進貨
 class Purchase():
@@ -489,7 +516,6 @@ class Purchase():
 				company_product_types_list.append(i['types'])
 			return render(request,'purchase/create_purchase.html', locals())
 	
-
 	@staticmethod
 	@session_check
 	def purchase_list(request, user):
@@ -501,7 +527,6 @@ class Purchase():
 		for i in PurchaseInfo.objects.filter(product_in_stock__gt=0).order_by('-purchase_date')[:30]:  #過濾庫存量大於0
 				purchase_list.append(i)
 		return render(request,'purchase/purchase_list.html', locals())
-
 
 	@staticmethod
 	@session_check
@@ -515,28 +540,34 @@ class Purchase():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def purchase_search_by_date(request, user):
-		search_start_time = request.POST.get('search_start_time')
-		search_end_time = request.POST.get('search_end_time')
-		product_in_stock_time = request.POST.get('product_in_stock_time')
-		ret = PurchaseModel().purchase_search_by_date(search_start_time, search_end_time, product_in_stock_time)
-		# ret = ''
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
+		if request.method == 'POST':
+			search_start_time = request.POST.get('search_start_time')
+			search_end_time = request.POST.get('search_end_time')
+			product_in_stock_time = request.POST.get('product_in_stock_time')
+			ret = PurchaseModel().purchase_search_by_date(search_start_time, search_end_time, product_in_stock_time)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def get_update_purchase(request, user):
-		purchase_id = request.POST.get('purchase_id') 
-		ret = PurchaseModel().get_update_purchase(purchase_id)
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
+		if request.method == 'POST':
+			purchase_id = request.POST.get('purchase_id') 
+			ret = PurchaseModel().get_update_purchase(purchase_id)
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
-	
 	@staticmethod
 	@session_check
 	def update_purchase(request, user):
@@ -561,6 +592,8 @@ class Purchase():
 			ret = PurchaseModel().update_purchase(**data)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -570,6 +603,8 @@ class Purchase():
 			ret = PurchaseModel().delete_purchase(purchase_id)
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 #銷售
 class Sale():
@@ -594,7 +629,6 @@ class Sale():
 					purchase_types_list.append(i.product.types)
 			return render(request,'sale/create_sale.html', locals())
 
-
 	@staticmethod
 	@session_check
 	def purchase_search(request, user):
@@ -606,6 +640,8 @@ class Sale():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -618,6 +654,8 @@ class Sale():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -629,7 +667,8 @@ class Sale():
 			# ret = ''
 			ret = json.dumps({'data':ret})
 			return HttpResponse(ret)
-
+		else:
+			return redirect('/')
 
 	@staticmethod
 	@session_check
@@ -643,33 +682,39 @@ class Sale():
 				sale_list.append(i)
 		return render(request,'sale/sale_list.html', locals())	
 
-
 	@staticmethod
 	@session_check
 	def get_update_sale(request, user):
-		sale_id = request.POST.get('sale_id') 
-		ret = SaleModel().get_update_sale(sale_id)
-		# ret = ''
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
-	
-
+		if request.method == 'POST':
+			sale_id = request.POST.get('sale_id') 
+			ret = SaleModel().get_update_sale(sale_id)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')			
+		
 	@staticmethod
 	@session_check	
 	def update_sale(request, user):
-		data = request.POST.get('data')
-		data = json.loads(data)
-		ret = SaleModel().update_sale(**data)
-		# ret = ''
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
-
+		if request.method == 'POST':
+			data = request.POST.get('data')
+			data = json.loads(data)
+			ret = SaleModel().update_sale(**data)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')	
 
 	@staticmethod
 	@session_check	
 	def delete_sale(request, user):
-		sale_id = request.POST.get('sale_id')
-		ret = SaleModel().delete_sale(sale_id)
-		# ret = ''
-		ret = json.dumps({'data':ret})
-		return HttpResponse(ret)
+		if request.method == 'POST':
+			sale_id = request.POST.get('sale_id')
+			ret = SaleModel().delete_sale(sale_id)
+			# ret = ''
+			ret = json.dumps({'data':ret})
+			return HttpResponse(ret)
+		else:
+			return redirect('/')	

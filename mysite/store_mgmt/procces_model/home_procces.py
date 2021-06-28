@@ -217,12 +217,15 @@ class HomeModel():
                 data.append(int(i['sale_amount']))
             else:
                 data[labels.index(cp.types)] += int(i['sale_amount'])
-
-        zipped_lists = zip(data, labels)
-        sorted_pairs = sorted(zipped_lists, reverse=True)
-        tuples = zip(*sorted_pairs)
-        data, labels = [ list(tuple) for tuple in  tuples]
-
+        try:
+            zipped_lists = zip(data, labels)
+            sorted_pairs = sorted(zipped_lists, reverse=True)
+            tuples = zip(*sorted_pairs)
+            data, labels = [ list(tuple) for tuple in  tuples]
+        except:
+            data = []
+            labels = []
+            
         ret['labels'] = labels[:5]
         ret['data'] = data[:5]
         ret['bgc'] = bgc[:len(data)]
@@ -257,12 +260,14 @@ class HomeModel():
                 data.append(int(revenue))
             else:
                 data[labels.index(purchase.product.types)] += int(revenue)
-
-        zipped_lists = zip(data, labels)
-        sorted_pairs = sorted(zipped_lists, reverse=True)
-        tuples = zip(*sorted_pairs)
-        data, labels = [ list(tuple) for tuple in  tuples]
-
+        try:
+            zipped_lists = zip(data, labels)
+            sorted_pairs = sorted(zipped_lists, reverse=True)
+            tuples = zip(*sorted_pairs)
+            data, labels = [ list(tuple) for tuple in  tuples]
+        except:
+            data = []
+            labels = []
         ret['labels'] = labels[:5]
         ret['data'] = data[:5]
         ret['bgc'] = bgc[:len(data)]
