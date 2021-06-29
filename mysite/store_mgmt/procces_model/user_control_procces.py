@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from store_mgmt.models import MgmtUser
+from store_mgmt.models import MgmtUser, AuthControl
 from store_mgmt.utils.password_encode import PasswordEncode
 from django.forms.models import model_to_dict
 
@@ -92,3 +92,15 @@ class UserControlModel():
             ret = 'success'
         return ret
 
+    def update_auth_control(self, auth_list):
+        try:
+            auth = auth_list['auth']
+            dic = {}
+            for i in auth_list['auth_list']:
+                dic.update(i)
+            dic['updated'] = self.get_datetime()
+            AuthControl.objects.filter(auth=auth).update(**dic)
+            ret = 'success'
+        except:
+            ret = 'error'
+        return ret

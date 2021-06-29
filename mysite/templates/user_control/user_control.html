@@ -184,11 +184,7 @@
                                     <tbody>
                                         {% for i in user_list %}
                                             <tr>
-                                                {% if i.auth == 'hight'%}
-                                                    <td>{{i.name}}</td>
-                                                {% else %}
-                                                    <td><a href="javascript:void(0)" onclick="get_user_id('{{i.id}}')">{{i.name}}</a></td>
-                                                {% endif%}
+                                                <td><a href="javascript:void(0)" onclick="get_user_id('{{i.id}}')">{{i.name}}</a></td>
                                                 <td><a href="mailto:{{i.email}}">{{i.email}}</a></td>
                                                 {% if i.auth == 'hight' %}
                                                     <td style="color: brown;">{{i.auth}}</td>
@@ -203,11 +199,9 @@
                                                     <td style="color: brown;">未啟用</td>
                                                 {% endif %}
                                                 <td>{{i.action | date:"Y-m-d H:i:s" }}</td>
-                                                {% if i.auth == 'hight'%}
-                                                    <td></td>
-                                                {% else %}
-                                                    <td><button class="btn-primary" onclick="get_user_id('{{i.id}}')">更新</button></td>
-                                                {% endif%}
+                    
+                                                <td><button class="btn-primary" onclick="get_user_id('{{i.id}}')">更新</button></td>
+                              
                                             </tr>
                                         {% endfor %}
                                     </tbody>

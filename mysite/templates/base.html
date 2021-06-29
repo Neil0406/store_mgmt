@@ -133,18 +133,25 @@
                   </ul>
                 </li> -->
 
+
                 <li><a><i class="fa fa-user"></i> 帳戶管理 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
                     <li><a href="/user/update_user">帳戶管理</a></li>
                   </ul>
                 </li>
 
-                {% if user.auth == 'hight'%}
+                {% if user.auth.user_control_main == True%}
                   <li><a><i class="fa fa-lock"></i> 使用者管理 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="/create_user">新增使用者</a></li>
-                      <li><a href="/user_control">使用者管理</a></li>
-                      <li><a href="/auth_control">權限設定</a></li>
+                      {% if user.auth.create_user == True%}
+                        <li><a href="/create_user">新增使用者</a></li>
+                      {% endif %}
+                      {% if user.auth.user_control == True%}
+                        <li><a href="/user_control">使用者管理</a></li>
+                      {% endif %}
+                      {% if user.auth.auth_control == True%}
+                        <li><a href="/auth_control">權限設定</a></li>
+                      {% endif %}
                     </ul>
                   </li>
                 {% endif %}

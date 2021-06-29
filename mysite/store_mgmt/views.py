@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect, HttpResponse
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from .models import MgmtUser, CompanyInfo, CompanyProductInfo, PurchaseInfo, SaleInfo
+from .models import MgmtUser, CompanyInfo, CompanyProductInfo, PurchaseInfo, SaleInfo, AuthControl
 from .utils.password_encode import PasswordEncode
 from datetime import datetime, timedelta
 from django.forms.models import model_to_dict
@@ -29,6 +29,8 @@ def session_check_func(request):
 			user.action = now                 #紀錄動作時間
 			user.save()
 			if session_expire > now and user.active == True:
+				auth = AuthControl.objects.get(auth=user.auth)
+				user.auth = auth
 				return user, True
 			else:
 				return None, False
@@ -52,7 +54,7 @@ def session_check(func):
 			return redirect ('/')
 	return wrapper
 
-
+	
 def login(request):
 	info =''
 	user, check = session_check_func(request)
@@ -101,7 +103,7 @@ def sign_up(request):
 		return render(request,'user/sign_up.html', locals())
 
 def logout(request):
-	if 'email' in request.session and request.method == 'GET':
+	if 'email' in request.session:
 		del request.session['email']
 		request.session.flush()
 		return redirect ('/')
@@ -168,7 +170,7 @@ class UserControl():
 	@staticmethod
 	@session_check
 	def create_user(request, user):
-		if user.auth == 'hight':
+		if user.auth.create_user == True:
 			if request.method == 'POST':
 				data = request.POST.get('data')
 				data = json.loads(data)
@@ -178,12 +180,12 @@ class UserControl():
 				return HttpResponse (ret)
 			return render(request,'user_control/create_user.html', locals())
 		else:
-			return redirect ('/')
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def user_control(request, user):
-		if user.auth == 'hight':
+		if user.auth.user_control == True:
 			user_list = MgmtUser.objects.all()
 			if request.method == 'POST':
 				user_id = request.POST.get('user_id')
@@ -192,12 +194,12 @@ class UserControl():
 				return HttpResponse(ret)
 			return render(request,'user_control/user_control.html', locals())
 		else:
-			return redirect ('/')
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def update_user(request, user):
-		if user.auth == 'hight':
+		if user.auth.update_user == True:
 			if request.method == 'POST':
 				data = request.POST.get('data')
 				data = json.loads(data)
@@ -207,18 +209,12 @@ class UserControl():
 			else:
 				return redirect ('/')
 		else:
-			return redirect ('/')
-
-	@staticmethod
-	@session_check
-	def auth_control(request, user):
-
-		return render(request,'user_control/auth_control.html', locals())
+			return redirect('/')
 
 	@staticmethod
 	@session_check
 	def delete_user(request, user):
-		if user.auth == 'hight':
+		if user.auth.delete_user == True:
 			if request.method == 'POST':
 				user_id = request.POST.get('user_id')
 				ret = UserControlModel().delete_user(user_id)
@@ -227,7 +223,53 @@ class UserControl():
 			else:
 				return redirect ('/')
 		else:
-			return redirect ('/')
+			return redirect('/')
+
+	@staticmethod
+	@session_check
+	def auth_control(request, user):
+		if user.auth.auth_control == True:
+			def procces(auth_control, switch):
+				auth_control = model_to_dict(auth_control)
+				ret = {}
+				for i in list(auth_control.keys()):
+					if type(auth_control[i]) == bool:
+						if auth_control[i] == True and switch == False:
+							ret[i] = 'checked'
+						elif auth_control[i] == True and switch == False:
+							ret[i] = ''
+						elif auth_control[i] == True and switch == True:
+							ret[i] = 'true'	
+						else:
+							ret[i] = 'false'
+				return ret
+
+			if request.method == 'POST':
+				auth = request.POST.get('auth')
+				auth_control = AuthControl.objects.get(auth=auth)
+				ret = procces(auth_control, True)
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+
+			auth_control = AuthControl.objects.get(auth='low')
+			auth_control = procces(auth_control, False)
+			return render(request,'user_control/auth_control.html', locals())
+		else:
+			return redirect('/')
+
+	@staticmethod
+	@session_check
+	def update_auth_control(request, user):
+		if user.auth.auth_control == True:
+			if request.method == 'POST':
+				auth_list = request.POST.get('auth_list')
+				auth_list = json.loads(auth_list)
+				ret = UserControlModel().update_auth_control(auth_list)
+				# ret = ''
+				ret = json.dumps({'data':ret})
+				return HttpResponse(ret)
+		else:
+			return redirect('/')
 
 class User():
 	@staticmethod

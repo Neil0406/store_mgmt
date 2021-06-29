@@ -18,9 +18,11 @@ urlpatterns = [
     path('create_user/', views.UserControl().create_user),        
     path('user_control/', views.UserControl().user_control),
     path('auth_control/', views.UserControl().auth_control),
+    path('update_auth_control/', views.UserControl().update_auth_control),
 
     path('user_control/update_user/', views.UserControl().update_user),
     path('user_control/delete_user/', views.UserControl().delete_user),
+
     #User Update
     path('user/update_user/', views.User().update_user),   
     path('user/update_user_password/', views.User().update_user_password),   

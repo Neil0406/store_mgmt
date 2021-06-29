@@ -108,6 +108,7 @@ class AuthControl(models.Model):
     user_control= models.BooleanField(blank=True, null=True)
     auth_control= models.BooleanField(blank=True, null=True)
 
+    company_main = models.BooleanField(blank=True, null=True)
     create_company = models.BooleanField(blank=True, null=True)
     company_list = models.BooleanField(blank=True, null=True)
     update_company = models.BooleanField(blank=True, null=True)
@@ -115,6 +116,7 @@ class AuthControl(models.Model):
 
     company_product_main = models.BooleanField(blank=True, null=True)
     create_company_product = models.BooleanField(blank=True, null=True)
+    company_product_list = models.BooleanField(blank=True, null=True)
     update_company_product = models.BooleanField(blank=True, null=True)
     delete_company_product = models.BooleanField(blank=True, null=True)
     show_company_product_purchase_price = models.BooleanField(blank=True, null=True)
@@ -131,6 +133,7 @@ class AuthControl(models.Model):
     update_sale = models.BooleanField(blank=True, null=True)
     delete_sale = models.BooleanField(blank=True, null=True)
     show_sale_purchase_price = models.BooleanField(blank=True, null=True)
+    
     updated = models.DateTimeField(auto_now_add=False)                                  
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):     

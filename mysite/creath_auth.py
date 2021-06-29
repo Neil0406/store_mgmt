@@ -25,12 +25,14 @@ class CreateAuth():
                 'create_user', 
                 'user_control', 
                 'auth_control', 
+                'company_main',
                 'create_company' , 
                 'company_list' , 
                 'update_company' , 
                 'delete_company', 
                 'company_product_main' , 
-                'create_company_product' , 
+                'create_company_product' ,
+                'company_product_list' 
                 'update_company_product' , 
                 'delete_company_product' , 
                 'show_company_product_purchase_price' , 
@@ -69,7 +71,7 @@ class CreateAuth():
             keys = ','.join(list(i.keys()))
             val = list(i.values())
             val = tuple(val)
-            cursor.executemany("insert into store_mgmt_authcontrol("+keys+")values(%s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [val])
+            cursor.executemany("insert into store_mgmt_authcontrol("+keys+")values(%s,%s, %s,%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", [val])
   
             new_id = cursor.lastrowid
             print("Id :", new_id)

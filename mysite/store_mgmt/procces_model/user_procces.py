@@ -50,7 +50,7 @@ class UserModel():
         user = MgmtUser.objects.get(id=kwargs['user_id'])
         pwd = PasswordEncode().decrypt(user.public_key, user.private_key)
         if kwargs['old_password'] == pwd:
-            print('密碼相同')
+            # print('密碼相同')
             key, ciphered = PasswordEncode().encrypt(kwargs['password'])
             user.public_key = key
             user.private_key = ciphered
@@ -59,5 +59,5 @@ class UserModel():
             ret = 'success'
         else:
             ret = 'error'
-            print('舊密碼錯誤')
+            # print('舊密碼錯誤')
         return ret

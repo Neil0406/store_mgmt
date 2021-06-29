@@ -10,10 +10,11 @@
     <br>
     <div class="card">
         <div class="card-body">
+            {% csrf_token %}
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-12 my-1">
                     <h5>權限</h5>
-                    <select id="" class="form-control col-lg-3 col-md-6 col-6">
+                    <select id="auth" class="form-control col-lg-3 col-md-6 col-6">
                         <option hidden value="low">低</option>
                         <option value="low">低</option>
                         <option value="medium">中</option>
@@ -24,80 +25,57 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-6 my-1">
                     <div class="card">
-                        <div class="card-body row">
-                            <h6 class="col-12">使用者管理&nbsp;&nbsp;&nbsp;<input type="checkbox" id="user_control_main"><hr></h6>
+                        <div class="card-body row" id="user_control_main">
+                            <h6 class="col-12">使用者管理<hr></h6>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">新增使用者</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_user"></h5>
+                                <h5><span class="badge bg-danger text-light">新增使用者</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_user" {{auth_control.create_user}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">使用者管理</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="user_control"></h5>
+                                <h5><span class="badge bg-danger text-light">使用者管理</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="user_control" {{auth_control.user_control}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">權限管理</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="auth_control"></h5>
-                            </div>
-                        </div>
-                    </div>        
-                </div>
-                <div class="col-lg-4 col-md-6 col-6 my-1">
-                    <div class="card">
-                        <div class="card-body row">
-                            <h6 class="col-12">廠商管理&nbsp;&nbsp;&nbsp;<input type="checkbox" id="company_main"><hr></h6>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">新增廠商</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_company"></h5>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">廠商資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="company_list"></h5>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">廠商資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_company"></h5>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">廠商資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_company"></h5>
+                                <h5><span class="badge bg-danger text-light">權限管理</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="auth_control" {{auth_control.auth_control}}></h5>
                             </div>
                         </div>
                     </div>        
                 </div>
                 <div class="col-lg-4 col-md-6 col-6 my-1">
                     <div class="card">
-                        <div class="card-body row">
-                            <h6 class="col-12">商品管理&nbsp;&nbsp;&nbsp;<input type="checkbox" id="company_product_main"><hr></h6>
+                        <div class="card-body row" id="company_main">
+                            <h6 class="col-12">廠商管理<hr></h6>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">新增商品</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_company_product"></h5>
+                                <h5><span class="badge bg-danger text-light">新增廠商</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_company" {{auth_control.create_company}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">商品資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="company_product_list"></h5>
+                                <h5><span class="badge bg-danger text-light">廠商資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="company_list" {{auth_control.company_list}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">商品資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_company_product"></h5>
+                                <h5><span class="badge bg-danger text-light">廠商資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_company" {{auth_control.update_company}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">商品資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_company_product"></h5>
-                            </div>
-                            <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">商品成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="show_company_product_purchase_price"></h5>
+                                <h5><span class="badge bg-danger text-light">廠商資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_company" {{auth_control.delete_company}}></h5>
                             </div>
                         </div>
                     </div>        
                 </div>
-
                 <div class="col-lg-4 col-md-6 col-6 my-1">
                     <div class="card">
-                        <div class="card-body row">
-                            <h6 class="col-12">庫存管理&nbsp;&nbsp;&nbsp;<input type="checkbox" id="purchase_main"><hr></h6>
+                        <div class="card-body row" id="company_product_main">
+                            <h6 class="col-12">商品管理<hr></h6>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">商品進貨</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_purchase"></h5>
+                                <h5><span class="badge bg-danger text-light">新增商品</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_company_product" {{auth_control.create_company_product}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">庫存資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="purchase_list"></h5>
+                                <h5><span class="badge bg-danger text-light">商品資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="company_product_list" {{auth_control.company_product_list}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">庫存資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_purchase"></h5>
+                                <h5><span class="badge bg-danger text-light">商品資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_company_product" {{auth_control.update_company_product}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">庫存資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_purchase"></h5>
+                                <h5><span class="badge bg-danger text-light">商品資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_company_product" {{auth_control.delete_company_product}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">進貨成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="show_purchase_purchase_price"></h5>
+                                <h5><span class="badge bg-danger text-light">商品成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="show_company_product_purchase_price" {{auth_control.show_company_product_purchase_price}}></h5>
                             </div>
                         </div>
                     </div>        
@@ -105,28 +83,52 @@
 
                 <div class="col-lg-4 col-md-6 col-6 my-1">
                     <div class="card">
-                        <div class="card-body row">
-                            <h6 class="col-12">銷售管理&nbsp;&nbsp;&nbsp;<input type="checkbox" id="sale_main"><hr></h6>
+                        <div class="card-body row" id="purchase_main">
+                            <h6 class="col-12">庫存管理<hr></h6>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">銷售/銷貨</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_sale"></h5>
+                                <h5><span class="badge bg-danger text-light">商品進貨</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_purchase" {{auth_control.create_purchase}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">銷售紀錄</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="sale_list"></h5>
+                                <h5><span class="badge bg-danger text-light">庫存資訊</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="purchase_list" {{auth_control.purchase_list}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">銷售紀錄更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_sale"></h5>
+                                <h5><span class="badge bg-danger text-light">庫存資訊更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_purchase" {{auth_control.update_purchase}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">銷售紀錄刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_sale"></h5>
+                                <h5><span class="badge bg-danger text-light">庫存資訊刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_purchase" {{auth_control.delete_purchase}}></h5>
                             </div>
                             <div class="col-lg-4 col-md-6 col-12">
-                                <h5><span class="badge bg-danger text-light">進貨成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="show_sale_purchase_price"></h5>
+                                <h5><span class="badge bg-danger text-light">進貨成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="show_purchase_purchase_price" {{auth_control.show_purchase_purchase_price}}></h5>
+                            </div>
+                        </div>
+                    </div>        
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-6 my-1">
+                    <div class="card">
+                        <div class="card-body row" id="sale_main">
+                            <h6 class="col-12">銷售管理<hr></h6>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-danger text-light">銷售/銷貨</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="create_sale" {{auth_control.create_sale}}></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-danger text-light">銷售紀錄</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="sale_list" {{auth_control.sale_list}}></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-danger text-light">銷售紀錄更新</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="update_sale" {{auth_control.update_sale}}></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-danger text-light">銷售紀錄刪除</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="delete_sale" {{auth_control.delete_sale}}></h5>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12">
+                                <h5><span class="badge bg-danger text-light">進貨成本顯示</span>&nbsp;&nbsp;&nbsp;<input type="checkbox" id="show_sale_purchase_price" {{auth_control.show_sale_purchase_price}}></h5>
                             </div>
                         </div>
                     </div>        
                 </div>
             </div>
-                
+            <br>
+            <button class="btn btn-primary" onclick="update_auth_control()">更新</button>
         </div>
     </div>
 </div>
@@ -134,11 +136,77 @@
 
 {% block js %}
 <script>
-    $('#user_control_main').change(function(){
-        console.log($('#user_control_main')[0].checked == true)
-      //  create_user
-      //  user_control
-      //  auth_control
+
+    $('#auth').change(function(){
+        var auth = $('#auth').val()
+        $.ajax({
+            url: '/auth_control/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                auth: auth,
+            },  
+            success: function (data) {
+                var data = JSON.parse(data);
+                var key_ = Object.keys(data.data)
+                for(i=0; i< key_.length; i++){
+                    if(key_[i] != 'user_control_main' && key_[i] != 'company_main' && key_[i] != 'company_product_main' && key_[i] != 'purchase_main' && key_[i] != 'sale_main' ){
+                        $('#'+ key_[i]).prop('checked', (data.data[key_[i]] === 'true'))
+                    }
+                }
+            }   
+        });
     });
+
+
+    function get_data(){
+        var user_control_main = $('#user_control_main input')
+        var company_main = $('#company_main input')
+        var company_product_main = $('#company_product_main input')
+        var purchase_main = $('#purchase_main input')
+        var sale_main = $('#sale_main input')
+        return [{'user_control_main':user_control_main}, {'company_main':company_main}, {'company_product_main':company_product_main}, {'purchase_main':purchase_main}, {'sale_main':sale_main}]
+    }
+
+    function update_auth_control(){
+        var auth = $('#auth').val();
+        var data = get_data()
+        var auth_list = []
+        for(i=0; i< data.length; i++){
+            var main_key = Object.keys(data[i])[0]
+            dic = {}
+            var main_ = false
+            for(j=0; j<data[i][main_key].length; j++){
+                var key_ = data[i][main_key][j].id
+                dic[key_] = data[i][main_key][j].checked
+                if(data[i][main_key][j].checked == true){
+                    main_ = true
+                }
+            }
+            dic[main_key] = main_
+            auth_list.push(dic)
+        }
+        auth_list = {'auth':auth, 'auth_list':auth_list}
+        $.ajax({
+            url: '/update_auth_control/', 
+            type: 'POST',  
+            headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+            data: {
+                auth_list: JSON.stringify(auth_list),
+            },  
+            success: function (data) {
+                var data = JSON.parse(data);
+                if(data.data == 'success'){
+                    alert('更新成功')
+                    window.location.reload()
+                }else if(data.data == 'error'){
+                    alert('更新失敗')
+                }
+            }
+        });
+    }
+
+   
+ 
 </script>
 {% endblock%}
